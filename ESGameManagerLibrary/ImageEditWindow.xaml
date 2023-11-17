@@ -1,0 +1,61 @@
+﻿<Window x:Class="ESGameManagerLibrary.ImageEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ESGameManagerLibrary"
+        mc:Ignorable="d" Name="uc" MinHeight="200" MinWidth="300"
+        MaxWidth="1300"
+        MaxHeight="760"
+        Title="Select New Image" SizeToContent="WidthAndHeight" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+    <Window.Resources>
+        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
+    </Window.Resources>
+    <DockPanel Margin="5,5,5,5">
+        <GroupBox
+            Background="#FFFFEAAF"
+            DockPanel.Dock="Top">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Padding="0,0,5,0" Text="Original:" FontWeight="Bold" />
+                    <TextBlock
+                        TextWrapping="Wrap" 
+                        Text="{Binding ElementName=uc, Path=OriginalText}" />
+                </StackPanel>
+            </GroupBox.Header>
+            <Image
+                MaxHeight="200" MinHeight="100"
+                Source="{Binding ElementName=uc, Path=OriginalFullPath}" />
+
+        </GroupBox>
+        <DockPanel
+            DockPanel.Dock="Bottom">
+            <Button ToolTip="Browse for new image" DockPanel.Dock="Left" Padding="5,5,5,5" Click="OnBrowse" >
+                <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
+            </Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button Padding="5,5,5,5" Content="OK" Click="OnOK"  />
+            <Button Padding="5,5,5,5" Content="Cancel" Click="OnCancel"  />
+        </StackPanel>
+        </DockPanel>
+        <GroupBox
+            Background="AliceBlue"
+            DockPanel.Dock="Top">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Padding="0,0,5,0" Text="New:" FontWeight="Bold" />
+                    <TextBlock
+                        TextWrapping="Wrap" 
+                        Text="{Binding ElementName=uc, Path=EditText}" />
+                </StackPanel>
+                
+            </GroupBox.Header>
+            <DockPanel>
+                <Image
+                    MaxHeight="200"
+                    Source="{Binding ElementName=uc, Path=EditTextFullPath}" />
+            </DockPanel>
+        </GroupBox>
+        
+    </DockPanel>
+</Window>
