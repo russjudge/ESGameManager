@@ -22,8 +22,10 @@ namespace ESGameManagerLibrary
                         return "In Main";
                     case StructureOrganization.ByGenre:
                         return "By Genre";
-                    case StructureOrganization.ByGenreAndFirstLetter:
-                        return "By Genre & By Letter";
+                    case StructureOrganization.Publisher:
+                        return "By Publisher";
+                    case StructureOrganization.Developer:
+                        return "By Developer";
                     case StructureOrganization.ByFirstLetter:
                         return "By First Letter";
                     default:

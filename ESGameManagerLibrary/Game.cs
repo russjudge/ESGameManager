@@ -214,9 +214,12 @@ namespace ESGameManagerLibrary
                     gm.dateBeingSet = true;
                     try
                     {
-                        if (int.TryParse(gm.ReleaseDate.Substring(0, 4), out int y)
-                            && int.TryParse(gm.ReleaseDate.Substring(4, 2), out int m)
-                            && int.TryParse(gm.ReleaseDate.Substring(4, 2), out int day))
+                        //if (int.TryParse(gm.ReleaseDate.Substring(0, 4), out int y)
+                        //    && int.TryParse(gm.ReleaseDate.Substring(4, 2), out int m)
+                        //    && int.TryParse(gm.ReleaseDate.Substring(4, 2), out int day))
+                            if (int.TryParse(gm.ReleaseDate.AsSpan(0, 4), out int y)
+                            && int.TryParse(gm.ReleaseDate.AsSpan(4, 2), out int m)
+                            && int.TryParse(gm.ReleaseDate.AsSpan(4, 2), out int day))
                         {
                             DateTime dt = new(y, m, day);
                             gm.DateReleased = dt;
@@ -714,12 +717,14 @@ namespace ESGameManagerLibrary
         /// Below method written entirely with ChatGPT.  Yes, I'm that lazy.
         /// </summary>
         /// <param name="path"></param>
-        public static void ShrinkImageIfNecessary(string filePath)
+        public static string ShrinkImageIfNecessary(string filePath, string target)
         {
+            string retVal = filePath;
             try
             {
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+                using (System.IO.FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
+                    
                     BitmapDecoder originalDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
 
                     int originalWidth = originalDecoder.Frames[0].PixelWidth;
@@ -731,84 +736,34 @@ namespace ESGameManagerLibrary
                         int newHeight = (int)((float)originalHeight / originalWidth * newWidth);
 
                         TransformedBitmap resizedImage = new TransformedBitmap(originalDecoder.Frames[0], new ScaleTransform((double)newWidth / originalWidth, (double)newHeight / originalHeight));
-
-                        /*
-                        BitmapFrame frame = BitmapFrame.Create(resizedImage);
-
-                        // Get the original encoder
-                        BitmapEncoder originalEncoder = originalDecoder.CodecInfo.CreateEncoder();
-
-                        // Copy metadata from the original encoder to the new encoder
-                        foreach (var metadata in originalDecoder.Frames[0].Metadata)
-                        {
-                            frame.Metadata.Add(metadata);
-                        }
-                        */
-                        /*
-                        BitmapFrame frame = BitmapFrame.Create(resizedImage);
-
-                        // Get the original encoder type
-                        Type originalEncoderType = originalDecoder.CodecInfo.  GetEncoderType();
-
-                        // Create an instance of the original encoder
-                        BitmapEncoder originalEncoder = (BitmapEncoder)Activator.CreateInstance(originalEncoderType);
-
-                        // Copy metadata from the original encoder to the new encoder
-                        foreach (var metadata in originalDecoder.Frames[0].Metadata)
-                        {
-                            frame.Metadata.Add(metadata);
-                        }
-
-
-                        */
-                        /*
-                        BitmapFrame frame = BitmapFrame.Create(resizedImage);
-
-                        // Get the original encoder based on the original image format
-                        BitmapEncoder originalEncoder = null;
-
-                        if (originalDecoder.CodecInfo.ContainerFormat == BitmapContainerFormat.Jpeg)
-                        {
-                            originalEncoder = new JpegBitmapEncoder();
-                        }
-                        // Add other formats as needed (e.g., PngBitmapEncoder, GifBitmapEncoder)
-
-                        // Copy metadata from the original encoder to the new encoder
-                        foreach (var metadata in originalDecoder.Frames[0].Metadata)
-                        {
-                            frame.Metadata.Add(metadata);
-                        }
-
-                       
-
-                        BitmapFrame frame = BitmapFrame.Create(resizedImage);
-
-                        // Get the original encoder type
-                        Type originalEncoderType = originalDecoder.CodecInfo.GetEncoderType();
-
-                        // Create an instance of the original encoder
-                        BitmapEncoder originalEncoder = (BitmapEncoder)Activator.CreateInstance(originalEncoderType);
-
-                        // Copy metadata from the original encoder to the new encoder
-                        foreach (var metadata in originalDecoder.Frames[0].Metadata)
-                        {
-                            frame.Metadata.Add(metadata);
-                        }
-
-                        */
-                        ////
-                        //TODO: NEED TO RENAME FILE TO .PNG.
+////
                         PngBitmapEncoder encoder = new PngBitmapEncoder();
+                        
                         encoder.Frames.Add(BitmapFrame.Create(resizedImage));
-
-                        fileStream.SetLength(0); // Clear the file content
-                        encoder.Save(fileStream);
+                        if (!target.ToLowerInvariant().EndsWith(".png"))
+                        {
+                            FileInfo f = new FileInfo(retVal);
+                            if (!string.IsNullOrEmpty(f.DirectoryName))
+                            {
+                                retVal = System.IO.Path.Combine(
+                                    f.DirectoryName,
+                                    string.Concat(
+                                        f.Name.AsSpan(0, f.Name.Length - f.Extension.Length), ".png"));
+                            }
+                        }
+                        using (System.IO.FileStream outStream = new FileStream(retVal, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            outStream.SetLength(0); // Clear the file content
+                            encoder.Save(outStream);
+                            outStream.Close();
+                        }
                         fileStream.Close();
 
                         //Console.WriteLine("Image resized and saved successfully.");
                     }
                     else
                     {
+                        System.IO.File.Copy(filePath, target);
                         //Console.WriteLine("Image width is already less than or equal to 1000 pixels. No resizing needed.");
                     }
                 }
@@ -817,6 +772,7 @@ namespace ESGameManagerLibrary
             {
                 //Console.WriteLine($"Error: {ex.Message}");
             }
+            return retVal;
         }
         private string SetFileLocation(string path, string expectedSubFolder, bool IsImage = false)
         {
@@ -837,29 +793,18 @@ namespace ESGameManagerLibrary
                         Directory.CreateDirectory(targetImageFolder);
                     }
                     retVal = System.IO.Path.Combine(targetImageFolder, f.Name);
-                    f.CopyTo(retVal);
+                    
                     if (IsImage)
                     {
-                        ShrinkImageIfNecessary(retVal);
+                        retVal = ShrinkImageIfNecessary(f.FullName, retVal);
+                    }
+                    else
+                    {
+                        f.CopyTo(retVal);
                     }
                 }
             }
             return retVal;
-        }
-        bool IsInLetterFolder(string path)
-        {
-            string? startFolder = GetListRoot();
-            if (!string.IsNullOrEmpty(startFolder))
-            {
-                FileInfo f = new(path);
-                string work1 = path.Replace(startFolder, string.Empty);
-                work1 = work1.Substring(0, work1.Length - f.Name.Length);
-                if (work1.Length == 3)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
         public static string SetSingleLetterFolder(string path)
         {
@@ -871,6 +816,18 @@ namespace ESGameManagerLibrary
             }
             return finaldir;
         }
+        public static string SetOtherFolder(string folderName)
+        {
+            if (!string.IsNullOrEmpty(folderName))
+            {
+                return folderName;
+            }
+            else
+            {
+                return "Other";
+            }
+        }
+
         public void SetFullROMPath(string path)
         {
             string expectedFileLocation = string.Empty;
@@ -883,28 +840,20 @@ namespace ESGameManagerLibrary
                     expectedFileLocation = SetSingleLetterFolder(path);
                     break;
                 case StructureOrganization.ByGenre:
-                    expectedFileLocation = Genre;
+                    expectedFileLocation = SetOtherFolder(Genre);
                     break;
-                case StructureOrganization.ByGenreAndFirstLetter:
-                    if (IsInLetterFolder(FullPath))
-                    {
-                        expectedFileLocation = SetSingleLetterFolder(path);
-                    }
-                    else
-                    {
-                        expectedFileLocation = Genre;
-                    }
+                case StructureOrganization.Publisher:
+                    expectedFileLocation = SetOtherFolder(Publisher);
                     break;
 
-
+                case StructureOrganization.Developer:
+                    expectedFileLocation = SetOtherFolder(Developer);
+                    break;
+                default:
+                    expectedFileLocation = string.Empty;
+                    break;
             }
             FullPath = SetFileLocation(path, expectedFileLocation, false);
-
-            //if (Parent.Organization == StructureOrganization.ByGenreAndFirstLetter)
-            //{
-            //    string newFullPath = SetFileLocation(path, Genre);
-               
-            //}
         }
         public void SetFullMarqueePath(string path)
         {

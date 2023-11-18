@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         mc:Ignorable="d" Loaded="OnLoaded" Name="uc"
-        Title="ROM Folder Scan Result" Height="450" Width="800">
+        Title="ROM Folder Scan Result" Height="450" Width="800" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
         <local:FullFilePathToNameConverter x:Key="FullFilePathToNameConverter" />
     </Window.Resources>

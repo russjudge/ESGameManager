@@ -120,12 +120,12 @@
                 </Button.Content>
             </Button>
             <Button
-                IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='ByGenreAndFirstLetter|False'}"
-                Click="OnReorgByBothGenreAndFirstLetter"
+                IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='Publisher|False'}"
+                Click="OnReorgByPublisher"
                 DockPanel.Dock="Right" Margin="0,0,0,0" Width="100">
                 <Button.ToolTip>
                     <TextBlock
-                        Text="Reorganize into subfolders by both first letter and genre.  This will create two copies of each game, one in the letter folder, one in the genre folder."
+                        Text="Reorganize into subfolders by Publisher."
                         TextWrapping="Wrap" />
                 </Button.ToolTip>
                 <Button.Content>
@@ -133,10 +133,29 @@
                         <Image Height="24" Source="/Resources/rearrange.png" />
                         <TextBlock
                             TextWrapping="Wrap" HorizontalAlignment="Center"
-                            Text="Genre &amp; First Letter" />
+                            Text="Publisher" />
                     </StackPanel>
                 </Button.Content>
                 
+            </Button>
+            <Button
+                IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='Developer|False'}"
+                Click="OnReorgByDeveloper"
+                DockPanel.Dock="Right" Margin="0,0,0,0" Width="100">
+                <Button.ToolTip>
+                    <TextBlock
+                        Text="Reorganize into subfolders by Developer."
+                        TextWrapping="Wrap" />
+                </Button.ToolTip>
+                <Button.Content>
+                    <StackPanel HorizontalAlignment="Center">
+                        <Image Height="24" Source="/Resources/rearrange.png" />
+                        <TextBlock
+                            TextWrapping="Wrap" HorizontalAlignment="Center"
+                            Text="Developer" />
+                    </StackPanel>
+                </Button.Content>
+
             </Button>
             <Button
                 IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='None|False'}"
@@ -237,7 +256,7 @@
                         </GridViewColumn.HeaderTemplate>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Id, Mode=OneWay}" />
+                                <TextBox Text="{Binding Path=Id, Mode=TwoWay}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

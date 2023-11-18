@@ -11,6 +11,7 @@ namespace ESGameManagerLibrary
         None,
         ByFirstLetter,
         ByGenre,
-        ByGenreAndFirstLetter,
+        Publisher,
+        Developer,
     }
 }

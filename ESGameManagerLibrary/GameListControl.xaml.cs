@@ -216,89 +216,58 @@ namespace ESGameManagerLibrary
                 }
             }
         }
-        private void ReorgIntoMainFolder()
+        private static string GetTargetFile(Game gm, string startFolder, StructureOrganization organization)
         {
-            if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
+            string retVal = string.Empty;
+            FileInfo currentFile = new(gm.FullPath);
+            switch (organization)
             {
-                string startFolder = System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder);
-                if (GameFolder.Organization != StructureOrganization.None)
-                {
-                    foreach (var gm in GameFolder.Games)
-                    {
-                        FileInfo f = new(gm.FullPath);
-                        string newFullPath = System.IO.Path.Combine(startFolder, f.Name);
-                        f.MoveTo(newFullPath);
-                        gm.FullPath = newFullPath;
-                    }
-                    
-                    if (GameFolder.Changed)
-                    {
-                        GameFolder.Save();
-                    }
-                }
-                RemoveEmptyFolders();
+                case StructureOrganization.None:
+                    retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
+                    break;
+                case StructureOrganization.ByFirstLetter:
+                    retVal = System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(gm.FullPath), currentFile.Name);
+                    break;
+                case StructureOrganization.Publisher:
+                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Publisher), currentFile.Name);
+                    break;
+                case StructureOrganization.ByGenre:
+                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Genre), currentFile.Name);
+                    break;
+                case StructureOrganization.Developer:
+                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Developer), currentFile.Name);
+                    break;
+                default:
+                    retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
+                    break;
             }
+            return retVal;
         }
-        private void ReorgByFirstLetter()
+        private static void MoveFile(Game gm, string startFolder, StructureOrganization organization)
         {
-            if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
+            FileInfo f = new(gm.FullPath);
+            string newFullPath = GetTargetFile(gm, startFolder, organization);
+            FileInfo newF = new(newFullPath);
+            if (newF.Directory != null && !newF.Directory.Exists)
             {
-                string startFolder = System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder);
-                if (GameFolder.Organization != StructureOrganization.ByFirstLetter)
-                {
-                    foreach (var gm in GameFolder.Games)
-                    {
-                        FileInfo f = new(gm.FullPath);
-
-                        string newFullPath =
-                            System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(gm.FullPath), f.Name);
-                        FileInfo target = new(newFullPath);
-                        if (target.Directory != null && !target.Directory.Exists)
-                        {
-                            target.Directory.Create();
-                        }
-
-                        f.MoveTo(newFullPath);
-                        gm.FullPath = newFullPath;
-                    }
-                }
-                RemoveEmptyFolders();
+                newF.Directory.Create();
             }
+            f.MoveTo(newFullPath);
+            gm.FullPath = newFullPath;
         }
-        private void ReorgByGenre(bool doMove)
+        private void MoveFiles(StructureOrganization organization)
         {
             if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
             {
                 string startFolder = System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder);
-                if (GameFolder.Organization != StructureOrganization.ByFirstLetter)
+                foreach (var gm in GameFolder.Games)
                 {
-                    List<Game> GamesToAdd = new List<Game>();
-                    foreach (var gm in GameFolder.Games)
-                    {
-                        FileInfo f = new(gm.FullPath);
-                        string newFullPath = System.IO.Path.Combine(startFolder, gm.Genre, f.Name);
-                        FileInfo target = new(newFullPath);
-                        if (target.Directory != null && !target.Directory.Exists)
-                        {
-                            target.Directory.Create();
-                        }
-                        if (doMove)
-                        {
-                            f.MoveTo(newFullPath);
-                            gm.FullPath = newFullPath;
-                        }
-                        else
-                        {
-                            Game newGame = gm.Copy();
-                            newGame.FullPath = newFullPath;
-                            GamesToAdd.Add(newGame);
-                            f.CopyTo(newFullPath);
-                        }
-                    }
-                    foreach (var gm in GamesToAdd)
-                    {
-                        GameFolder.Games.Add(gm);
-                    }
+                    MoveFile(gm, startFolder, organization);
+                }
+                GameFolder.Organization = organization;
+                if (GameFolder.Changed)
+                {
+                    GameFolder.Save();
                 }
                 RemoveEmptyFolders();
             }
@@ -306,57 +275,27 @@ namespace ESGameManagerLibrary
 
         private void OnReorgIntoMainFolder(object sender, RoutedEventArgs e)
         {
-            ReorgIntoMainFolder();
-            GameFolder.Organization = StructureOrganization.None;
-
-            if (GameFolder.Changed)
-            {
-                GameFolder.Save();
-            }
-        }
-
-        private void OnReorgByBothGenreAndFirstLetter(object sender, RoutedEventArgs e)
-        {
-    
-            ReorgByGenre(false);
-            ReorgByFirstLetter();
-            GameFolder.Organization = StructureOrganization.ByGenreAndFirstLetter;
-
-            if (GameFolder.Changed)
-            {
-                GameFolder.Save();
-            }
-            
+            MoveFiles(StructureOrganization.None);
         }
 
         private void OnReorgByGenre(object sender, RoutedEventArgs e)
         {
-            if (GameFolder.Organization == StructureOrganization.ByGenreAndFirstLetter)
-            {
-                ReorgIntoMainFolder();
-            }
-            ReorgByGenre(true);
-            GameFolder.Organization = StructureOrganization.ByGenre;
-
-            if (GameFolder.Changed)
-            {
-                GameFolder.Save();
-            }
+            MoveFiles(StructureOrganization.ByGenre);
         }
 
         private void OnReorgByFirstLetter(object sender, RoutedEventArgs e)
         {
-            if (GameFolder.Organization == StructureOrganization.ByGenreAndFirstLetter)
-            {
-                ReorgIntoMainFolder();
-            }
-            ReorgByFirstLetter();
-            GameFolder.Organization = StructureOrganization.ByFirstLetter;
+            MoveFiles(StructureOrganization.ByFirstLetter);
+        }
 
-            if (GameFolder.Changed)
-            {
-                GameFolder.Save();
-            }
+        private void OnReorgByPublisher(object sender, RoutedEventArgs e)
+        {
+            MoveFiles(StructureOrganization.Publisher);
+        }
+
+        private void OnReorgByDeveloper(object sender, RoutedEventArgs e)
+        {
+            MoveFiles(StructureOrganization.Developer);
         }
     }
 }

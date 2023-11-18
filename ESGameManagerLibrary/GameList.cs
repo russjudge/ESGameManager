@@ -71,16 +71,16 @@ namespace ESGameManagerLibrary
                     Games = new ObservableCollection<Game>(Games.OrderBy(game => game.Name));
                     break;
                 case StructureOrganization.ByGenre:
-                    Games = new ObservableCollection<Game>(Games.OrderBy(game => game.Genre).ThenBy(game => game.Name));
+                    Games = new ObservableCollection<Game>(Games.OrderBy(game => Game.SetOtherFolder(game.Genre)).ThenBy(game => game.Name));
                     break;
                 case StructureOrganization.ByFirstLetter:
-                    Games = new ObservableCollection<Game>(Games.OrderBy(game => game.Path.Substring(0,1)).ThenBy(game => game.Name));
+                    Games = new ObservableCollection<Game>(Games.OrderBy(game => Game.SetSingleLetterFolder(game.Path)).ThenBy(game => game.Name));
                     break;
-                case StructureOrganization.ByGenreAndFirstLetter:
-                    Games = new ObservableCollection<Game>(Games.OrderBy(game =>
-                    ( game.Path.IndexOf('/', 1) == 3 ))
-                        .ThenBy(game => (game.Path.IndexOf('/', 1) == 3 ? game.Name : game.Genre))
-                    );
+                case StructureOrganization.Publisher:
+                    Games = new ObservableCollection<Game>(Games.OrderBy(game => Game.SetOtherFolder(game.Publisher)).ThenBy(game => game.Name));
+                    break;
+                case StructureOrganization.Developer:
+                    Games = new ObservableCollection<Game>(Games.OrderBy(game => Game.SetOtherFolder(game.Developer)).ThenBy(game => game.Name));
                     break;
             }
             
@@ -340,7 +340,8 @@ namespace ESGameManagerLibrary
         public void DetermineOrganization()
         {
             Organization = StructureOrganization.None;
-
+            bool foundByPublisher = false;
+            bool foundByDeveloper = false;
             bool foundByLetter = false;
             bool foundByGenre = false;
             foreach(var gm in Games)
@@ -357,19 +358,20 @@ namespace ESGameManagerLibrary
                         }
                         else
                         {
+                            foundByLetter = false;
                             string folder = gm.Path.Substring(i + 1, j - i);
-                            if (gm.Genre == folder)
-                            {
-                                foundByGenre = true;
-                            }
+                            foundByGenre = (gm.Genre == folder);
+                            foundByPublisher = (gm.Publisher == folder);
+
+                            foundByDeveloper = (gm.Developer == folder);
                         }
                     }
                     
                 }
             }
-            if (foundByLetter && foundByGenre)
+            if (foundByDeveloper)
             {
-                Organization = StructureOrganization.ByGenreAndFirstLetter;
+                Organization = StructureOrganization.Developer;
             }
             else if (foundByLetter)
             {
@@ -378,6 +380,14 @@ namespace ESGameManagerLibrary
             else if (foundByGenre)
             {
                 Organization = StructureOrganization.ByGenre;
+            }
+            else if (foundByPublisher)
+            {
+                Organization = StructureOrganization.Publisher;
+            }
+            else
+            {
+                Organization = StructureOrganization.None;
             }
         }
         

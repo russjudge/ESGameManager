@@ -12,6 +12,7 @@
     <None Remove="Resources\browse.png" />
     <None Remove="Resources\delete.png" />
     <None Remove="Resources\edit.png" />
+    <None Remove="Resources\EMManager.ico" />
     <None Remove="Resources\info.png" />
     <None Remove="Resources\leftarrow.png" />
     <None Remove="Resources\na.png" />
@@ -33,6 +34,7 @@
     <Resource Include="Resources\browse.png" />
     <Resource Include="Resources\delete.png" />
     <Resource Include="Resources\edit.png" />
+    <Resource Include="Resources\EMManager.ico" />
     <Resource Include="Resources\info.png" />
     <Resource Include="Resources\leftarrow.png" />
     <Resource Include="Resources\na.png" />

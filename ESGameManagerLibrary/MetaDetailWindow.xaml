@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         mc:Ignorable="d" Name="uc" Closed="OnClosed"
-        Title="Game Detail" Height="650" Width="1000">
+        Title="Game Detail" Height="650" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
         <local:DateFormatter x:Key="DateFormatter" />
         <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />

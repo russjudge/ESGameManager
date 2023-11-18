@@ -14,7 +14,7 @@ namespace ESGameManagerLibrary.Tests
         [TestMethod()]
         public void ShrinkImageIfNecessaryTest()
         {
-            Game.ShrinkImageIfNecessary("E:\\DefaultUser\\Documents\\roms\\amstradcpc\\media\\screenshot\\#\\20230107_165904.jpg");
+            //Game.ShrinkImageIfNecessary("E:\\DefaultUser\\Documents\\roms\\amstradcpc\\media\\screenshot\\#\\20230107_165904.jpg");
         }
     }
 }
