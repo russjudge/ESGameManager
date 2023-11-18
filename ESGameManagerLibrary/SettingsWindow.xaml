@@ -1,0 +1,128 @@
+﻿<Window x:Class="ESGameManagerLibrary.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
+        xmlns:local="clr-namespace:ESGameManagerLibrary"
+        mc:Ignorable="d" Name="uc"
+        MinWidth="300"
+        Title="Settings" SizeToContent="WidthAndHeight" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+    <Window.Resources>
+        <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
+    </Window.Resources>
+    <DockPanel>
+
+        <GroupBox>
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold" Text="Flag Meanings" />
+            </GroupBox.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+
+                </Grid.RowDefinitions>
+
+                <local:ColorSelectorControl
+                    SelectedColor="{Binding ElementName=uc, Path=Flag1Color, Mode=TwoWay}"
+                    Grid.Row="0" Grid.Column="0"/>
+                <TextBlock
+                    MouseDown="OnFlag1MouseDown"
+                    Grid.Row="0" Grid.Column="1"
+                    Foreground="{Binding ElementName=uc, Path=Flag1Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    ToolTip="Meaning for Flag 1. Click to select color."
+                    Text="Flag 1:"   />
+                <TextBox
+                    Grid.Row="0" Grid.Column="2"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag1Text}" />
+
+                <TextBlock
+                    Grid.Row="1" Grid.Column="0"
+                    Foreground="Green"
+                    ToolTip="Meaning for Flag 2"
+                    Text="Flag 2:" />
+                <TextBox
+                    Grid.Row="1" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag2Text}" />
+
+                <TextBlock
+                    Grid.Row="2" Grid.Column="0"
+                    Foreground="Blue"
+                    ToolTip="Meaning for Flag 3"
+                    Text="Flag 3:" />
+                <TextBox
+                    Grid.Row="2" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag3Text}" />
+
+                <TextBlock
+                    Grid.Row="3" Grid.Column="0"
+                    Foreground="Magenta"
+                    ToolTip="Meaning for Flag 4"
+                    Text="Flag 4:" />
+                <TextBox
+                    Grid.Row="3" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag4Text}" />
+
+                <TextBlock
+                    Grid.Row="4" Grid.Column="0"
+                    Foreground="Cyan"
+                    ToolTip="Meaning for Flag 5"
+                    Text="Flag 5:" />
+                <TextBox
+                    Grid.Row="4" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag5Text}" />
+
+                <TextBlock
+                    Grid.Row="5" Grid.Column="0"
+                    Foreground="Yellow"
+                    ToolTip="Meaning for Flag 6"
+                    Text="Flag 6:" />
+                <TextBox
+                    Grid.Row="5" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag6Text}" />
+
+                <TextBlock
+                    Grid.Row="6" Grid.Column="0"
+                    Foreground="Black"
+                    ToolTip="Meaning for Flag 7"
+                    Text="Flag 7:" />
+                <TextBox
+                    Grid.Row="6" Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    Text="{Binding ElementName=uc, Path=Flag7Text}" />
+                <Button
+                    IsDefault="True"
+                    Grid.Row="7" Grid.ColumnSpan="2"
+                    HorizontalAlignment="Right"
+                    ToolTip="Save Changes"
+                    Click="OnSave">
+                    <Button.Content>
+                        <StackPanel>
+                            <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/save.png" />
+                            <TextBlock Text="Save" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
+            </Grid>
+        </GroupBox>
+    </DockPanel>
+</Window>

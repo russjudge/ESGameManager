@@ -13,6 +13,7 @@
     <None Remove="Resources\delete.png" />
     <None Remove="Resources\edit.png" />
     <None Remove="Resources\EMManager.ico" />
+    <None Remove="Resources\gear.png" />
     <None Remove="Resources\info.png" />
     <None Remove="Resources\leftarrow.png" />
     <None Remove="Resources\na.png" />
@@ -35,6 +36,7 @@
     <Resource Include="Resources\delete.png" />
     <Resource Include="Resources\edit.png" />
     <Resource Include="Resources\EMManager.ico" />
+    <Resource Include="Resources\gear.png" />
     <Resource Include="Resources\info.png" />
     <Resource Include="Resources\leftarrow.png" />
     <Resource Include="Resources\na.png" />
@@ -62,6 +64,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="ScanGamesWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -75,6 +82,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

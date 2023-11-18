@@ -23,6 +23,15 @@ namespace ESGameManagerLibrary
     /// </summary>
     public partial class GameListControl : UserControl
     {
+        static GameListControl()
+        {
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpgradeRequired = false;
+                Properties.Settings.Default.Save();
+            }
+        }
         public GameListControl()
         {
             InitializeComponent();

@@ -15,6 +15,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:OrganizationStructureToTextConverter x:Key="OrganizationStructureToTextConverter" />
         <local:OrganizationStructureToBooleanConverter x:Key="OrganizationStructureToBooleanConverter" />
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <Style TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -418,17 +419,27 @@
                                     <Button.ToolTip>
                                         <DockPanel>
                                             <TextBlock
+                                                Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
                                                 DockPanel.Dock="Top"
                                                 FontWeight="Bold" Text="Notes" />
                                             <TextBlock
+                                                Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
                                                 TextWrapping="Wrap"
                                                 Text="{Binding Notes, Mode=TwoWay}" />
-
+                                            <TextBlock
+                                                Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Visible'}"
+                                                Text="Add Note" />
                                         </DockPanel>
 
                                     </Button.ToolTip>
+                                    <StackPanel>
                                     <Image
+                                        Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
                                         MaxHeight="24" Source="/Resources/notes.png" />
+                                        <Image
+                                        Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Visible'}"
+                                        MaxHeight="24" Source="/Resources/add.png" />
+                                    </StackPanel>
                                 </Button>
 
                             </DataTemplate>

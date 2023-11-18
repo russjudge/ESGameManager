@@ -7,16 +7,16 @@
         xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"
         mc:Ignorable="d" Closing="OnClosing" Closed="OnClosed"
         Title="Emulation Station Game Manager" Height="600" Width="1100" Icon="/Resources/EMManager.ico">
-    
+
     <DockPanel>
-        
+
         <DockPanel
             DockPanel.Dock="Top" >
             <Label
                 VerticalAlignment="Center" FontWeight="Bold"
                 DockPanel.Dock="Left"
                 Content="Root Game Folder (roms):" />
-                
+
             <TextBlock MinWidth="100"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left" Padding="5,0,5,0"
@@ -28,7 +28,18 @@
                 DockPanel.Dock="Left">
                 <Image Height="24" Source="/Resources/browse.png" />
             </Button>
-            
+
+            <Button
+                ToolTip="Settings"
+                DockPanel.Dock="Right"
+                Click="OnSettings">
+                <Button.Content>
+                    <StackPanel>
+                        <Image Height="24" Source="/Resources/gear.png" />
+                        <!--<TextBlock Text="Settings" />-->
+                    </StackPanel>
+                </Button.Content>
+            </Button>
             <Button
                 ToolTip="Create a single CSV file based on all game lists in all folders."
                 Padding="2,2,2,2" HorizontalAlignment="Right"
@@ -38,10 +49,9 @@
                     <Image Height="24" Source="/Resources/spreadsheet.png"/>
                 </StackPanel>
             </Button>
-            
             <TextBlock />
         </DockPanel>
-       
+
         <TabControl
             Name="tc"
             HorizontalAlignment="Stretch"
@@ -52,7 +62,7 @@
                     <ctl:GameListControl GameFolder="{Binding}" />
                 </ItemContainerTemplate>
             </TabControl.ContentTemplate>
-            
+
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock
@@ -60,10 +70,10 @@
                         Padding="5,0,5,0"
                         Background="Azure" FontWeight="Heavy"
                         FontSize="14" Text="{Binding Folder}" />
-                    
+
                 </DataTemplate>
             </TabControl.ItemTemplate>
-            
+
         </TabControl>
     </DockPanel>
 </Window>

@@ -28,7 +28,6 @@ namespace ESGameManager
        
         public MainWindow()
         {
-     
             InitializeComponent();
             DataContext = this;
             //RootGamesListFolder = @"E:\DefaultUser\Documents\roms";
@@ -152,6 +151,11 @@ namespace ESGameManager
                 Common.DetailWindow.Close();
             }
         }
-        
+
+        private void OnSettings(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow win = new SettingsWindow();
+            win.ShowDialog();
+        }
     }
 }
