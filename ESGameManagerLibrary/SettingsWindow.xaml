@@ -22,6 +22,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -35,82 +36,155 @@
 
                 </Grid.RowDefinitions>
 
-                <local:ColorSelectorControl
-                    SelectedColor="{Binding ElementName=uc, Path=Flag1Color, Mode=TwoWay}"
-                    Grid.Row="0" Grid.Column="0"/>
                 <TextBlock
-                    MouseDown="OnFlag1MouseDown"
-                    Grid.Row="0" Grid.Column="1"
+                    Grid.Row="0" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag1Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag1Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag1Color, Mode=TwoWay}"
+                    Grid.Row="0" Grid.Column="3"/>
+                <TextBlock
+                    Grid.Row="0" Grid.Column="0"
+                    Padding="5,0,5,0"
                     Foreground="{Binding ElementName=uc, Path=Flag1Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 1. Click to select color."
                     Text="Flag 1:"   />
                 <TextBox
-                    Grid.Row="0" Grid.Column="2"
+                    MinWidth="200"
+                    Grid.Row="0" Grid.Column="1"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag1Text}" />
 
                 <TextBlock
+                    Grid.Row="1" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag2Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag2Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag2Color, Mode=TwoWay}"
+                    Grid.Row="1" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="1" Grid.Column="0"
-                    Foreground="Green"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag2Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 2"
                     Text="Flag 2:" />
                 <TextBox
                     Grid.Row="1" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag2Text}" />
 
                 <TextBlock
+                    Grid.Row="2" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag3Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag3Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag3Color, Mode=TwoWay}"
+                    Grid.Row="2" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="2" Grid.Column="0"
-                    Foreground="Blue"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag3Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 3"
                     Text="Flag 3:" />
                 <TextBox
                     Grid.Row="2" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag3Text}" />
 
                 <TextBlock
+                    Grid.Row="3" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag4Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag4Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag4Color, Mode=TwoWay}"
+                    Grid.Row="3" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="3" Grid.Column="0"
-                    Foreground="Magenta"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag4Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 4"
                     Text="Flag 4:" />
                 <TextBox
                     Grid.Row="3" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag4Text}" />
 
                 <TextBlock
+                    Grid.Row="4" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag5Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag5Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag5Color, Mode=TwoWay}"
+                    Grid.Row="4" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="4" Grid.Column="0"
-                    Foreground="Cyan"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag5Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 5"
                     Text="Flag 5:" />
                 <TextBox
                     Grid.Row="4" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag5Text}" />
 
                 <TextBlock
+                    Grid.Row="5" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag6Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag6Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag6Color, Mode=TwoWay}"
+                    Grid.Row="5" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="5" Grid.Column="0"
-                    Foreground="Yellow"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag6Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='NotWorking'}"
                     ToolTip="Meaning for Flag 6"
                     Text="Flag 6:" />
                 <TextBox
                     Grid.Row="5" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag6Text}" />
 
                 <TextBlock
+                    Grid.Row="6" Grid.Column="2"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag7Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}}"
+                    Text="Color &amp; Symbol:" />
+                <local:ColorSelectorControl
+                    SelectedSymbol="{Binding ElementName=uc, Path=Flag7Symbol, Mode=TwoWay}"
+                    SelectedColor="{Binding ElementName=uc, Path=Flag7Color, Mode=TwoWay}"
+                    Grid.Row="6" Grid.Column="3"/>
+                <TextBlock
                     Grid.Row="6" Grid.Column="0"
-                    Foreground="Black"
+                    Padding="5,0,5,0"
+                    Foreground="{Binding ElementName=uc, Path=Flag7Color, Mode=OneWay, Converter={StaticResource ColorListToBrushConverter}}"
                     ToolTip="Meaning for Flag 7"
                     Text="Flag 7:" />
                 <TextBox
                     Grid.Row="6" Grid.Column="1"
+                    MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding ElementName=uc, Path=Flag7Text}" />
                 <Button
                     IsDefault="True"
-                    Grid.Row="7" Grid.ColumnSpan="2"
+                    Grid.Row="7" Grid.ColumnSpan="4"
                     HorizontalAlignment="Right"
                     ToolTip="Save Changes"
                     Click="OnSave">

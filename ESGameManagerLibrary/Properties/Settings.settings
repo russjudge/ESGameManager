@@ -50,5 +50,26 @@
     <Setting Name="Flag7Color" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6</Value>
     </Setting>
+    <Setting Name="Flag1Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">✔</Value>
+    </Setting>
+    <Setting Name="Flag2Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">🗹</Value>
+    </Setting>
+    <Setting Name="Flag3Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
+    <Setting Name="Flag4Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">!</Value>
+    </Setting>
+    <Setting Name="Flag5Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#</Value>
+    </Setting>
+    <Setting Name="Flag6Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">?</Value>
+    </Setting>
+    <Setting Name="Flag7Symbol" Type="System.String" Scope="User">
+      <Value Profile="(Default)">+</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

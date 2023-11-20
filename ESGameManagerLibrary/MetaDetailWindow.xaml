@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
+        xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
         mc:Ignorable="d" Name="uc" Closed="OnClosed"
         Title="Game Detail" Height="650" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
@@ -248,30 +249,43 @@
                                         Maximum="1" IsSnapToTickEnabled="True"
                                         Minimum="0" Interval="1" TickFrequency="0.1" />
                                 </DockPanel>
-                                <TextBlock
-                                    Grid.Row="7" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Kid's Game:" />
-                                <CheckBox
-                                    VerticalAlignment="Center"
-                                    Grid.Row="7" Grid.Column="1"
-                                    IsChecked="{Binding ElementName=uc, Path=SelectedGame.KidGame, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
-                                <TextBlock
-                                    Grid.Row="8" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Favorite:" />
-                                <CheckBox
-                                    VerticalAlignment="Center"
-                                    Grid.Row="8" Grid.Column="1"
-                                    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Favorite, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
-                                <TextBlock
-                                    Grid.Row="9" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Hidden:" />
-                                <CheckBox
-                                    VerticalAlignment="Center"
-                                    Grid.Row="9" Grid.Column="1"
-                                    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Hidden, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
+                                    <StackPanel
+                                        Grid.Row="7" Grid.Column="0">
+                                        <TextBlock
+    Grid.Row="7" Grid.Column="0"
+    FontWeight="Bold"
+    Text="Kid's Game:" />
+                                        <CheckBox
+    VerticalAlignment="Center"
+    Grid.Row="7" Grid.Column="1"
+    IsChecked="{Binding ElementName=uc, Path=SelectedGame.KidGame, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
+                                        <TextBlock
+    Grid.Row="8" Grid.Column="0"
+    FontWeight="Bold"
+    Text="Favorite:" />
+                                        <CheckBox
+    VerticalAlignment="Center"
+    Grid.Row="8" Grid.Column="1"
+    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Favorite, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
+                                        <TextBlock
+    Grid.Row="9" Grid.Column="0"
+    FontWeight="Bold"
+    Text="Hidden:" />
+                                        <CheckBox
+    VerticalAlignment="Center"
+    Grid.Row="9" Grid.Column="1"
+    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Hidden, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
+                                    </StackPanel>
+                                    <WrapPanel Grid.Row="7" Grid.Column="1">
+                                        <CheckBox
+                                            IsChecked="{Binding ElementName=uc, Path=SelectedGame.Flags}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1Text}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+                                    </WrapPanel>
                             </Grid>
                         </GroupBox>
                             <GroupBox

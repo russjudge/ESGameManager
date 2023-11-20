@@ -42,6 +42,24 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty SelectedSymbolProperty =
+            DependencyProperty.Register(
+            nameof(SelectedSymbol),
+            typeof(string),
+            typeof(ColorSelectorControl));
+        public string SelectedSymbol
+        {
+            get
+            {
+                return (string)this.GetValue(SelectedSymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(SelectedSymbolProperty, value);
+            }
+        }
+
         private void OnColorLeft(object sender, RoutedEventArgs e)
         {
             int selectedColor = (int)SelectedColor;

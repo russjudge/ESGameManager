@@ -33,6 +33,7 @@ namespace ESGameManagerLibrary
                 string relativeFolder = fullFilePath.Replace(startFolder, ".").Replace("\\", "/");
                 Game gm = new Game()
                 {
+                    Flags = 0,
                     Parent = this,
                     FullPath = fullFilePath,
                     Path = relativeFolder,

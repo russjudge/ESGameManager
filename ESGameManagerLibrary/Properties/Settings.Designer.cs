@@ -214,5 +214,89 @@ namespace ESGameManagerLibrary.Properties {
                 this["Flag7Color"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("✔")]
+        public string Flag1Symbol {
+            get {
+                return ((string)(this["Flag1Symbol"]));
+            }
+            set {
+                this["Flag1Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("🗹")]
+        public string Flag2Symbol {
+            get {
+                return ((string)(this["Flag2Symbol"]));
+            }
+            set {
+                this["Flag2Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("*")]
+        public string Flag3Symbol {
+            get {
+                return ((string)(this["Flag3Symbol"]));
+            }
+            set {
+                this["Flag3Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("!")]
+        public string Flag4Symbol {
+            get {
+                return ((string)(this["Flag4Symbol"]));
+            }
+            set {
+                this["Flag4Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#")]
+        public string Flag5Symbol {
+            get {
+                return ((string)(this["Flag5Symbol"]));
+            }
+            set {
+                this["Flag5Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("?")]
+        public string Flag6Symbol {
+            get {
+                return ((string)(this["Flag6Symbol"]));
+            }
+            set {
+                this["Flag6Symbol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("+")]
+        public string Flag7Symbol {
+            get {
+                return ((string)(this["Flag7Symbol"]));
+            }
+            set {
+                this["Flag7Symbol"] = value;
+            }
+        }
     }
 }

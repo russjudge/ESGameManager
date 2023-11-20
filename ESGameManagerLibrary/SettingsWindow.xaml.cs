@@ -37,8 +37,35 @@ namespace ESGameManagerLibrary
             Flag5Color = (ColorList)Properties.Settings.Default.Flag5Color;
             Flag6Color = (ColorList)Properties.Settings.Default.Flag6Color;
             Flag7Color = (ColorList)Properties.Settings.Default.Flag7Color;
+
+            Flag1Symbol = Properties.Settings.Default.Flag1Symbol;
+            Flag2Symbol = Properties.Settings.Default.Flag2Symbol;
+            Flag3Symbol = Properties.Settings.Default.Flag3Symbol;
+            Flag4Symbol = Properties.Settings.Default.Flag4Symbol;
+            Flag5Symbol = Properties.Settings.Default.Flag5Symbol;
+            Flag6Symbol = Properties.Settings.Default.Flag6Symbol;
+            Flag7Symbol = Properties.Settings.Default.Flag7Symbol;
             InitializeComponent();
         }
+
+        public static readonly DependencyProperty Flag1SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag1Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag1Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag1SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag1SymbolProperty, value);
+            }
+        }
+
 
         public static readonly DependencyProperty Flag1TextProperty =
             DependencyProperty.Register(
@@ -75,6 +102,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag2SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag2Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag2Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag2SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag2SymbolProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty Flag2TextProperty =
             DependencyProperty.Register(
@@ -111,6 +155,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag3SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag3Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag3Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag3SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag3SymbolProperty, value);
+            }
+        }
         public static readonly DependencyProperty Flag3TextProperty =
             DependencyProperty.Register(
             nameof(Flag3Text),
@@ -146,6 +207,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag4SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag4Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag4Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag4SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag4SymbolProperty, value);
+            }
+        }
         public static readonly DependencyProperty Flag4TextProperty =
            DependencyProperty.Register(
             nameof(Flag4Text),
@@ -181,6 +259,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag5SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag5Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag5Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag5SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag5SymbolProperty, value);
+            }
+        }
         public static readonly DependencyProperty Flag5TextProperty =
             DependencyProperty.Register(
             nameof(Flag5Text),
@@ -216,6 +311,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag6SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag6Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag6Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag6SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag6SymbolProperty, value);
+            }
+        }
         public static readonly DependencyProperty Flag6TextProperty =
             DependencyProperty.Register(
             nameof(Flag6Text),
@@ -251,6 +363,23 @@ namespace ESGameManagerLibrary
             }
         }
 
+        public static readonly DependencyProperty Flag7SymbolProperty =
+            DependencyProperty.Register(
+            nameof(Flag7Symbol),
+            typeof(string),
+            typeof(SettingsWindow));
+        public string Flag7Symbol
+        {
+            get
+            {
+                return (string)this.GetValue(Flag7SymbolProperty);
+            }
+
+            set
+            {
+                this.SetValue(Flag7SymbolProperty, value);
+            }
+        }
         public static readonly DependencyProperty Flag7TextProperty =
             DependencyProperty.Register(
             nameof(Flag7Text),
@@ -304,13 +433,18 @@ namespace ESGameManagerLibrary
             Properties.Settings.Default.Flag6Color = (int)Flag6Color;
             Properties.Settings.Default.Flag7Color = (int)Flag7Color;
 
+            Properties.Settings.Default.Flag1Symbol = Flag1Symbol;
+            Properties.Settings.Default.Flag2Symbol = Flag2Symbol;
+            Properties.Settings.Default.Flag3Symbol = Flag3Symbol;
+            Properties.Settings.Default.Flag4Symbol = Flag4Symbol;
+            Properties.Settings.Default.Flag5Symbol = Flag5Symbol;
+            Properties.Settings.Default.Flag6Symbol = Flag6Symbol;
+            Properties.Settings.Default.Flag7Symbol = Flag7Symbol;
+
             Properties.Settings.Default.Save();
             Close();
         }
 
-        private void OnFlag1MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
+        
     }
 }

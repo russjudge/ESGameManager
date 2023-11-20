@@ -12,15 +12,17 @@
     <StackPanel Orientation="Horizontal">
         <Button Click="OnColorLeft">
             <Button.Content>
-                <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png" />
+                <Image Height="15" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png" />
             </Button.Content>
         </Button>
-        <TextBlock
+        <TextBox
+            
+            Text="{Binding ElementName=uc, Path=SelectedSymbol, Mode=TwoWay}"
             Width="24"
-            Background="{Binding ElementName=uc, Path=SelectedColor, Converter={StaticResource ColorListToBrushConverter}}" />
+            Foreground="{Binding ElementName=uc, Path=SelectedColor, Converter={StaticResource ColorListToBrushConverter}}" />
         <Button Click="OnColorRight">
             <Button.Content>
-                <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rightarrow.png" />
+                <Image Height="15" Source="/ESGameManagerLibrary;component/Resources/rightarrow.png" />
             </Button.Content>
         </Button>
     </StackPanel>

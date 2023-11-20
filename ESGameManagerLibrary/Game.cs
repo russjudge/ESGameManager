@@ -60,6 +60,24 @@ namespace ESGameManagerLibrary
                 this.SetValue(SourceProperty, value);
             }
         }
+        public static readonly DependencyProperty FlagsProperty =
+            DependencyProperty.Register(
+            nameof(Flags),
+            typeof(int),
+            typeof(Game), new PropertyMetadata(OnPropertyValueChanged));
+        [XmlAttribute("flags")]
+        public required int Flags
+        {
+            get
+            {
+                return (int)this.GetValue(FlagsProperty);
+            }
+
+            set
+            {
+                this.SetValue(FlagsProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty FullPathProperty =
            DependencyProperty.Register(
@@ -872,6 +890,7 @@ namespace ESGameManagerLibrary
 
             return new Game()
             {
+                Flags = 0,
                 Id = Id,
                 Source = Source,
                 Name = Name,

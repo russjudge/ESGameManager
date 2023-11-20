@@ -433,12 +433,12 @@
 
                                     </Button.ToolTip>
                                     <StackPanel>
-                                    <Image
-                                        Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
-                                        MaxHeight="24" Source="/Resources/notes.png" />
                                         <Image
-                                        Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Visible'}"
-                                        MaxHeight="24" Source="/Resources/add.png" />
+                                            Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
+                                            MaxHeight="24" Source="/Resources/notes.png" />
+                                        <Image
+                                            Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Visible'}"
+                                            MaxHeight="24" Source="/Resources/add.png" />
                                     </StackPanel>
                                 </Button>
 
