@@ -274,16 +274,26 @@ namespace ESGameManagerLibrary
                 }
             }
         }
-        
+
+        public void Print()
+        {
+            throw new NotImplementedException();
+        }
         public static void GenerateCSV(string sourceRoot, GameList[] gameLists, string targetCSV)
         {
-            string csvFile = targetCSV; //Path.Combine(root.FullName, targetName);
+            string csvFile = targetCSV;
             if (File.Exists(csvFile))
             {
                 File.Delete(csvFile);
             }
             using StreamWriter sw = new(csvFile, true);
-            sw.WriteLine("\"folder\",\"System\",\"id\",\"file\",\"Name\",\"Developer\",\"Genre\",\"Publisher\",\"Release Year\",\"Flight Stick?\",\"Verified\",\"Issues\"");
+            sw.Write("\"folder\",\"System\",\"id\",\"file\",\"Name\",\"Developer\",\"Genre\",\"Publisher\",\"Release Year\",\"Notes\"");
+            sw.Write(",\"{0}\"", Properties.Settings.Default.Flag1);
+            sw.Write(",\"{0}\"", Properties.Settings.Default.Flag2);
+            sw.Write(",\"{0}\"", Properties.Settings.Default.Flag3);
+            sw.Write(",\"{0}\"", Properties.Settings.Default.Flag4);
+            sw.Write(",\"{0}\"", Properties.Settings.Default.Flag5);
+            sw.WriteLine(",\"{0}\"", Properties.Settings.Default.Flag6);
             foreach (var gamelist in gameLists)
             {
                 if (gamelist != null)
@@ -314,9 +324,6 @@ namespace ESGameManagerLibrary
                             actualPath = fi.FullName;
                         }
 
-                        bool exists = File.Exists(actualPath);
-                         
-                        string issue = exists ? string.Empty : "3";
                         List<string> columns = new()
                     {
                                 folder,
@@ -328,15 +335,18 @@ namespace ESGameManagerLibrary
                                 game.Genre,
                                 game.Publisher,
                                 yr,
-                                string.Empty,
-                                string.Empty,
-                                issue
+                                game.Notes,
+                                game.Flag1 ? "X" : string.Empty,
+                                game.Flag2 ? "X" : string.Empty,
+                                game.Flag3 ? "X" : string.Empty,
+                                game.Flag4 ? "X" : string.Empty,
+                                game.Flag5 ? "X" : string.Empty,
+                                game.Flag6 ? "X" : string.Empty
                             };
                         sw.WriteLine("\"" + String.Join("\",\"", columns.ToArray()) + "\"");
                     }
                 }
             }
-        
         }
         public void DetermineOrganization()
         {
@@ -360,23 +370,21 @@ namespace ESGameManagerLibrary
                         else
                         {
                             foundByLetter = false;
-                            string folder = gm.Path.Substring(i + 1, j - i);
-                            foundByGenre = (gm.Genre == folder);
-                            foundByPublisher = (gm.Publisher == folder);
-
-                            foundByDeveloper = (gm.Developer == folder);
+                            string folder = gm.Path.Substring(i + 1, j - (i+1));
+                            foundByGenre = (Game.GetRelativeFolderPath(gm.Genre, false) == folder);
+                            foundByPublisher = (Game.GetRelativeFolderPath(gm.Publisher, false) == folder);
+                            foundByDeveloper = (Game.GetRelativeFolderPath(gm.Developer, false) == folder);
                         }
                     }
-                    
                 }
             }
-            if (foundByDeveloper)
-            {
-                Organization = StructureOrganization.Developer;
-            }
-            else if (foundByLetter)
+            if (foundByLetter)
             {
                 Organization = StructureOrganization.ByFirstLetter;
+            }
+            else if (foundByDeveloper)
+            {
+                Organization = StructureOrganization.Developer;
             }
             else if (foundByGenre)
             {
@@ -391,6 +399,5 @@ namespace ESGameManagerLibrary
                 Organization = StructureOrganization.None;
             }
         }
-        
     }
 }

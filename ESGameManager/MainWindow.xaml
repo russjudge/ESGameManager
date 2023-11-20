@@ -69,7 +69,38 @@
                         FontFamily="Comic Sans MS"
                         Padding="5,0,5,0"
                         Background="Azure" FontWeight="Heavy"
-                        FontSize="14" Text="{Binding Folder}" />
+                        FontSize="14" Text="{Binding Folder}" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                            <DataTrigger Binding="{Binding Changed}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <!-- Animation for changing background color to red -->
+                                            <ColorAnimation
+                                                Storyboard.TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)"
+                                                To="Red" Duration="0:0:1" AutoReverse="True"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <!-- Animation for changing background color to red -->
+                                                    <ColorAnimation
+            Storyboard.TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)"
+            To="Azure" Duration="0:0:1" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+
+                            </DataTrigger>
+                                    
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
                 </DataTemplate>
             </TabControl.ItemTemplate>

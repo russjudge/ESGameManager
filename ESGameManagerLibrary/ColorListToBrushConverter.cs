@@ -3,27 +3,32 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 
 namespace ESGameManagerLibrary
 {
-    [ValueConversion(typeof(ColorList), typeof(System.Windows.Media.Brush) )]
+    [ValueConversion(typeof(int), typeof(System.Windows.Media.Brush) )]
     public class ColorListToBrushConverter : IValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is ColorList c)
+            if (value is int c)
             {
-                var retVal = new SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter
-               .ConvertFromString(c.ToString()));
+                ColorList col = (ColorList)c;
+                
+                var converter = System.Windows.Media.ColorConverter.ConvertFromString(col.ToString());
+                var color = (System.Windows.Media.Color)converter;
+                var retVal = new SolidColorBrush(color);
                 return retVal;
             }
             else
             {
-                return default(System.Windows.Media.Brush);
+                return DependencyProperty.UnsetValue;
             }
         }
 

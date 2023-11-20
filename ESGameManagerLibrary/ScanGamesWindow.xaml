@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         mc:Ignorable="d" Loaded="OnLoaded" Name="uc"
-        Title="ROM Folder Scan Result" Height="450" Width="800" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+        Title="ROM Folder Scan Result" SizeToContent="Height" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
         <local:FullFilePathToNameConverter x:Key="FullFilePathToNameConverter" />
     </Window.Resources>
@@ -14,52 +14,62 @@
             MinHeight="150"
             DockPanel.Dock="Bottom">
             <GroupBox.Header>
+                <TextBlock
+                    FontWeight="Bold"
+                    Text="Orphaned Images"
+                    ToolTip="These are orphaned images files--images that are not referenced in the game list." />
+            </GroupBox.Header>
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="These are orphaned images files--images that are not referenced in the game list." />
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+                    <StackPanel>
+                        <Image Height="24" Source="/Resources/delete.png" />
+                        <TextBlock Text="Delete All" />
+                    </StackPanel>
+                </Button>
+                <ListBox
+                ItemsSource="{Binding ElementName=uc, Path=OrphanImages}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Click="OnDeleteImage"
+                                    CommandParameter="{Binding}">
+                                    <Image Height="16" Source="/Resources/delete.png" />
+                                </Button>
+                                <TextBlock
+                                    Padding="5,0,0,0"
+                                    Text="{Binding Converter={StaticResource FullFilePathToNameConverter}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </GroupBox>
+        <DockPanel
+            MaxHeight="450"
+            DockPanel.Dock="Top">
+            <GroupBox
+                Width="450"
+                DockPanel.Dock="Left" >
+                <GroupBox.Header>
+                    <TextBlock
+                    FontWeight="Bold"
+                    Text="Missing ROM" />
+                </GroupBox.Header>
                 <DockPanel>
                     <TextBlock
-                    DockPanel.Dock="Top"
-                    Text="These are orphaned images files--images that are not referenced in the game list." />
+                        DockPanel.Dock="Top"
+                        Text="These are listed games, but the ROM is missing (thus unplayable)."/>
                     <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
                         <StackPanel>
-
                             <Image Height="24" Source="/Resources/delete.png" />
                             <TextBlock Text="Delete All" />
                         </StackPanel>
                     </Button>
                     <ListBox
-                        ItemsSource="{Binding ElementName=uc, Path=OrphanImages}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button
-                                        Click="OnDeleteImage"
-                                        CommandParameter="{Binding}">
-                                        <Image Height="16" Source="/Resources/delete.png" />
-                                    </Button>
-                                    <TextBlock Text="{Binding Converter={StaticResource FullFilePathToNameConverter}}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </DockPanel>
-            </GroupBox.Header>
-        </GroupBox>
-        <DockPanel DockPanel.Dock="Top">
-        <GroupBox DockPanel.Dock="Left" >
-            <GroupBox.Header>
-                <TextBlock Text="Missing ROM" />
-            </GroupBox.Header>
-            <DockPanel>
-                <TextBlock
-                    DockPanel.Dock="Top"
-                    Text="These are listed games, but the ROM is missing (thus unplayable)."/>
-                    <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
-                        <StackPanel>
-
-                            <Image Height="24" Source="/Resources/delete.png" />
-                            <TextBlock Text="Delete All" />
-                        </StackPanel>
-                    </Button>
-                    <ListBox ItemsSource="{Binding ElementName=uc, Path=DeleteGames}" >
+                        SelectedItem="{Binding ElementName=uc, Path=SelectedDeleteGame}"
+                        ItemsSource="{Binding ElementName=uc, Path=DeleteGames}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -68,38 +78,80 @@
                                         CommandParameter="{Binding}">
                                         <Image Height="16" Source="/Resources/delete.png" />
                                     </Button>
-                                    <TextBlock Padding="5,0,5,0" Text="{Binding Path=FullPath, Converter={StaticResource FullFilePathToNameConverter}}" />
-                                    <TextBlock Text="{Binding Path=Name}" />
+
+                                    <TextBlock
+                                        Padding="5,0,5,0"
+                                        Text="{Binding Path=Name}"
+                                        >
+                                        <TextBlock.ToolTip>
+                                            <StackPanel>
+                                                <TextBlock
+                                                    Text="{Binding Path=Path}" />
+
+                                                <TextBlock
+                                                    Text="{Binding Path=FullPath}" />
+                                            </StackPanel>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                        
+
                     </ListBox>
                 </DockPanel>
-        </GroupBox>
+            </GroupBox>
+            <GroupBox
+                Width="70"
+                DockPanel.Dock="Left">
+                <Button
+                    Click="OnReplaceROM"
+                    ToolTip="Replace ROM with Selected New ROM"
+                    VerticalAlignment="Center">
+                    <StackPanel>
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png"/>
+                        <TextBlock
+                        Text="Replace" />
+                    </StackPanel>
+                </Button>
+                
+            </GroupBox>
             <GroupBox DockPanel.Dock="Left" >
                 <GroupBox.Header>
-                    <TextBlock Text="New ROMS" />
+                    <TextBlock
+                        FontWeight="Bold"
+                        Text="New ROMS" />
                 </GroupBox.Header>
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="These are ROMS that were found, but not listed."/>
+                    <TextBlock
+                        DockPanel.Dock="Top" Text="These are ROMS that were found, but not listed."/>
                     <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
                         <StackPanel>
-                            
-                        <Image Height="24" Source="/Resources/add.png" />
+
+                            <Image Height="24" Source="/Resources/add.png" />
                             <TextBlock Text="Add All" />
                         </StackPanel>
                     </Button>
-                    <ListBox ItemsSource="{Binding ElementName=uc, Path=NewGames}" >
+                    <ListBox
+                        SelectedItem="{Binding ElementName=uc, Path=SelectedNewROM}"
+                        ItemsSource="{Binding ElementName=uc, Path=NewGames}" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button
+                                        ToolTip="Add Game"
                                         Click="OnAddGame"
                                         CommandParameter="{Binding}">
                                         <Image Height="16" Source="/Resources/add.png" />
                                     </Button>
-                                    <TextBlock Text="{Binding Converter={StaticResource FullFilePathToNameConverter}}" />
+                                    <Button
+                                        ToolTip="Delete the file"
+                                        Click="OnDeleteRom"
+                                        CommandParameter="{Binding}">
+                                        <Image Height="16" Source="/Resources/delete.png" />
+                                    </Button>
+                                    <TextBlock
+                                        ToolTip="{Binding}"
+                                        Padding="5,0,0,0" Text="{Binding Converter={StaticResource FullFilePathToNameConverter}}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -107,6 +159,6 @@
                 </DockPanel>
             </GroupBox>
         </DockPanel>
-        
+
     </DockPanel>
 </Window>

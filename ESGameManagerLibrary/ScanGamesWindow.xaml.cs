@@ -72,6 +72,23 @@ namespace ESGameManagerLibrary
         }
 
 
+        public static readonly DependencyProperty SelectedNewROMProperty =
+           DependencyProperty.Register(
+               nameof(SelectedNewROM),
+               typeof(string),
+               typeof(ScanGamesWindow));
+        public string SelectedNewROM
+        {
+            get
+            {
+                return (string)this.GetValue(SelectedNewROMProperty);
+            }
+
+            set
+            {
+                this.SetValue(SelectedNewROMProperty, value);
+            }
+        }
         public static readonly DependencyProperty DeleteGamesProperty =
            DependencyProperty.Register(
                nameof(DeleteGames),
@@ -87,6 +104,24 @@ namespace ESGameManagerLibrary
             set
             {
                 this.SetValue(DeleteGamesProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedDeleteGameProperty =
+           DependencyProperty.Register(
+               nameof(SelectedDeleteGame),
+               typeof(Game),
+               typeof(ScanGamesWindow));
+        public Game SelectedDeleteGame
+        {
+            get
+            {
+                return (Game)this.GetValue(SelectedDeleteGameProperty);
+            }
+
+            set
+            {
+                this.SetValue(SelectedDeleteGameProperty, value);
             }
         }
 
@@ -208,6 +243,33 @@ namespace ESGameManagerLibrary
             {
                 GameFolder.AddGame(file);
                 NewGames.Remove(file);
+            }
+        }
+
+        private void OnDeleteRom(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button b && b.CommandParameter is string file)
+            {
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
+                NewGames.Remove(file);
+            }
+        }
+
+        private void OnReplaceROM(object sender, RoutedEventArgs e)
+        {
+            if (SelectedDeleteGame == null || string.IsNullOrEmpty(SelectedNewROM))
+            {
+                MessageBox.Show("You need to select the Game with the bad ROM to be updated AND the Orphaned ROM file.",
+                    "Update ROM file",MessageBoxButton.OK, MessageBoxImage.Stop);
+            }
+            else
+            {
+                SelectedDeleteGame.FullPath = SelectedNewROM;
+                DeleteGames.Remove(SelectedDeleteGame);
+                NewGames.Remove(SelectedNewROM);
             }
         }
     }

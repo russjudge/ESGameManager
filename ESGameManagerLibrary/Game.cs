@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Xml.Serialization;
 namespace ESGameManagerLibrary
 {
@@ -60,11 +63,35 @@ namespace ESGameManagerLibrary
                 this.SetValue(SourceProperty, value);
             }
         }
+
+
+        private bool flagsBeingSet = false;
         public static readonly DependencyProperty FlagsProperty =
             DependencyProperty.Register(
             nameof(Flags),
             typeof(int),
-            typeof(Game), new PropertyMetadata(OnPropertyValueChanged));
+            typeof(Game), new PropertyMetadata(OnFlagsChanged));
+
+        private static void OnFlagsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Game gm)
+            {
+                if (!gm.flagsBeingSet)
+                {
+                    gm.flagsBeingSet = true;
+                    gm.Flag1 = ((int)gm.Flags & 1) == 1;
+                    gm.Flag2 = ((int)gm.Flags & 2) == 2;
+                    gm.Flag3 = ((int)gm.Flags & 4) == 4;
+                    gm.Flag4 = ((int)gm.Flags & 8) == 8;
+                    gm.Flag5 = ((int)gm.Flags & 16) == 16;
+                    gm.Flag6 = ((int)gm.Flags & 32) == 32;
+                    gm.Flag7 = ((int)gm.Flags & 64) == 64;
+                    gm.flagsBeingSet = false;
+                }
+                OnPropertyValueChanged(d, e);
+            }
+        }
+
         [XmlAttribute("flags")]
         public required int Flags
         {
@@ -79,6 +106,155 @@ namespace ESGameManagerLibrary
             }
         }
 
+
+
+        public static readonly DependencyProperty Flag1Property =
+            DependencyProperty.Register(
+            nameof(Flag1),
+            typeof(bool),
+            typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+
+        private static void OnFlagBoolChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Game gm)
+            {
+                if (!gm.flagsBeingSet)
+                {
+                    gm.flagsBeingSet = true;
+                    gm.Flags = (int)(gm.Flag1 ? 1 : 0)
+                        + (int)(gm.Flag2 ? 2 : 0)
+                        + (int)(gm.Flag3 ? 4: 0)
+                        + (int)(gm.Flag4 ? 8 : 0)
+                        + (int)(gm.Flag5 ? 16 : 0)
+                        + (int)(gm.Flag6 ? 32 : 0)
+                        + (int)(gm.Flag7 ? 64 : 0);
+                    gm.flagsBeingSet = false;
+                }
+            }
+        }
+
+        [XmlIgnore]
+        public bool Flag1
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag1Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag1Property, value);
+            }
+        }
+
+        public static readonly DependencyProperty Flag2Property =
+           DependencyProperty.Register(
+           nameof(Flag2),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag2
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag2Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag2Property, value);
+            }
+        }
+        public static readonly DependencyProperty Flag3Property =
+           DependencyProperty.Register(
+           nameof(Flag3),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag3
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag3Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag3Property, value);
+            }
+        }
+        public static readonly DependencyProperty Flag4Property =
+           DependencyProperty.Register(
+           nameof(Flag4),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag4
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag4Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag4Property, value);
+            }
+        }
+        public static readonly DependencyProperty Flag5Property =
+           DependencyProperty.Register(
+           nameof(Flag5),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag5
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag5Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag5Property, value);
+            }
+        }
+        public static readonly DependencyProperty Flag6Property =
+           DependencyProperty.Register(
+           nameof(Flag6),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag6
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag6Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag6Property, value);
+            }
+        }
+        public static readonly DependencyProperty Flag7Property =
+           DependencyProperty.Register(
+           nameof(Flag7),
+           typeof(bool),
+           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+        [XmlIgnore]
+        public bool Flag7
+        {
+            get
+            {
+                return (bool)this.GetValue(Flag7Property);
+            }
+
+            set
+            {
+                this.SetValue(Flag7Property, value);
+            }
+        }
         public static readonly DependencyProperty FullPathProperty =
            DependencyProperty.Register(
            nameof(FullPath),
@@ -697,28 +873,60 @@ namespace ESGameManagerLibrary
         }
         public void DeleteGameFiles(IEnumerable<Game> GameFolderGames)
         {
-            bool isNotSafe = false;
+  
             //Need to find if image is elsewhere and delete it if not
-          
-            if (System.IO.File.Exists(FullImagePath))
+            string? fullImagePath = null;
+            string? fullPath = null;
+            string? fullVideoPath = null;
+            string? fullMarqueePath = null;
+           
+            this.Dispatcher.Invoke(() =>
             {
+                fullImagePath = FullImagePath;
+                fullPath = FullPath;
+                fullVideoPath = FullVideoPath;
+                fullMarqueePath = FullMarqueePath;
                 foreach (var game in GameFolderGames)
                 {
-                    if (FullImagePath == game.FullImagePath && game.FullPath != FullPath)
+                    if (game.FullPath != fullPath)
                     {
-                        isNotSafe = true;
-                        break;
+                        if (!string.IsNullOrEmpty(fullVideoPath) && fullVideoPath == game.FullVideoPath)
+                        {
+                            fullVideoPath = null;
+                        }
+                        if (!string.IsNullOrEmpty(fullImagePath) && fullImagePath == game.FullImagePath)
+                        {
+                            fullImagePath = null;
+                        }
+                        if (!string.IsNullOrEmpty(fullMarqueePath) && fullMarqueePath == game.FullMarqueePath)
+                        {
+                            fullMarqueePath = null;
+                        }
+                        if (string.IsNullOrEmpty(fullVideoPath) && string.IsNullOrEmpty(fullImagePath) && string.IsNullOrEmpty(fullMarqueePath))
+                        {
+                            break;
+                        }
                     }
                 }
-                if (!isNotSafe)
-                {
-                    System.IO.File.Delete(FullImagePath);
-                }
+            });
+
+                    
+            if (!string.IsNullOrEmpty(fullImagePath) && System.IO.File.Exists(fullImagePath))
+            {
+                System.IO.File.Delete(fullImagePath);
+            }
+            if (!string.IsNullOrEmpty(fullMarqueePath) && System.IO.File.Exists(fullMarqueePath))
+            {
+                System.IO.File.Delete(fullMarqueePath);
+            }
+            if (!string.IsNullOrEmpty(fullVideoPath) && System.IO.File.Exists(fullVideoPath))
+            {
+                System.IO.File.Delete(fullVideoPath);
             }
             //need to delete file.
-            if (System.IO.File.Exists(FullPath))
+            if (System.IO.File.Exists(fullPath))
             {
-                System.IO.File.Delete(FullPath);
+                System.IO.File.Delete(fullPath);
             }
         }
         string? GetListRoot()
@@ -824,26 +1032,73 @@ namespace ESGameManagerLibrary
             }
             return retVal;
         }
-        public static string SetSingleLetterFolder(string path)
+        public static string GetRelativeFolderPath(string? pathOrFactor, bool forSingleLetter = false)
         {
-            FileInfo f = new FileInfo(path);
-            string finaldir = f.Name.Substring(0, 1);
-            if (finaldir.CompareTo("A") < 0)
+            if (forSingleLetter && !string.IsNullOrEmpty(pathOrFactor))
             {
-                finaldir = "#";
-            }
-            return finaldir;
-        }
-        public static string SetOtherFolder(string folderName)
-        {
-            if (!string.IsNullOrEmpty(folderName))
-            {
-                return folderName;
+                FileInfo f = new FileInfo(pathOrFactor);
+                string finaldir = f.Name.Substring(0, 1);
+                if (finaldir.CompareTo("A") < 0)
+                {
+                    finaldir = "#";
+                }
+                else if (finaldir.CompareTo("Z") > 0)
+                {
+                    finaldir = "Z";
+                }
+                return finaldir;
             }
             else
             {
-                return "Other";
+                if (pathOrFactor != null)
+                {
+                    if (!string.IsNullOrEmpty(pathOrFactor.Trim()))
+                    {
+                        string retVal = pathOrFactor
+                            .Replace('/', '-')
+                            .Replace('\\', '-')
+                            .Replace('\u00A0', ' ')
+                            .Replace('*', '-')
+                            .Replace("<", "&lt;")
+                            .Replace(">", "&gt;")
+                            .Replace(':', '-')
+                            .Replace('"', '\'')
+                            .Replace('|', '-')
+                            .Replace('?', ' ').Trim();
+                        StringBuilder sb = new StringBuilder(retVal);
+
+                        for(int i =0;i< sb.Length; i++)
+                        {
+                            if (sb[i] < ' ')
+                            {
+                                sb[i] = ' ';
+                            }
+                        }
+                        retVal = sb.ToString();
+                        if (retVal.EndsWith('.'))
+                        {
+                            retVal = retVal.Substring(0, retVal.Length - 1);
+                        }
+                        return retVal;
+                    }
+                    else
+                    {
+                        return "-Other-";
+                    }
+                }
+                else
+                {
+                    return "-Other-";
+                }
             }
+        }
+        public static string SetSingleLetterFolder(string path)
+        {
+            return GetRelativeFolderPath(path, true);
+        }
+        public static string SetOtherFolder(string? folderName)
+        {
+            return GetRelativeFolderPath(folderName, false);
         }
 
         public void SetFullROMPath(string path)
@@ -875,11 +1130,11 @@ namespace ESGameManagerLibrary
         }
         public void SetFullMarqueePath(string path)
         {
-            FullMarqueePath = SetFileLocation(path, "media\\screenshot\\" + SetSingleLetterFolder(path), true);
+            FullMarqueePath = SetFileLocation(path, "media\\marquee\\" + SetSingleLetterFolder(path), true);
         }
         public void SetFullImagePath(string path)
         {
-            FullImagePath = SetFileLocation(path, "media\\marquee\\" + SetSingleLetterFolder(path), true);
+            FullImagePath = SetFileLocation(path, "media\\screenshot\\" + SetSingleLetterFolder(path), true);
         }
         public void SetFullVideoPath(string path)
         {

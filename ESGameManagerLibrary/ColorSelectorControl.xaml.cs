@@ -27,13 +27,13 @@ namespace ESGameManagerLibrary
         public static readonly DependencyProperty SelectedColorProperty =
             DependencyProperty.Register(
             nameof(SelectedColor),
-            typeof(ColorList),
+            typeof(int),
             typeof(ColorSelectorControl));
-        public ColorList SelectedColor
+        public int SelectedColor
         {
             get
             {
-                return (ColorList)this.GetValue(SelectedColorProperty);
+                return (int)this.GetValue(SelectedColorProperty);
             }
 
             set
@@ -62,24 +62,24 @@ namespace ESGameManagerLibrary
 
         private void OnColorLeft(object sender, RoutedEventArgs e)
         {
-            int selectedColor = (int)SelectedColor;
+            int selectedColor = SelectedColor;
             selectedColor--;
             if (selectedColor <0)
             {
                 selectedColor = 6;
             }
-            SelectedColor = (ColorList)selectedColor;
+            SelectedColor = selectedColor;
         }
 
         private void OnColorRight(object sender, RoutedEventArgs e)
         {
-            int selectedColor = (int)SelectedColor;
+            int selectedColor = SelectedColor;
             selectedColor++;
             if (selectedColor > 6)
             {
                 selectedColor = 0;
             }
-            SelectedColor = (ColorList)selectedColor;
+            SelectedColor = selectedColor;
         }
     }
 }

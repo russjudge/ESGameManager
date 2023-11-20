@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ESGameManagerLibrary"
+    xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
     mc:Ignorable="d" Name="uc"
     HorizontalAlignment="Stretch"
     HorizontalContentAlignment="Stretch"
@@ -16,6 +17,7 @@
         <local:OrganizationStructureToTextConverter x:Key="OrganizationStructureToTextConverter" />
         <local:OrganizationStructureToBooleanConverter x:Key="OrganizationStructureToBooleanConverter" />
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
         <Style TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -28,6 +30,19 @@
         </Style>
     </UserControl.Resources>
     <DockPanel HorizontalAlignment="Stretch" >
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Padding="0,0,5,0" Text="Game Count:" />
+                    <TextBlock Text="{Binding ElementName=uc, Path=GameFolder.Games.Count}" />
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="{Binding ElementName=uc, Path=Activity}" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
         <DockPanel
             DockPanel.Dock="Top" HorizontalAlignment="Stretch" Background="BlanchedAlmond" >
             <Button
@@ -59,19 +74,31 @@
                                     To="Red" Duration="0:0:1" AutoReverse="True"/>
                             </Storyboard>
                         </BeginStoryboard>
+                        
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
             <Button
-                
                 Padding="5,5,5,5"
                 VerticalAlignment="Center" 
                 DockPanel.Dock="Right"
                 Click="OnScan" >
                 <Button.ToolTip>
-                    <TextBlock
-                        Text="Scan ROM folder for missing games to add and deleted games to remove"
-                        TextWrapping="Wrap" />
+                    <StackPanel>
+                        <TextBlock
+                            Text="Scan ROM folder for ROMs to add or delete"
+                             TextWrapping="Wrap" />
+                        <TextBlock
+                            Text="1. Find list of ROMs not in the gameList.xml file and give the option to either add it to the list or delete it."
+                            TextWrapping="Wrap"/>
+                        <TextBlock
+                            Text="2. Find list of games in gameList.xml where the ROM file does not exist."
+                            TextWrapping="Wrap"/>
+                        <TextBlock
+                            Text="3. Find images in the ROM folder that are not referenced (that are orphaned) and give the option to delete these."
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+                   
                 </Button.ToolTip>
                 <Button.Content>
                 <StackPanel>
@@ -210,14 +237,6 @@
             </DockPanel>
 
         </DockPanel>
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Padding="0,0,5,0" Text="Game Count:" />
-                    <TextBlock Text="{Binding ElementName=uc, Path=GameFolder.Games.Count}" />
-                </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
         <ListView
             SelectedItem="{Binding ElementName=uc, Path=SelectedGame, Mode=TwoWay}"
             DockPanel.Dock="Top" 
@@ -277,7 +296,46 @@
                         </GridViewColumn.HeaderTemplate>
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag1, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag1Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1}"/>
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag2, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag2Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2}"/>
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag3, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag3Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3}"/>
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag4, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag4Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag4Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag4}"/>
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag5, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag5Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5}"/>
+                                    <TextBlock
+                                        Visibility="{Binding Path=Flag6, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Padding="0,0,5,0"
+                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag6Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Symbol}"
+                                        ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6}"/>
+                                    <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
+                                </StackPanel>
+                                
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

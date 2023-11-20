@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace ESGameManagerLibrary
@@ -15,7 +16,7 @@ namespace ESGameManagerLibrary
         {
             if (value == null)
             {
-                return default;
+                return DependencyProperty.UnsetValue;
             }
             else
             {
@@ -25,7 +26,7 @@ namespace ESGameManagerLibrary
                 }
                 else
                 {
-                    return default;
+                    return DependencyProperty.UnsetValue;
                 }
             }
         }

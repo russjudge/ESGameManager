@@ -13,5 +13,6 @@ namespace ESGameManager
     /// </summary>
     public partial class App : Application
     {
+       
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -55,7 +56,27 @@ namespace ESGameManagerLibrary
                 this.SetValue(GameFolderProperty, value);
             }
         }
+        public static readonly DependencyProperty ActivityProperty =
+           DependencyProperty.Register(
+               nameof(Activity),
+               typeof(string),
+               typeof(GameListControl));
+        public string Activity
+        {
+            get
+            {
+                return (string)this.GetValue(ActivityProperty);
+            }
 
+            set
+            {
+                this.SetValue(ActivityProperty, value);
+            }
+        }
+        public void UpdateActivity(string text)
+        {
+            this.Dispatcher.Invoke(() => { Activity = text; });
+        }
 
         public static readonly DependencyProperty SelectedGameProperty =
            DependencyProperty.Register(
@@ -203,24 +224,33 @@ namespace ESGameManagerLibrary
 
         private void RemoveEmptyFolders()
         {
-            if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
+            string? gameFolder = null;
+            if (this.Dispatcher != System.Windows.Threading.Dispatcher.CurrentDispatcher)
             {
-                RemoveEmptyFolders(System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder));
+                this.Dispatcher.Invoke(() => { gameFolder = GameFolder.Folder; });
+            }
+            else
+            {
+                gameFolder = GameFolder.Folder;
+            }
+            if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(gameFolder))
+            {
+                RemoveEmptyFolders(new DirectoryInfo(System.IO.Path.Combine(RootGamesListFolder, gameFolder)));
             }
         }
-        private static void RemoveEmptyFolders(string root)
+        private static void RemoveEmptyFolders(DirectoryInfo root)
         {
-            if (!string.IsNullOrEmpty(root))
+            if (root != null && root.Exists)
             {
-                foreach (var folder in new DirectoryInfo(root).GetDirectories())
+                foreach (var folder in root.GetDirectories())
                 {
-                    if (folder.GetDirectories().Length > 0)
+                    if (folder != null)
                     {
-                        RemoveEmptyFolders(folder.FullName);
-                    }
-                    if (folder.GetDirectories().Length == 0 && folder.GetFiles().Length == 0)
-                    {
-                        folder.Delete();
+                        RemoveEmptyFolders(folder);
+                        if (folder.Exists && folder.GetDirectories().Length == 0 && folder.GetFiles().Length == 0)
+                        {
+                            folder.Delete();
+                        }
                     }
                 }
             }
@@ -228,57 +258,112 @@ namespace ESGameManagerLibrary
         private static string GetTargetFile(Game gm, string startFolder, StructureOrganization organization)
         {
             string retVal = string.Empty;
-            FileInfo currentFile = new(gm.FullPath);
-            switch (organization)
+            string? fullPath = null;
+            string? genre = null;
+            string? publisher = null;
+            string? developer = null;
+            gm.Dispatcher.Invoke(() =>
             {
-                case StructureOrganization.None:
-                    retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
-                    break;
-                case StructureOrganization.ByFirstLetter:
-                    retVal = System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(gm.FullPath), currentFile.Name);
-                    break;
-                case StructureOrganization.Publisher:
-                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Publisher), currentFile.Name);
-                    break;
-                case StructureOrganization.ByGenre:
-                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Genre), currentFile.Name);
-                    break;
-                case StructureOrganization.Developer:
-                    retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(gm.Developer), currentFile.Name);
-                    break;
-                default:
-                    retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
-                    break;
+                fullPath = gm.FullPath;
+                genre = gm.Genre;
+                publisher = gm.Publisher;
+                developer = gm.Developer;
+            });
+            if (!string.IsNullOrEmpty(fullPath))
+            {
+                FileInfo currentFile = new(fullPath);
+                switch (organization)
+                {
+                    case StructureOrganization.None:
+                        retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
+                        break;
+                    case StructureOrganization.ByFirstLetter:
+
+                        retVal = System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(fullPath), currentFile.Name);
+
+                        break;
+                    case StructureOrganization.Publisher:
+                        retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(publisher), currentFile.Name);
+                        
+                        break;
+                    case StructureOrganization.ByGenre:
+                        retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(genre), currentFile.Name);
+                        
+                        break;
+                    case StructureOrganization.Developer:
+                        retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(developer), currentFile.Name);
+                        
+                        break;
+                    default:
+                        retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
+                        break;
+                }
             }
             return retVal;
         }
-        private static void MoveFile(Game gm, string startFolder, StructureOrganization organization)
+        int moveFileCount = 0;
+        private void MoveFile(Game gm, string startFolder, StructureOrganization organization)
         {
-            FileInfo f = new(gm.FullPath);
-            string newFullPath = GetTargetFile(gm, startFolder, organization);
-            FileInfo newF = new(newFullPath);
-            if (newF.Directory != null && !newF.Directory.Exists)
+            FileInfo? f = null;
+            gm.Dispatcher.Invoke(() => { f = new(gm.FullPath); });
+            if (f != null)
             {
-                newF.Directory.Create();
+                string newFullPath = GetTargetFile(gm, startFolder, organization);
+                if (f.Exists)
+                {
+                    FileInfo newF = new(newFullPath);
+                    if (newF.Directory != null && !newF.Directory.Exists)
+                    {
+                        newF.Directory.Create();
+                    }
+                    moveFileCount++;
+                    if ((moveFileCount % 50 == 0) && newF.Directory != null)
+                    {
+                        UpdateActivity("Moving " + f.Name + " to " + newF.Directory.Name);
+                    }
+                    f.MoveTo(newFullPath);
+                }
+                gm.Dispatcher.Invoke(() =>
+                {
+                    gm.FullPath = newFullPath;
+                });
             }
-            f.MoveTo(newFullPath);
-            gm.FullPath = newFullPath;
         }
         private void MoveFiles(StructureOrganization organization)
         {
-            if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
+            moveFileCount = 0;
+            UpdateActivity("Reorganizing files...");
+            System.Threading.ThreadPool.QueueUserWorkItem(MoveFiles, organization);
+        }
+        private void MoveFiles(object? state)
+        {
+            if (state is StructureOrganization organization)
             {
-                string startFolder = System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder);
-                foreach (var gm in GameFolder.Games)
+                string? folder = null;
+                List<Game>? games = null;
+                this.Dispatcher.Invoke(() => {
+                    folder = GameFolder.Folder;
+                    games = new(GameFolder.Games);
+                });
+                if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(folder) && games != null)
                 {
-                    MoveFile(gm, startFolder, organization);
+                    string startFolder = System.IO.Path.Combine(RootGamesListFolder, folder);
+
+                    foreach (var gm in games)
+                    {
+                        MoveFile(gm, startFolder, organization);
+                    }
+                    this.Dispatcher.Invoke(() => {
+                        GameFolder.Organization = organization;
+                        if (GameFolder.Changed)
+                        {
+                            GameFolder.Save();
+                        }
+                    });
+                    UpdateActivity("Removing empty folders.");
+                    RemoveEmptyFolders();
+                    UpdateActivity("Process complete.");
                 }
-                GameFolder.Organization = organization;
-                if (GameFolder.Changed)
-                {
-                    GameFolder.Save();
-                }
-                RemoveEmptyFolders();
             }
         }
 

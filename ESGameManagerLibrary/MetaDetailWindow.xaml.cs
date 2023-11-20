@@ -28,6 +28,7 @@ namespace ESGameManagerLibrary
         public MetaDetailWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
         public static readonly DependencyProperty SelectedGameProperty =
            DependencyProperty.Register(
@@ -215,6 +216,11 @@ namespace ESGameManagerLibrary
             {
                 SelectedGame = Games[i + 1];
             }
+        }
+
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
-        mc:Ignorable="d" Name="uc" Closed="OnClosed"
+        mc:Ignorable="d" Closed="OnClosed"
         Title="Game Detail" Height="650" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
         <local:DateFormatter x:Key="DateFormatter" />
         <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
+        <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
     </Window.Resources>
     <DockPanel>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <Button
-                    IsEnabled="{Binding ElementName=uc, Path=PreviousEnabled}"
+                    IsEnabled="{Binding Path=PreviousEnabled}"
                     ToolTip="Previous Game"
                     Click="GoToPreviousGame">
                     <Image Height="16" Source="/Resources/leftarrow.png" />
@@ -25,292 +26,381 @@
             </StatusBarItem>
             <StatusBarItem>
                 <Button
-                    IsEnabled="{Binding ElementName=uc, Path=NextEnabled}"
+                    IsEnabled="{Binding Path=NextEnabled}"
                     ToolTip="Next Game"
                     Click="GoToNextGame">
                     <Image Height="16" Source="/Resources/rightarrow.png" />
                 </Button>
             </StatusBarItem>
         </StatusBar>
-    <GroupBox>
-        <GroupBox.Header>
-            <DockPanel>
-                <TextBlock
+        <GroupBox>
+            <GroupBox.Header>
+                <DockPanel>
+                    <TextBlock
                     DockPanel.Dock="Top"
                     FontFamily="Comic Sans"
                     FontWeight="Black"
                     FontStyle="Italic" FontSize="14" VerticalAlignment="Top"
                     Text="Game Detail" Padding="0,0,10,0" />
-                <TextBlock FontWeight="Bold" Padding="0,0,5,0" Text="ID:" />
-                <TextBox
+                    <TextBlock FontWeight="Bold" Padding="0,0,5,0" Text="ID:" />
+                    <TextBox
                     Padding="0,0,10,0"
-                    Text="{Binding ElementName=uc, Path=SelectedGame.Id, Mode=TwoWay }" />
-                <TextBlock Padding="10,0,5,0" FontWeight="Bold" Text="Name:" />
-                <TextBox
-                    Text="{Binding ElementName=uc, Path=SelectedGame.Name, Mode=TwoWay}" />
-            </DockPanel>
-        </GroupBox.Header>
-        <DockPanel>
-            <DockPanel DockPanel.Dock="Top">
-                <ScrollViewer
+                    Text="{Binding Path=SelectedGame.Id, Mode=TwoWay }" />
+                    <TextBlock Padding="10,0,5,0" FontWeight="Bold" Text="Name:" />
+                    <TextBox
+                    Text="{Binding Path=SelectedGame.Name, Mode=TwoWay}" />
+                </DockPanel>
+            </GroupBox.Header>
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <ScrollViewer
                     MaxWidth="600"
                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                    <DockPanel>
-                        <GroupBox DockPanel.Dock="Top">
-                            <GroupBox.Header>
-                                <TextBlock
+                        <DockPanel>
+                            <GroupBox DockPanel.Dock="Top">
+                                <GroupBox.Header>
+                                    <TextBlock
                                 FontWeight="Bold"
                                 Text="Marquee"/>
-                            </GroupBox.Header>
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Bottom" >
-                                    <Button
+                                </GroupBox.Header>
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Bottom" >
+                                        <Button
                                         Click="BrowseForMarquee"
                                         DockPanel.Dock="Right" >
-                                        <Image Height="16" Source="/Resources/browse.png" />
-                                    </Button>
-                                    <TextBox
+                                            <Image Height="16" Source="/Resources/browse.png" />
+                                        </Button>
+                                        <TextBox
                                         IsReadOnly="True"
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Marquee, Mode=TwoWay}" />
-                                </DockPanel>
-                                <Image
+                                        Text="{Binding Path=SelectedGame.Marquee, Mode=TwoWay}" />
+                                    </DockPanel>
+                                    <Image
                                     DockPanel.Dock="Top"
-                                    Source="{Binding ElementName=uc, Path=SelectedGame.FullMarqueePath,Converter={StaticResource PathToImageSourceConverter}}" />
-                            </DockPanel>
-                        </GroupBox>
-                        <GroupBox
+                                    Source="{Binding Path=SelectedGame.FullMarqueePath,Converter={StaticResource PathToImageSourceConverter}}" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox
                             MinHeight="200"
                             DockPanel.Dock="Top">
-                            <GroupBox.Header>
-                                <TextBlock
+                                <GroupBox.Header>
+                                    <TextBlock
                                     FontWeight="Bold"
                                     Text="Image"/>
-                            </GroupBox.Header>
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Bottom" >
-                                    <Button
+                                </GroupBox.Header>
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Bottom" >
+                                        <Button
                                         Click="BrowseForImage"
                                         DockPanel.Dock="Right" >
-                                        <Image
+                                            <Image
                                             Height="16" Source="/Resources/browse.png" />
-                                    </Button>
-                                    <TextBox
+                                        </Button>
+                                        <TextBox
                                         IsReadOnly="True"
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Image, Mode=TwoWay}" />
-                                </DockPanel>
-                                <Image
+                                        Text="{Binding Path=SelectedGame.Image, Mode=TwoWay}" />
+                                    </DockPanel>
+                                    <Image
                                     MaxHeight="300"
                                     DockPanel.Dock="Top"
-                                    Source="{Binding ElementName=uc, Path=SelectedGame.FullImagePath,Converter={StaticResource PathToImageSourceConverter}}" />
-                            </DockPanel>
-                        </GroupBox>
-                        <GroupBox
+                                    Source="{Binding Path=SelectedGame.FullImagePath,Converter={StaticResource PathToImageSourceConverter}}" />
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox
                             MinHeight="200"
                             DockPanel.Dock="Top">
-                            <GroupBox.Header>
-                                <TextBlock
+                                <GroupBox.Header>
+                                    <TextBlock
                                     FontWeight="Bold"
                                     Text="Video"/>
-                            </GroupBox.Header>
-                            <DockPanel>
-                                <DockPanel DockPanel.Dock="Bottom" >
-                                    <Button
+                                </GroupBox.Header>
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Bottom" >
+                                        <Button
                                         Click="BrowseForVideo"
                                         DockPanel.Dock="Right" >
-                                        <Image
+                                            <Image
                                             Height="16" Source="/Resources/browse.png" />
-                                    </Button>
-                                    <TextBox
+                                        </Button>
+                                        <TextBox
                                         IsReadOnly="True"
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Video, Mode=TwoWay}" />
+                                        Text="{Binding Path=SelectedGame.Video, Mode=TwoWay}" />
+                                    </DockPanel>
+                                    <MediaElement
+                                    Source="{Binding Path=SelectedGame.FullVideoPath}" />
                                 </DockPanel>
-                                <MediaElement
-                                    Source="{Binding ElementName=uc, Path=SelectedGame.FullVideoPath}" />
-                            </DockPanel>
-                        </GroupBox>
-                    </DockPanel>
-                </ScrollViewer>
-                <ScrollViewer
-                    HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto">
-                    <DockPanel
+                            </GroupBox>
+                        </DockPanel>
+                    </ScrollViewer>
+                    <ScrollViewer
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Auto">
+                        <DockPanel
                         MinWidth="50"
                         DockPanel.Dock="Left">
-                        <GroupBox DockPanel.Dock="Top">
-                            <GroupBox.Header>
-                                <TextBlock
+                            <GroupBox DockPanel.Dock="Top">
+                                <GroupBox.Header>
+                                    <TextBlock
                                     FontWeight="Bold"
                                     Text="Statistics" />
-                            </GroupBox.Header>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBlock
+                                </GroupBox.Header>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
                                     Grid.Row="0" Grid.Column="0"
                                     FontWeight="Bold"
                                     Text="Last Played:" />
-                                <TextBlock
+                                    <TextBlock
                                     Grid.Row="0" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.LastPlayed}" />
-                                <TextBlock
+                                    Text="{Binding Path=SelectedGame.LastPlayed}" />
+                                    <TextBlock
                                     Grid.Row="1" Grid.Column="0"
                                     FontWeight="Bold"
                                     Text="Play Count:" />
-                                <TextBlock
-                                    Grid.Row="1" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.PlayCount}" />
-                            </Grid>
-                        </GroupBox>
-                        <GroupBox
-                            DockPanel.Dock="Top" >
-                            <Grid DockPanel.Dock="Top">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    Grid.Row="0" Grid.Column="0"
-                                    Text="Path:" FontWeight="Bold" />
-                                <DockPanel
-                                    Grid.Row="0" Grid.Column="1">
-                                    <Button
-                                        Click="BrowseForPath"
-                                        DockPanel.Dock="Right" >
-                                        <Image Height="16" Source="/Resources/browse.png" />
-                                    </Button>
-                                    <TextBox
-                                        IsReadOnly="True"
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Path, Mode=TwoWay}" />
-                                </DockPanel>
-                                <TextBlock
-                                    Grid.Row="1" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Developer:" />
-                                <TextBox
-                                    Grid.Row="1" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.Developer, Mode=TwoWay}" />
-                                <TextBlock
-                                    Grid.Row="2" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Publisher:" />
-                                <TextBox
-                                    Grid.Row="2" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.Publisher, Mode=TwoWay}" />
-                                <TextBlock
-                                    Grid.Row="3" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Genre:" />
-                                <TextBox
-                                    Grid.Row="3" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.Genre, Mode=TwoWay}" />
-                                <TextBlock
-                                    Grid.Row="4" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Release Date:" />
-                                <TextBox
-                                    Grid.Row="4" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.DateReleased, Mode=TwoWay, Converter={StaticResource DateFormatter}, ConverterParameter='MM/dd/yyyy'}" />
-                                <TextBlock
-                                    Grid.Row="5" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Players:" />
-                                <TextBox
-                                    Grid.Row="5" Grid.Column="1"
-                                    Text="{Binding ElementName=uc, Path=SelectedGame.Players, Mode=TwoWay}" />
-                                <TextBlock
-                                    Grid.Row="6" Grid.Column="0"
-                                    FontWeight="Bold"
-                                    Text="Rating:" />
-                                <DockPanel
-                                    Grid.Row="6" Grid.Column="1">
                                     <TextBlock
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Rating, Mode=TwoWay}" />
-                                    <Slider
-                                        Value="{Binding ElementName=uc, Path=SelectedGame.Rating, Mode=TwoWay}"
-                                        Maximum="1" IsSnapToTickEnabled="True"
-                                        Minimum="0" Interval="1" TickFrequency="0.1" />
-                                </DockPanel>
+                                    Grid.Row="1" Grid.Column="1"
+                                    Text="{Binding Path=SelectedGame.PlayCount}" />
+                                </Grid>
+                            </GroupBox>
+                            <GroupBox
+                                DockPanel.Dock="Top" >
+                                <Grid DockPanel.Dock="Top">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Grid.Row="0" Grid.Column="0"
+                                        Text="Path:" FontWeight="Bold" />
+                                    <DockPanel
+                                        Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+                                        <Button
+                                            Click="BrowseForPath"
+                                            DockPanel.Dock="Right" >
+                                            <Image Height="16" Source="/Resources/browse.png" />
+                                        </Button>
+                                        <TextBox
+                                            IsReadOnly="True"
+                                            Text="{Binding Path=SelectedGame.Path, Mode=TwoWay}" />
+                                    </DockPanel>
+                                    <TextBlock
+                                        Grid.Row="1" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Developer:" />
+                                    <TextBox
+                                        Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="{Binding Path=SelectedGame.Developer, Mode=TwoWay}" />
+                                    <TextBlock
+                                        Grid.Row="2" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Publisher:" />
+                                    <TextBox
+                                        Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="{Binding Path=SelectedGame.Publisher, Mode=TwoWay}" />
+                                    <TextBlock
+                                        Grid.Row="3" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Genre:" />
+                                    <TextBox
+                                        Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="{Binding Path=SelectedGame.Genre, Mode=TwoWay}" />
+                                    <TextBlock
+                                        Grid.Row="4" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Release Date:" />
+                                    <TextBox
+                                        Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="{Binding Path=SelectedGame.DateReleased, Mode=TwoWay, Converter={StaticResource DateFormatter}, ConverterParameter='MM/dd/yyyy'}" />
+                                    <TextBlock
+                                        Grid.Row="5" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Players:" />
+                                    <TextBox
+                                        Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+                                        Text="{Binding Path=SelectedGame.Players, Mode=TwoWay}" />
+                                    <TextBlock
+                                        Grid.Row="6" Grid.Column="0"
+                                        FontWeight="Bold"
+                                        Text="Rating:" />
+                                    <DockPanel
+                                        Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
+                                        <TextBlock
+                                            Text="{Binding Path=SelectedGame.Rating, Mode=TwoWay}" />
+                                        <Slider
+                                            Value="{Binding Path=SelectedGame.Rating, Mode=TwoWay}"
+                                            Maximum="1" IsSnapToTickEnabled="True"
+                                            Minimum="0" Interval="1" TickFrequency="0.1" />
+                                    </DockPanel>
                                     <StackPanel
                                         Grid.Row="7" Grid.Column="0">
-                                        <TextBlock
-    Grid.Row="7" Grid.Column="0"
-    FontWeight="Bold"
-    Text="Kid's Game:" />
                                         <CheckBox
-    VerticalAlignment="Center"
-    Grid.Row="7" Grid.Column="1"
-    IsChecked="{Binding ElementName=uc, Path=SelectedGame.KidGame, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
-                                        <TextBlock
-    Grid.Row="8" Grid.Column="0"
-    FontWeight="Bold"
-    Text="Favorite:" />
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding Path=SelectedGame.KidGame, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" >
+                                            <TextBlock 
+                                                Padding="0,0,15,0"
+                                                FontWeight="Bold"
+                                                Text="Kid's Game" />
+                                        </CheckBox>
+                                        
                                         <CheckBox
-    VerticalAlignment="Center"
-    Grid.Row="8" Grid.Column="1"
-    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Favorite, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
-                                        <TextBlock
-    Grid.Row="9" Grid.Column="0"
-    FontWeight="Bold"
-    Text="Hidden:" />
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding Path=SelectedGame.Favorite, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" >
+                                            <TextBlock
+                                                Padding="0,0,15,0"
+                                                FontWeight="Bold"
+                                                Text="Favorite" />
+                                        </CheckBox>
+
                                         <CheckBox
-    VerticalAlignment="Center"
-    Grid.Row="9" Grid.Column="1"
-    IsChecked="{Binding ElementName=uc, Path=SelectedGame.Hidden, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" />
+                                            VerticalAlignment="Center"
+                                            IsChecked="{Binding Path=SelectedGame.Hidden, Mode=TwoWay, Converter={StaticResource StringToBoolConverter}}" >
+                                            <TextBlock
+                                                Padding="0,0,15,0"
+                                                FontWeight="Bold"
+                                                Text="Hidden:" />
+                                        </CheckBox>
                                     </StackPanel>
-                                    <WrapPanel Grid.Row="7" Grid.Column="1">
+                                    <StackPanel Grid.Row="7" Grid.Column="1">
                                         <CheckBox
-                                            IsChecked="{Binding ElementName=uc, Path=SelectedGame.Flags}">
+                                            IsChecked="{Binding Path=SelectedGame.Flag1}">
                                             <CheckBox.Content>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1Text}" />
+                                                <StackPanel
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Padding="0,0,5,0"
+                                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag1Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='test'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1Symbol}" />
+                                                    <TextBlock
+                                                        Padding="0,0,15,0"
+                                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag1Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='test'}"
+                                                        Text="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag1}" />
                                                 </StackPanel>
                                             </CheckBox.Content>
                                         </CheckBox>
-                                    </WrapPanel>
-                            </Grid>
-                        </GroupBox>
+
+                                        <CheckBox
+                                            IsChecked="{Binding Path=SelectedGame.Flag2}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                                        Padding="0,0,5,0"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2Symbol}" />
+                                                    <TextBlock
+                                                        Padding="0,0,15,0"
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='SymbolColor'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+
+                                        <CheckBox
+                                            IsChecked="{Binding Path=SelectedGame.Flag3}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                                        Padding="0,0,5,0"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3Symbol}" />
+                                                    <TextBlock
+                                                        Padding="0,0,15,0"
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='SymbolColor'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="7" Grid.Column="2">
+                                        <CheckBox
+                                            IsChecked="{Binding Path=SelectedGame.Flag4}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Padding="0,0,5,0"
+                                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag4Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='test'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag4Symbol}" />
+                                                    <TextBlock
+                                                        Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag4Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='test'}"
+                                                        Text="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag4}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+
+                                        <CheckBox
+                                            IsChecked="{Binding Path=SelectedGame.Flag5}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                                        Padding="0,0,5,0"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5Symbol}" />
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='SymbolColor'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+
+                                        <CheckBox
+                                            IsChecked="{Binding Path=SelectedGame.Flag6}">
+                                            <CheckBox.Content>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Color, Converter={StaticResource ColorListToBrushConverter}}"
+                                                        Padding="0,0,5,0"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Symbol}" />
+                                                    <TextBlock
+                                                        Foreground="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Color, Converter={StaticResource ColorListToBrushConverter}, ConverterParameter='SymbolColor'}"
+                                                        Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6}" />
+                                                </StackPanel>
+                                            </CheckBox.Content>
+                                        </CheckBox>
+                                    </StackPanel>
+                                </Grid>
+                            </GroupBox>
                             <GroupBox
-                            DockPanel.Dock="Bottom">
+                                DockPanel.Dock="Bottom">
                                 <GroupBox.Header>
                                     <TextBlock FontWeight="Bold" Text="Notes:" />
                                 </GroupBox.Header>
-                                    <TextBox
-                                        MinHeight="80" TextWrapping="Wrap"
-                                        Text="{Binding ElementName=uc, Path=SelectedGame.Notes, Mode=TwoWay}"
-                                        AcceptsReturn="True" AcceptsTab="True" />
+                                <TextBox
+                                    MinHeight="80" TextWrapping="Wrap"
+                                    Text="{Binding Path=SelectedGame.Notes, Mode=TwoWay}"
+                                    AcceptsReturn="True" AcceptsTab="True" />
                             </GroupBox>
-                        <GroupBox>
-                            <GroupBox.Header>
-                                <TextBlock FontWeight="Bold" Text="Description:"/>
-                            </GroupBox.Header>
-                            <TextBox
-                                MinHeight="80" TextWrapping="Wrap"
-                                Text="{Binding ElementName=uc, Path=SelectedGame.Description, Mode=TwoWay}"
-                                AcceptsReturn="True" AcceptsTab="True" />
-                        </GroupBox>
-                    </DockPanel>
-                </ScrollViewer>
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <TextBlock FontWeight="Bold" Text="Description:"/>
+                                </GroupBox.Header>
+                                <TextBox
+                                    MinHeight="80" TextWrapping="Wrap"
+                                    Text="{Binding Path=SelectedGame.Description, Mode=TwoWay}"
+                                    AcceptsReturn="True" AcceptsTab="True" />
+                            </GroupBox>
+                        </DockPanel>
+                    </ScrollViewer>
+                </DockPanel>
             </DockPanel>
-        </DockPanel>
-    </GroupBox>
+        </GroupBox>
     </DockPanel>
 </Window>
