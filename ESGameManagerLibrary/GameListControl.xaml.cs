@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Xps;
 
 namespace ESGameManagerLibrary
 {
@@ -391,5 +394,116 @@ namespace ESGameManagerLibrary
         {
             MoveFiles(StructureOrganization.Developer);
         }
+        private void Print()
+        {
+            FixedDocument fixedDoc = new FixedDocument();
+            PageContent pageContent = new PageContent();
+            FixedPage fixedPage = new FixedPage();
+            fixedPage.Children.Add(lvGameList);
+            ((System.Windows.Markup.IAddChild)pageContent).AddChild(fixedPage);
+            fixedDoc.Pages.Add(pageContent);
+        }
+        private void OnPrint(object sender, RoutedEventArgs e)
+        {
+            PrintDialog printDialog = new PrintDialog();
+
+            if (printDialog.ShowDialog() == true)
+            {
+                // Create a FixedDocument representing the content of the ListView
+                FixedDocument fixedDoc = CreateFixedDocument(lvGameList);
+
+                // Set up the print queue and print document
+                PrintQueue printQueue = printDialog.PrintQueue;
+                XpsDocumentWriter xpsWriter = PrintQueue.CreateXpsDocumentWriter(printQueue);
+
+                // Write the FixedDocument to the XpsDocumentWriter
+                xpsWriter.Write(fixedDoc);
+            }
+        }
+        private FixedDocument CreateFixedDocument(ListView listView)
+        {
+            FixedDocument fixedDoc = new FixedDocument();
+
+            // Create a PageContent to hold the FixedPage
+            PageContent pageContent = new PageContent();
+            FixedPage fixedPage = new FixedPage();
+
+            // Set the size of the FixedPage (adjust as needed)
+            fixedPage.Width = 793.76; // 8.5" x 96 dpi
+            fixedPage.Height = 1122.56; // 11" x 96 dpi
+
+
+
+            //listView is already child, cannot be added as child here.
+            //Need to figure out how to fix.
+
+            fixedPage.Children.Add(this);
+            ((System.Windows.Markup.IAddChild)pageContent).AddChild(fixedPage);
+            fixedDoc.Pages.Add(pageContent);
+
+
+            return fixedDoc;
+        }
+        /*
+         * 
+         * Print table of data:
+         * 
+         *  <DataGrid AutoGenerateColumns="False" Margin="12,0,0,0" Name="dataGrid1"  HorizontalAlignment="Left"  VerticalAlignment="Top"  ItemsSource="{Binding}" AlternatingRowBackground="LightGoldenrodYellow" AlternationCount="1">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding Path=Image}" Width="100" Height="50" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+
+
+            <DataGridTextColumn Header="Make" Binding="{Binding Path=Make}"/>
+            <DataGridTextColumn Header="Model" Binding="{Binding Path=Model}"/>
+            <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
+            <DataGridTextColumn Header="Color" Binding="{Binding Path=Color}"/>
+        </DataGrid.Columns>
+    </DataGrid>
+
+
+        private void OnDataGridPrinting(object sender, RoutedEventArgs e)
+    {
+        System.Windows.Controls.PrintDialog Printdlg = new System.Windows.Controls.PrintDialog();
+        if ((bool)Printdlg.ShowDialog().GetValueOrDefault())
+        {
+            Size pageSize = new Size(Printdlg.PrintableAreaWidth, Printdlg.PrintableAreaHeight);
+            // sizing of the element.
+            dataGrid1.Measure(pageSize);
+            dataGrid1.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
+            Printdlg.PrintVisual(dataGrid1, Title);
+        }
+
+        Other Info???: https://itecnote.com/tecnote/r-printing-a-wpf-flowdocument/
+}
+         * */
+
+        //private void PrintList()
+
+        //{
+        //    FlowDocument fd = new FlowDocument();
+
+        //    //TaskViewModel.Tasks is the collection (List<> in my case) your ListView takes data from
+        //    foreach (var item in TaskViewModel.Tasks)
+        //    {
+        //        fd.Blocks.Add(new Paragraph(new Run(item.ToString()))); //you may need to create a ToString method in your type, if it's string it's ok
+        //    }
+
+        //    PrintDialog pd = new PrintDialog();
+        //    if (pd.ShowDialog() != true) return;
+
+        //    fd.PageHeight = pd.PrintableAreaHeight;
+        //    fd.PageWidth = pd.PrintableAreaWidth;
+
+        //    IDocumentPaginatorSource idocument = fd as IDocumentPaginatorSource;
+
+        //    pd.PrintDocument(idocument.DocumentPaginator, "Printing Flow Document...");
+        //}
+
     }
 }

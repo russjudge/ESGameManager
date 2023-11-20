@@ -18,6 +18,7 @@
     <None Remove="Resources\leftarrow.png" />
     <None Remove="Resources\na.png" />
     <None Remove="Resources\notes.png" />
+    <None Remove="Resources\printer.png" />
     <None Remove="Resources\rearrange.png" />
     <None Remove="Resources\rightarrow.png" />
     <None Remove="Resources\save.png" />
@@ -41,6 +42,7 @@
     <Resource Include="Resources\leftarrow.png" />
     <Resource Include="Resources\na.png" />
     <Resource Include="Resources\notes.png" />
+    <Resource Include="Resources\printer.png" />
     <Resource Include="Resources\rearrange.png" />
     <Resource Include="Resources\rightarrow.png" />
     <Resource Include="Resources\save.png" />

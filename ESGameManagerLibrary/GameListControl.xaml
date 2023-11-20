@@ -119,6 +119,20 @@
                 </StackPanel>
             </Button>
             <Button
+                Click="OnPrint"
+                VerticalAlignment="Center"
+                ToolTip="Print this list"
+                DockPanel.Dock="Right"
+                Padding="5,5,5,5"
+                Margin="15,0,15,0">
+                <Button.Content>
+                    <StackPanel>
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/printer.png" />
+                        <TextBlock Text="Print"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button
                 IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='ByFirstLetter|False'}"
                 Click="OnReorgByFirstLetter"
                 ToolTip="Reorganize into subfolders by first letter"
@@ -238,6 +252,7 @@
 
         </DockPanel>
         <ListView
+            Name="lvGameList"
             SelectedItem="{Binding ElementName=uc, Path=SelectedGame, Mode=TwoWay}"
             DockPanel.Dock="Top" 
             HorizontalAlignment="Stretch" 
