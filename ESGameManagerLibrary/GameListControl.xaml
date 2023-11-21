@@ -31,19 +31,20 @@
     </UserControl.Resources>
     <DockPanel HorizontalAlignment="Stretch" >
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
+            <StatusBarItem BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Padding="0,0,5,0" Text="Game Count:" />
                     <TextBlock Text="{Binding ElementName=uc, Path=GameFolder.Games.Count}" />
                 </StackPanel>
             </StatusBarItem>
-            <StatusBarItem>
+            <StatusBarItem BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="{Binding ElementName=uc, Path=Activity}" />
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <DockPanel
+            IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
             DockPanel.Dock="Top" HorizontalAlignment="Stretch" Background="BlanchedAlmond" >
             <Button
                 IsEnabled="{Binding ElementName=uc, Path=GameFolder.Changed}"
@@ -265,6 +266,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
+                                    IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                     ToolTip="Delete game"
                                     CommandParameter="{Binding}" Click="OnDelete" >
                                     <Image
@@ -370,6 +372,7 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button
+                                    IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                     Margin="10,0,0,0"
                                     Padding="5,5,5,5"
                                     HorizontalAlignment="Center"
@@ -400,6 +403,7 @@
                             <DataTemplate>
                                 <DockPanel>
                                     <Button
+                                        IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                         Margin="0,0,5,0"
                                         HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                                         ToolTip="Show Description"
@@ -409,6 +413,7 @@
                                             Height="16" Width="16" Source="/Resources/info.png" />
                                     </Button>
                                     <Button
+                                        IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                         Margin="0,0,5,0"
                                         HorizontalAlignment="Center" HorizontalContentAlignment="Center"
                                         ToolTip="Edit Description"
@@ -418,6 +423,7 @@
                                             Height="16" Width="16" Source="/Resources/edit.png" />
                                     </Button>
                                     <Button
+                                        IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                         Padding="5,5,5,5"
                                         HorizontalAlignment="Stretch"
                                         Click="OnEditName"
@@ -444,6 +450,7 @@
                             <DataTemplate>
 
                                 <Button
+                                    IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                     CommandParameter="{Binding}"
                                     Margin="5,0,5,0" Padding="5,5,5,5"
                                     Click="OnChangeImage" >
@@ -486,6 +493,7 @@
                             <DataTemplate>
 
                                 <Button
+                                    IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
                                     CommandParameter="{Binding}"
                                     Margin="5,0,5,0" Padding="5,5,5,5"
                                     Click="OnEditNotes" >

@@ -1110,7 +1110,7 @@ namespace ESGameManagerLibrary
                     expectedFileLocation = string.Empty;
                     break;
                 case StructureOrganization.ByFirstLetter:
-                    expectedFileLocation = SetSingleLetterFolder(path);
+                    expectedFileLocation = SetSingleLetterFolder(Name);
                     break;
                 case StructureOrganization.ByGenre:
                     expectedFileLocation = SetOtherFolder(Genre);

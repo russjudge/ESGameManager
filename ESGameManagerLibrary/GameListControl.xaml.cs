@@ -38,6 +38,7 @@ namespace ESGameManagerLibrary
         }
         public GameListControl()
         {
+            NotProcessing = true;
             InitializeComponent();
         }
         public static string? RootGamesListFolder { get; set; }
@@ -59,6 +60,24 @@ namespace ESGameManagerLibrary
                 this.SetValue(GameFolderProperty, value);
             }
         }
+        public static readonly DependencyProperty NotProcessingProperty =
+           DependencyProperty.Register(
+               nameof(NotProcessing),
+               typeof(bool),
+               typeof(GameListControl));
+        public bool NotProcessing
+        {
+            get
+            {
+                return (bool)this.GetValue(NotProcessingProperty);
+            }
+
+            set
+            {
+                this.SetValue(NotProcessingProperty, value);
+            }
+        }
+
         public static readonly DependencyProperty ActivityProperty =
            DependencyProperty.Register(
                nameof(Activity),
@@ -92,14 +111,17 @@ namespace ESGameManagerLibrary
         {
             if (d is GameListControl me )
             {
-                if (Common.DetailWindow == null)
+                if (me.GameFolder != null)
                 {
-                    Common.ShowDetailWindow();
-                }
-                if (Common.DetailWindow != null)
-                {
-                    Common.DetailWindow.Games = me.GameFolder.Games;
-                    Common.DetailWindow.SelectedGame = me.SelectedGame;
+                    if (Common.DetailWindow == null)
+                    {
+                        Common.ShowDetailWindow();
+                    }
+                    if (Common.DetailWindow != null)
+                    {
+                        Common.DetailWindow.Games = me.GameFolder.Games;
+                        Common.DetailWindow.SelectedGame = me.SelectedGame;
+                    }
                 }
             }
         }
@@ -265,12 +287,14 @@ namespace ESGameManagerLibrary
             string? genre = null;
             string? publisher = null;
             string? developer = null;
+            string? name = null;
             gm.Dispatcher.Invoke(() =>
             {
                 fullPath = gm.FullPath;
                 genre = gm.Genre;
                 publisher = gm.Publisher;
                 developer = gm.Developer;
+                name = gm.Name;
             });
             if (!string.IsNullOrEmpty(fullPath))
             {
@@ -281,9 +305,10 @@ namespace ESGameManagerLibrary
                         retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
                         break;
                     case StructureOrganization.ByFirstLetter:
-
-                        retVal = System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(fullPath), currentFile.Name);
-
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            retVal = System.IO.Path.Combine(startFolder, Game.SetSingleLetterFolder(name), currentFile.Name);
+                        }
                         break;
                     case StructureOrganization.Publisher:
                         retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(publisher), currentFile.Name);
