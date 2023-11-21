@@ -5,6 +5,16 @@
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <SignAssembly>False</SignAssembly>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/russjudge/ESGameManager</RepositoryUrl>
+    <Title>ES Game Manager</Title>
+    <ApplicationIcon>Resources\EMManager.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +26,14 @@
     <None Remove="Resources\gear.png" />
     <None Remove="Resources\info.png" />
     <None Remove="Resources\leftarrow.png" />
+    <None Remove="Resources\merge.png" />
     <None Remove="Resources\na.png" />
     <None Remove="Resources\notes.png" />
     <None Remove="Resources\rearrange.png" />
     <None Remove="Resources\rightarrow.png" />
     <None Remove="Resources\save.png" />
     <None Remove="Resources\scan.png" />
+    <None Remove="Resources\search.png" />
     <None Remove="Resources\showdetail.png" />
     <None Remove="Resources\spreadsheet.png" />
   </ItemGroup>
@@ -34,6 +46,10 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -53,11 +69,13 @@
     <Resource Include="Resources\gear.png" />
     <Resource Include="Resources\info.png" />
     <Resource Include="Resources\leftarrow.png" />
+    <Resource Include="Resources\merge.png" />
     <Resource Include="Resources\notes.png" />
     <Resource Include="Resources\rearrange.png" />
     <Resource Include="Resources\rightarrow.png" />
     <Resource Include="Resources\save.png" />
     <Resource Include="Resources\scan.png" />
+    <Resource Include="Resources\search.png" />
     <Resource Include="Resources\showdetail.png" />
     <Resource Include="Resources\spreadsheet.png" />
   </ItemGroup>

@@ -28,8 +28,10 @@ namespace ESGameManager
        
         public MainWindow()
         {
+            
             InitializeComponent();
             DataContext = this;
+            SearchText = string.Empty;
             //RootGamesListFolder = @"E:\DefaultUser\Documents\roms";
             GamesList = new();
             GameList.NewGameList += GameList_NewGameList;
@@ -94,8 +96,27 @@ namespace ESGameManager
                 this.SetValue(GamesListProperty, value);
             }
         }
-       
-        
+
+
+        public static readonly DependencyProperty SearchTextProperty =
+           DependencyProperty.Register(
+               nameof(SearchText),
+               typeof(string),
+               typeof(MainWindow));
+        public string SearchText
+        {
+            get
+            {
+                return (string)this.GetValue(SearchTextProperty);
+            }
+
+            set
+            {
+                this.SetValue(SearchTextProperty, value);
+            }
+        }
+
+
         private void OnGenerateCSV(object sender, RoutedEventArgs e)
         {
             if (GamesList != null)
@@ -138,12 +159,6 @@ namespace ESGameManager
             }
         }
         
-        //private void OnShowDetailWindow(object sender, RoutedEventArgs e)
-        //{
-        //    ShowDetailWindow();
-        //    MetaDetailWindow.SendDetailToForeground();
-        //}
-
         private void OnClosed(object sender, EventArgs e)
         {
             if (Common.DetailWindow != null)
@@ -156,6 +171,35 @@ namespace ESGameManager
         {
             SettingsWindow win = new SettingsWindow();
             win.ShowDialog();
+        }
+
+        private void OnSearch(object sender, RoutedEventArgs e)
+        {
+            List<Game> matchedGames = new();
+            if (!string.IsNullOrEmpty(SearchText.Trim()))
+            {
+                foreach (var list in GamesList)
+                {
+                    foreach (var game in list.Games)
+                    {
+                        if (game.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            matchedGames.Add(game);
+                        }
+                    }
+                }
+            }
+            if (matchedGames.Count > 0)
+            {
+                MetaDetailWindow win = new MetaDetailWindow();
+                win.Games =new( matchedGames);
+                win.ShowList = true;
+                win.Show();
+            }
+            else
+            {
+                MessageBox.Show("No matches.");
+            }
         }
     }
 }

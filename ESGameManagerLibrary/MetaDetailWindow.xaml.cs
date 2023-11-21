@@ -30,6 +30,29 @@ namespace ESGameManagerLibrary
             InitializeComponent();
             DataContext = this;
         }
+        public static readonly DependencyProperty ShowListProperty =
+          DependencyProperty.Register(
+              nameof(ShowList),
+              typeof(bool),
+              typeof(MetaDetailWindow));
+
+
+        public bool ShowList
+        {
+            get
+            {
+                return (bool)this.GetValue(ShowListProperty);
+            }
+
+            set
+            {
+                this.SetValue(ShowListProperty, value);
+            }
+        }
+
+
+
+
         public static readonly DependencyProperty SelectedGameProperty =
            DependencyProperty.Register(
                nameof(SelectedGame),
@@ -196,7 +219,10 @@ namespace ESGameManagerLibrary
 
         private void OnClosed(object sender, EventArgs e)
         {
-            Common.DetailWindow = null;
+            if (Common.DetailWindow == this)
+            {
+                Common.DetailWindow = null;
+            }
         }
 
         private void GoToPreviousGame(object sender, RoutedEventArgs e)
@@ -221,6 +247,15 @@ namespace ESGameManagerLibrary
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void OnDeleteGame(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button b && b.CommandParameter is Game gm)
+            {
+                gm.Parent.RemoveGame(gm);
+                Games.Remove(gm);
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E4F80AD-1026-4ABC-90E0-99D724E089ED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESGameManagerLibrary", "ESGameManagerLibrary\ESGameManagerLibrary.csproj", "{9DE9AC64-8919-4D13-969B-E45C47710F2F}"

@@ -49,6 +49,30 @@
                     <Image Height="24" Source="/Resources/spreadsheet.png"/>
                 </StackPanel>
             </Button>
+            <Button
+                Margin="0,0,15,0"
+                Padding="2,2,2,2"
+                DockPanel.Dock="Right"
+                ToolTip="Search"
+                Click="OnSearch">
+                <StackPanel>
+                    <Image Height="24" Source="/Resources/search.png" />
+                </StackPanel>
+            </Button>
+            <TextBox
+                VerticalContentAlignment="Center"
+                Text="{Binding Path=SearchText, Mode=TwoWay}"
+                Width="100" DockPanel.Dock="Right" />
+            <TextBlock Padding="0,0,5,0" VerticalAlignment="Center" Text="Search:" DockPanel.Dock="Right" />
+            <Button
+                Margin="0,0,15,0"
+                Padding="2,2,2,2"
+                DockPanel.Dock="Right"
+                ToolTip="Merge">
+                <StackPanel>
+                    <Image Height="24" Source="/Resources/merge.png" />
+                </StackPanel>
+            </Button>
             <TextBlock />
         </DockPanel>
 

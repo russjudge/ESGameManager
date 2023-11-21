@@ -33,6 +33,34 @@
                 </Button>
             </StatusBarItem>
         </StatusBar>
+        <GroupBox
+             DockPanel.Dock="Left">
+            <GroupBox.Header>
+                <TextBlock Text="Matches" FontWeight="Bold" />
+            </GroupBox.Header>
+        <ListBox
+            MaxWidth="300"
+            SelectedItem="{Binding Path=SelectedGame, Mode=TwoWay}"
+            ItemsSource="{Binding Path=Games}"
+            Visibility="{Binding Path=ShowList, Converter={StaticResource BooleanToVisibilityConverter}}"
+           >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" >
+                        <Button
+                            ToolTip="Delete Game"
+                            CommandParameter="{Binding}" Click="OnDeleteGame">
+                            <Button.Content>
+                                <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/delete.png"/>
+                            </Button.Content>
+                        </Button>
+                        <TextBlock Padding="5,0,5,0" FontStyle="Italic" Text="{Binding Parent.Folder}" />
+                        <TextBlock Text="{Binding Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        </GroupBox>
         <GroupBox>
             <GroupBox.Header>
                 <DockPanel>
