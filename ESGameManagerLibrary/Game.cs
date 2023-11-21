@@ -241,7 +241,7 @@ namespace ESGameManagerLibrary
            DependencyProperty.Register(
            nameof(Flag7),
            typeof(bool),
-           typeof(Game), new PropertyMetadata(OnFlagBoolChanged));
+           typeof(Game)); //, new PropertyMetadata(OnFlagBoolChanged)
         [XmlIgnore]
         public bool Flag7
         {
@@ -929,15 +929,7 @@ namespace ESGameManagerLibrary
                 System.IO.File.Delete(fullPath);
             }
         }
-        string? GetListRoot()
-        {
-            string? startFolder = null;
-            if (!string.IsNullOrEmpty(GameListControl.RootGamesListFolder) && !string.IsNullOrEmpty(Parent.Folder))
-            {
-                startFolder = System.IO.Path.Combine(GameListControl.RootGamesListFolder, Parent.Folder);
-            }
-            return startFolder;
-        }
+       
 
         /// <summary>
         /// Below method written entirely with ChatGPT.  Yes, I'm that lazy.
@@ -1000,10 +992,10 @@ namespace ESGameManagerLibrary
             }
             return retVal;
         }
-        private string SetFileLocation(string path, string expectedSubFolder, bool IsImage = false)
+        public string SetFileLocation(string path, string expectedSubFolder, bool IsImage = false)
         {
             string retVal = string.Empty;
-            string? startFolder = GetListRoot();
+            string? startFolder = Parent.GetListRoot();
             if (!string.IsNullOrEmpty(startFolder))
             {
                 string targetImageFolder = System.IO.Path.Combine(startFolder, expectedSubFolder);
@@ -1100,7 +1092,33 @@ namespace ESGameManagerLibrary
         {
             return GetRelativeFolderPath(folderName, false);
         }
+        public string GetRomRelativePath()
+        {
+            string expectedFileLocation = string.Empty;
+            switch (Parent.Organization)
+            {
+                case StructureOrganization.None:
+                    expectedFileLocation = string.Empty;
+                    break;
+                case StructureOrganization.ByFirstLetter:
+                    expectedFileLocation = SetSingleLetterFolder(Name);
+                    break;
+                case StructureOrganization.ByGenre:
+                    expectedFileLocation = SetOtherFolder(Genre);
+                    break;
+                case StructureOrganization.Publisher:
+                    expectedFileLocation = SetOtherFolder(Publisher);
+                    break;
 
+                case StructureOrganization.Developer:
+                    expectedFileLocation = SetOtherFolder(Developer);
+                    break;
+                default:
+                    expectedFileLocation = string.Empty;
+                    break;
+            }
+            return expectedFileLocation;
+        }
         public void SetFullROMPath(string path)
         {
             string expectedFileLocation = string.Empty;
@@ -1128,17 +1146,29 @@ namespace ESGameManagerLibrary
             }
             FullPath = SetFileLocation(path, expectedFileLocation, false);
         }
+        public string GetFullMarqueePath(string path)
+        {
+            return SetFileLocation(path, "media\\marquee\\" + SetSingleLetterFolder(path), true);
+        }
         public void SetFullMarqueePath(string path)
         {
-            FullMarqueePath = SetFileLocation(path, "media\\marquee\\" + SetSingleLetterFolder(path), true);
+            FullMarqueePath = GetFullMarqueePath(path);
+        }
+        public string GetFullImagePath(string path)
+        {
+            return SetFileLocation(path, "media\\screenshot\\" + SetSingleLetterFolder(path), true);
         }
         public void SetFullImagePath(string path)
         {
-            FullImagePath = SetFileLocation(path, "media\\screenshot\\" + SetSingleLetterFolder(path), true);
+            FullImagePath = GetFullImagePath(path);
+        }
+        public string GetFullVideoPath(string path)
+        {
+            return SetFileLocation(path, "media\\video\\" + SetSingleLetterFolder(path), true);
         }
         public void SetFullVideoPath(string path)
         {
-            FullVideoPath = SetFileLocation(path, "media\\video\\" + SetSingleLetterFolder(path), false);
+            FullVideoPath = GetFullVideoPath(path);
         }
         public Game Copy()
         {

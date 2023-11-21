@@ -3,13 +3,16 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 using System.Xml.Serialization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace ESGameManagerLibrary
 {
@@ -24,20 +27,57 @@ namespace ESGameManagerLibrary
             DeletedGames.Add(gm);
             Changed = true;
         }
+        public string? GetListRoot()
+        {
+            string? startFolder = null;
+            if (!string.IsNullOrEmpty(GameListControl.RootGamesListFolder) && !string.IsNullOrEmpty(Folder))
+            {
+                startFolder = System.IO.Path.Combine(GameListControl.RootGamesListFolder, Folder);
+            }
+            return startFolder;
+        }
+        public void AddGame(Game game, string targetSubfolder = "")
+        {
+            //FullPath, FullImagePath, FullMarqueePath, FullVideoPath
+            if (string.IsNullOrEmpty(targetSubfolder))
+            {
+                game.SetFullROMPath(game.FullPath);
+            }
+            else
+            {
+                game.FullPath = game.SetFileLocation(game.FullPath, targetSubfolder, false);
+            }
+            if (!string.IsNullOrEmpty(game.FullImagePath))
+            {
+                game.SetFullImagePath(game.FullImagePath);
+            }
+            if (!string.IsNullOrEmpty(game.FullMarqueePath))
+            {
+                game.SetFullMarqueePath(game.FullMarqueePath);
+            }
+            if (!string.IsNullOrEmpty(game.FullVideoPath))
+            {
+                game.SetFullVideoPath(game.FullVideoPath);
+            }
+            Games.Add(game);
+            Changed = true;
+        }
         
-        public Game? AddGame(string fullFilePath)
+        public Game? AddGame(string sourcefullFilePath)
         {
             if (!string.IsNullOrEmpty(GameListControl.RootGamesListFolder) && !string.IsNullOrEmpty(Folder))
             {
                 string startFolder = System.IO.Path.Combine(GameListControl.RootGamesListFolder, Folder);
-                string relativeFolder = fullFilePath.Replace(startFolder, ".").Replace("\\", "/");
+                
+
+                string relativeFolder = sourcefullFilePath.Replace(startFolder, ".").Replace("\\", "/");
                 Game gm = new Game()
                 {
                     Flags = 0,
                     Parent = this,
-                    FullPath = fullFilePath,
+                    FullPath = sourcefullFilePath,
                     Path = relativeFolder,
-                    Name = new FileInfo(fullFilePath).Name,
+                    Name = new FileInfo(sourcefullFilePath).Name,
                     Source = string.Empty,
                     Description = string.Empty,
                     Rating = string.Empty,
@@ -51,7 +91,7 @@ namespace ESGameManagerLibrary
                     FullImagePath = string.Empty,
                     GenreId = string.Empty,
                 };
-                gm.SetFullROMPath(fullFilePath);
+                gm.SetFullROMPath(sourcefullFilePath);
                 Games.Add(gm);
                 Changed = true;
                 return gm;
@@ -170,7 +210,7 @@ namespace ESGameManagerLibrary
                 using StringWriter writer = new();
                 serializer.Serialize(writer, this);
                 string xmlResult = writer.ToString();
-                using (StreamWriter sw = new(Path.Combine(GameListControl.RootGamesListFolder, Folder, "gameList.xml")))
+                using (StreamWriter sw = new(System.IO.Path.Combine(GameListControl.RootGamesListFolder, Folder, "gameList.xml")))
                 {
                     sw.Write(xmlResult);
                 }
@@ -220,7 +260,7 @@ namespace ESGameManagerLibrary
                 string xml = string.Empty;
                 foreach (var dir in root.GetDirectories())
                 {
-                    string gameListFile = Path.Combine(dir.FullName, gameListXML);
+                    string gameListFile = System.IO.Path.Combine(dir.FullName, gameListXML);
 
                     if (File.Exists(gameListFile))
                     {
@@ -317,7 +357,7 @@ namespace ESGameManagerLibrary
                             string wrkPath = game.Path;
                             if (wrkPath.StartsWith("./"))
                             {
-                                wrkPath = Path.Combine(sourceRoot, folder, wrkPath.Substring(2));
+                                wrkPath = System.IO.Path.Combine(sourceRoot, folder, wrkPath.Substring(2));
                             }
                             FileInfo fi = new(wrkPath);
                             path = fi.Name;

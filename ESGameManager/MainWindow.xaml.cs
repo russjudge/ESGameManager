@@ -201,5 +201,12 @@ namespace ESGameManager
                 MessageBox.Show("No matches.");
             }
         }
+
+        private void OnMerge(object sender, RoutedEventArgs e)
+        {
+            MergeWindow win = new MergeWindow();
+            win.GamesList = new(this.GamesList);
+            win.ShowDialog();
+        }
     }
 }
