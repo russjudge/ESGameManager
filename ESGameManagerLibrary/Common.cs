@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -7,8 +8,29 @@ namespace ESGameManagerLibrary
 {
     public static class Common
     {
+        public static Dispatcher? UIDispatcher { get; private set; }
+
+        public static void SetDispatcher(Dispatcher dispatcher)
+        {
+            UIDispatcher = dispatcher;
+        }
+        public static void FatalApplicationException(Exception exception)
+        {
+            //TODO: add code to capture error and upload.
+            MessageBox.Show("Fatal Error received--\r\n\r\n" + exception.GetType().ToString() + ":\r\n" + exception.Message + "\r\n\r\nApplication must exit now.");
+            if (UIDispatcher == null)
+            {
+                Application.Current.Shutdown(1);
+            }
+            else
+            {
+                UIDispatcher.Invoke(() =>
+                {
+                    Application.Current.Shutdown(1);
+                });
+            }
+        }
         public static MetaDetailWindow? DetailWindow { get; set; }
-        public static Dispatcher? UIDispatcher { get; set; }
         public static void ShowDetailWindow()
         {
             if (Common.DetailWindow == null)

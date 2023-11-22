@@ -1,6 +1,5 @@
 ﻿using ESGameManagerLibrary;
 using Microsoft.Win32;
-using Ookii.Dialogs.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,14 +27,12 @@ namespace ESGameManager
        
         public MainWindow()
         {
-            
             InitializeComponent();
             DataContext = this;
             SearchText = string.Empty;
             //RootGamesListFolder = @"E:\DefaultUser\Documents\roms";
             GamesList = new();
             GameList.NewGameList += GameList_NewGameList;
-            Common.UIDispatcher = Dispatcher;
         }
 
         private void GameList_NewGameList(object? sender, NewGameListEventArgs e)
@@ -135,6 +132,61 @@ namespace ESGameManager
             }
         }
 
+        public static readonly DependencyProperty SearchIncludePublisherProperty =
+           DependencyProperty.Register(
+               nameof(SearchIncludePublisher),
+               typeof(bool),
+               typeof(MainWindow));
+        public bool SearchIncludePublisher
+        {
+            get
+            {
+                return (bool)this.GetValue(SearchIncludePublisherProperty);
+            }
+
+            set
+            {
+                this.SetValue(SearchIncludePublisherProperty, value);
+            }
+        }
+
+
+        public static readonly DependencyProperty SearchIncludeDeveloperProperty =
+           DependencyProperty.Register(
+               nameof(SearchIncludeDeveloper),
+               typeof(bool),
+               typeof(MainWindow));
+        public bool SearchIncludeDeveloper
+        {
+            get
+            {
+                return (bool)this.GetValue(SearchIncludeDeveloperProperty);
+            }
+
+            set
+            {
+                this.SetValue(SearchIncludeDeveloperProperty, value);
+            }
+        }
+
+
+        public static readonly DependencyProperty SearchIncludeGenreProperty =
+           DependencyProperty.Register(
+               nameof(SearchIncludeGenre),
+               typeof(bool),
+               typeof(MainWindow));
+        public bool SearchIncludeGenre
+        {
+            get
+            {
+                return (bool)this.GetValue(SearchIncludeGenreProperty);
+            }
+
+            set
+            {
+                this.SetValue(SearchIncludeGenreProperty, value);
+            }
+        }
 
         private void OnGenerateCSV(object sender, RoutedEventArgs e)
         {
@@ -153,13 +205,13 @@ namespace ESGameManager
 
         private void OnBrowseForROMFolder(object sender, RoutedEventArgs e)
         {
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-
-            if (dialog.ShowDialog(this) == true)
+            var dialog = new OpenFolderDialog
             {
-              
-                RootGamesListFolder = dialog.SelectedPath;
-                
+                Title = "Select folder where all ROMs for all systems are stored"
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                RootGamesListFolder = dialog.FolderName;
             }
         }
 
@@ -209,6 +261,18 @@ namespace ESGameManager
                         {
                             matchedGames.Add(game);
                         }
+                        else if (SearchIncludeDeveloper && !string.IsNullOrEmpty(game.Developer) && game.Developer.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            matchedGames.Add(game);
+                        }
+                        else if (SearchIncludeGenre && !string.IsNullOrEmpty(game.Genre) && game.Genre.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            matchedGames.Add(game);
+                        }
+                        else if (SearchIncludePublisher && !string.IsNullOrEmpty(game.Publisher) && game.Publisher.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            matchedGames.Add(game);
+                        }
                     }
                 }
             }
@@ -230,6 +294,11 @@ namespace ESGameManager
             MergeWindow win = new MergeWindow();
             win.GamesList = new(this.GamesList);
             win.ShowDialog();
+        }
+
+        private void OnTest(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException("test");
         }
     }
 }

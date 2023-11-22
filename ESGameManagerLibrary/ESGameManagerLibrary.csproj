@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	 
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -17,6 +18,7 @@
     <None Remove="Resources\info.png" />
     <None Remove="Resources\leftarrow.png" />
     <None Remove="Resources\merge.png" />
+    <None Remove="Resources\move-22.png" />
     <None Remove="Resources\na.png" />
     <None Remove="Resources\notes.png" />
     <None Remove="Resources\printer.png" />
@@ -30,10 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\add.png" />
     <Resource Include="Resources\browse.png" />
     <Resource Include="Resources\delete.png" />
@@ -43,6 +41,7 @@
     <Resource Include="Resources\info.png" />
     <Resource Include="Resources\leftarrow.png" />
     <Resource Include="Resources\merge.png" />
+    <Resource Include="Resources\move-22.png" />
     <Resource Include="Resources\na.png" />
     <Resource Include="Resources\notes.png" />
     <Resource Include="Resources\printer.png" />

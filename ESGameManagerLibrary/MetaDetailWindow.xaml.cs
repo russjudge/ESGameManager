@@ -80,13 +80,21 @@ namespace ESGameManagerLibrary
         /// <param name="state"></param>
         static void SendToForeGround(object? state)
         {
-            if (Common.UIDispatcher != null && Common.DetailWindow != null)
+
+            try
             {
-                Common.UIDispatcher.Invoke(() =>
+                if (Common.UIDispatcher != null && Common.DetailWindow != null)
                 {
-                    Common.DetailWindow.Activate();
-                    Common.DetailWindow.Focus();
-                });
+                    Common.UIDispatcher.Invoke(() =>
+                    {
+                        Common.DetailWindow.Activate();
+                        Common.DetailWindow.Focus();
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Common.FatalApplicationException(ex);
             }
         }
         public Game SelectedGame

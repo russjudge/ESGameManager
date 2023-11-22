@@ -5,12 +5,15 @@
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+	  
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <SignAssembly>False</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/russjudge/ESGameManager</RepositoryUrl>
     <Title>ES Game Manager</Title>
-    <ApplicationIcon>Resources\EMManager.ico</ApplicationIcon>
+    <PackageIcon>EMManager.ico</PackageIcon>
+    <ApplicationIcon>EMManager.ico</ApplicationIcon>
+  
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,34 +21,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\add.png" />
-    <None Remove="Resources\browse.png" />
-    <None Remove="Resources\delete.png" />
-    <None Remove="Resources\edit.png" />
-    <None Remove="Resources\EMManager.ico" />
-    <None Remove="Resources\gear.png" />
-    <None Remove="Resources\info.png" />
-    <None Remove="Resources\leftarrow.png" />
-    <None Remove="Resources\merge.png" />
-    <None Remove="Resources\na.png" />
-    <None Remove="Resources\notes.png" />
-    <None Remove="Resources\rearrange.png" />
-    <None Remove="Resources\rightarrow.png" />
-    <None Remove="Resources\save.png" />
-    <None Remove="Resources\scan.png" />
-    <None Remove="Resources\search.png" />
-    <None Remove="Resources\showdetail.png" />
-    <None Remove="Resources\spreadsheet.png" />
+    <Compile Remove="Resources\**" />
+    <EmbeddedResource Remove="Resources\**" />
+    <None Remove="Resources\**" />
+    <Page Remove="Resources\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\na.png">
+    <None Remove="EMManager.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="EMManager.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="..\ESGameManagerLibrary\Resources\EMManager.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -53,7 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,23 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\add.png" />
-    <Resource Include="Resources\browse.png" />
-    <Resource Include="Resources\delete.png" />
-    <Resource Include="Resources\edit.png" />
-    <Resource Include="Resources\EMManager.ico" />
-    <Resource Include="Resources\gear.png" />
-    <Resource Include="Resources\info.png" />
-    <Resource Include="Resources\leftarrow.png" />
-    <Resource Include="Resources\merge.png" />
-    <Resource Include="Resources\notes.png" />
-    <Resource Include="Resources\rearrange.png" />
-    <Resource Include="Resources\rightarrow.png" />
-    <Resource Include="Resources\save.png" />
-    <Resource Include="Resources\scan.png" />
-    <Resource Include="Resources\search.png" />
-    <Resource Include="Resources\showdetail.png" />
-    <Resource Include="Resources\spreadsheet.png" />
+    <Resource Include="EMManager.ico" />
   </ItemGroup>
 
   <ItemGroup>

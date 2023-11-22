@@ -8,6 +8,7 @@
         Title="ROM Folder Scan Result" SizeToContent="Height" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
         <local:FullFilePathToNameConverter x:Key="FullFilePathToNameConverter" />
+        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
     </Window.Resources>
     <DockPanel>
         <GroupBox
@@ -19,31 +20,66 @@
                     Text="Orphaned Images"
                     ToolTip="These are orphaned images files--images that are not referenced in the game list." />
             </GroupBox.Header>
-            <DockPanel>
+            <DockPanel Name="ImageContainer">
                 <TextBlock DockPanel.Dock="Top" Text="These are orphaned images files--images that are not referenced in the game list." />
-                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+                <Button
+                    Click="OnDeleteAllImages"
+                    DockPanel.Dock="Bottom" HorizontalAlignment="Right">
                     <StackPanel>
-                        <Image Height="24" Source="/Resources/delete.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                         <TextBlock Text="Delete All" />
                     </StackPanel>
                 </Button>
-                <ListBox
-                ItemsSource="{Binding ElementName=uc, Path=OrphanImages}">
-                    <ListBox.ItemTemplate>
+                <!---->
+                <ScrollViewer>
+                <ItemsControl
+                    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                    ItemsSource="{Binding ElementName=uc, Path=OrphanImages}">
+
+                <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                Width="Auto"
+                                 Orientation="Horizontal"  />
+                            <!--<UniformGrid Columns="3" />-->
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Button
+                                    Margin="0,0,10,0"
+                                    ToolTip="Delete Image"
+                                    VerticalAlignment="Center"
                                     Click="OnDeleteImage"
                                     CommandParameter="{Binding}">
-                                    <Image Height="16" Source="/Resources/delete.png" />
+                                        <Image Height="24"   Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                                 </Button>
+                                <StackPanel>
+                                        <StackPanel.ToolTip>
+                                            <GroupBox>
+                                                <GroupBox.Header>
+                                                    <TextBlock
+                                                        FontWeight="Bold"
+                                                        Text="{Binding}" />
+                                                </GroupBox.Header>
+                                            <Image
+                                                Source="{Binding Mode=OneWay, Converter={StaticResource PathToImageSourceConverter}}" />
+                                            </GroupBox>
+                                        </StackPanel.ToolTip>
+                                <Image
+                                    Source="{Binding Mode=OneWay, Converter={StaticResource PathToImageSourceConverter}}"
+                                    MaxHeight="100" />
                                 <TextBlock
+                                    
                                     Padding="5,0,0,0"
                                     Text="{Binding Converter={StaticResource FullFilePathToNameConverter}}" />
+                                </StackPanel>
                             </StackPanel>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                </ScrollViewer>
             </DockPanel>
         </GroupBox>
         <DockPanel
@@ -61,9 +97,11 @@
                     <TextBlock
                         DockPanel.Dock="Top"
                         Text="These are listed games, but the ROM is missing (thus unplayable)."/>
-                    <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
+                    <Button
+                        Click="DeleteAllMissingROMS"
+                        DockPanel.Dock="Bottom" HorizontalAlignment="Right">
                         <StackPanel>
-                            <Image Height="24" Source="/Resources/delete.png" />
+                            <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                             <TextBlock Text="Delete All" />
                         </StackPanel>
                     </Button>
@@ -76,7 +114,7 @@
                                     <Button
                                         Click="OnDeleteGame"
                                         CommandParameter="{Binding}">
-                                        <Image Height="16" Source="/Resources/delete.png" />
+                                        <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                                     </Button>
 
                                     <TextBlock
@@ -127,7 +165,7 @@
                     <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right">
                         <StackPanel>
 
-                            <Image Height="24" Source="/Resources/add.png" />
+                            <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/add.png" />
                             <TextBlock Text="Add All" />
                         </StackPanel>
                     </Button>
@@ -141,13 +179,13 @@
                                         ToolTip="Add Game"
                                         Click="OnAddGame"
                                         CommandParameter="{Binding}">
-                                        <Image Height="16" Source="/Resources/add.png" />
+                                        <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/add.png" />
                                     </Button>
                                     <Button
                                         ToolTip="Delete the file"
                                         Click="OnDeleteRom"
                                         CommandParameter="{Binding}">
-                                        <Image Height="16" Source="/Resources/delete.png" />
+                                        <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                                     </Button>
                                     <TextBlock
                                         ToolTip="{Binding}"

@@ -12,7 +12,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Xml.Serialization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace ESGameManagerLibrary
 {
@@ -229,14 +228,21 @@ namespace ESGameManagerLibrary
         }
         private void ProcessDeletedGames(object? state)
         {
-            Tuple<List<Game>, IEnumerable<Game>>? parms = state as Tuple<List<Game>, IEnumerable<Game>>;
-           
-            if (parms != null)
+            try
             {
-                foreach (var game in parms.Item1)
+                Tuple<List<Game>, IEnumerable<Game>>? parms = state as Tuple<List<Game>, IEnumerable<Game>>;
+
+                if (parms != null)
                 {
-                    game.DeleteGameFiles(parms.Item2);
+                    foreach (var game in parms.Item1)
+                    {
+                        game.DeleteGameFiles(parms.Item2);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Common.FatalApplicationException(ex);
             }
         }
 
@@ -251,67 +257,75 @@ namespace ESGameManagerLibrary
         public static event EventHandler<NewGameListEventArgs>? NewGameList;
         private static void LoadGameListFiles(object? state)
         {
-            if (Common.UIDispatcher != null && Directory.Exists(GameListControl.RootGamesListFolder))
+            try
             {
-                DirectoryInfo root = new(GameListControl.RootGamesListFolder);
-                XmlSerializer serializer = new(typeof(GameList));
-
-
-                string xml = string.Empty;
-                foreach (var dir in root.GetDirectories())
+                
+                if (Common.UIDispatcher != null && Directory.Exists(GameListControl.RootGamesListFolder))
                 {
-                    string gameListFile = System.IO.Path.Combine(dir.FullName, gameListXML);
+                    DirectoryInfo root = new(GameListControl.RootGamesListFolder);
+                    XmlSerializer serializer = new(typeof(GameList));
 
-                    if (File.Exists(gameListFile))
+
+                    string xml = string.Empty;
+                    foreach (var dir in root.GetDirectories())
                     {
-                        FileInfo f = new(gameListFile);
-                        if (!string.IsNullOrEmpty(f.DirectoryName) && f.Directory != null)
-                        {
-                            string folder = f.Directory.Name;
-                            using (StreamReader sr = new(gameListFile))
-                            {
-                                xml = sr.ReadToEnd();
-                            }
+                        string gameListFile = System.IO.Path.Combine(dir.FullName, gameListXML);
 
-                            using StringReader reader = new(xml);
-                            GameList? gameList = null;
-                            Common.UIDispatcher.Invoke(() =>
+                        if (File.Exists(gameListFile))
+                        {
+                            FileInfo f = new(gameListFile);
+                            if (!string.IsNullOrEmpty(f.DirectoryName) && f.Directory != null)
                             {
-                                gameList = (GameList?)serializer.Deserialize(reader);
+                                string folder = f.Directory.Name;
+                                using (StreamReader sr = new(gameListFile))
+                                {
+                                    xml = sr.ReadToEnd();
+                                }
+
+                                using StringReader reader = new(xml);
+                                GameList? gameList = null;
+                                Common.UIDispatcher.Invoke(() =>
+                                {
+                                    gameList = (GameList?)serializer.Deserialize(reader);
+                                    if (gameList != null)
+                                    {
+                                        gameList.Folder = dir.Name;
+                                        foreach (var game in gameList.Games)
+                                        {
+                                            game.Parent = gameList;
+
+                                            game.FullPath = GetFullPath(game.Path, dir.FullName);
+                                            if (!string.IsNullOrEmpty(game.Image))
+                                            {
+                                                game.FullImagePath = GetFullPath(game.Image, dir.FullName);
+                                            }
+                                            if (!string.IsNullOrEmpty(game.Marquee))
+                                            {
+                                                game.FullMarqueePath = GetFullPath(game.Marquee, dir.FullName);
+                                            }
+                                            if (!string.IsNullOrEmpty(game.Video))
+                                            {
+                                                game.FullVideoPath = GetFullPath(game.Video, dir.FullName);
+                                            }
+                                            game.IsLoading = false;
+                                        }
+                                        gameList.DetermineOrganization();
+                                        gameList.Changed = false;
+                                    }
+                                });
+
                                 if (gameList != null)
                                 {
-                                    gameList.Folder = dir.Name;
-                                    foreach (var game in gameList.Games)
-                                    {
-                                        game.Parent = gameList;
-
-                                        game.FullPath = GetFullPath(game.Path, dir.FullName);
-                                        if (!string.IsNullOrEmpty(game.Image))
-                                        {
-                                            game.FullImagePath = GetFullPath(game.Image, dir.FullName);
-                                        }
-                                        if (!string.IsNullOrEmpty(game.Marquee))
-                                        {
-                                            game.FullMarqueePath = GetFullPath(game.Marquee, dir.FullName);
-                                        }
-                                        if (!string.IsNullOrEmpty(game.Video))
-                                        {
-                                            game.FullVideoPath = GetFullPath(game.Video, dir.FullName);
-                                        }
-                                        game.IsLoading = false;
-                                    }
-                                    gameList.DetermineOrganization();
-                                    gameList.Changed = false;
+                                    NewGameList?.Invoke(null, new(gameList));
                                 }
-                            });
-
-                            if (gameList != null)
-                            {
-                                NewGameList?.Invoke(null, new(gameList));
                             }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Common.FatalApplicationException(ex);
             }
         }
 
@@ -327,7 +341,7 @@ namespace ESGameManagerLibrary
                 File.Delete(csvFile);
             }
             using StreamWriter sw = new(csvFile, true);
-            sw.Write("\"folder\",\"System\",\"id\",\"file\",\"Name\",\"Developer\",\"Genre\",\"Publisher\",\"Release Year\",\"Notes\"");
+            sw.Write("\"ROM Folder\",\"System\",\"id\",\"file\",\"Name\",\"Developer\",\"Genre\",\"Publisher\",\"Release Year\",\"Notes\"");
             sw.Write(",\"{0}\"", Properties.Settings.Default.Flag1);
             sw.Write(",\"{0}\"", Properties.Settings.Default.Flag2);
             sw.Write(",\"{0}\"", Properties.Settings.Default.Flag3);
@@ -376,12 +390,12 @@ namespace ESGameManagerLibrary
                                 game.Publisher,
                                 yr,
                                 game.Notes,
-                                game.Flag1 ? "X" : string.Empty,
-                                game.Flag2 ? "X" : string.Empty,
-                                game.Flag3 ? "X" : string.Empty,
-                                game.Flag4 ? "X" : string.Empty,
-                                game.Flag5 ? "X" : string.Empty,
-                                game.Flag6 ? "X" : string.Empty
+                                game.Flag1 ? Properties.Settings.Default.Flag1Symbol : string.Empty,
+                                game.Flag2 ? Properties.Settings.Default.Flag2Symbol : string.Empty,
+                                game.Flag3 ? Properties.Settings.Default.Flag3Symbol : string.Empty,
+                                game.Flag4 ? Properties.Settings.Default.Flag4Symbol : string.Empty,
+                                game.Flag5 ? Properties.Settings.Default.Flag5Symbol : string.Empty,
+                                game.Flag6 ? Properties.Settings.Default.Flag6Symbol : string.Empty
                             };
                         sw.WriteLine("\"" + String.Join("\",\"", columns.ToArray()) + "\"");
                     }
@@ -414,6 +428,7 @@ namespace ESGameManagerLibrary
                             foundByGenre = (Game.GetRelativeFolderPath(gm.Genre, false) == folder);
                             foundByPublisher = (Game.GetRelativeFolderPath(gm.Publisher, false) == folder);
                             foundByDeveloper = (Game.GetRelativeFolderPath(gm.Developer, false) == folder);
+                            break;
                         }
                     }
                 }

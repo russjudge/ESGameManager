@@ -272,5 +272,32 @@ namespace ESGameManagerLibrary
                 NewGames.Remove(SelectedNewROM);
             }
         }
+
+        private void OnDeleteAllImages(object sender, RoutedEventArgs e)
+        {
+            foreach (var img in OrphanImages)
+            {
+                if (File.Exists(img))
+                {
+                    try
+                    {
+                        File.Delete(img);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            OrphanImages.Clear();
+        }
+
+        private void DeleteAllMissingROMS(object sender, RoutedEventArgs e)
+        {
+            foreach(var gm in DeleteGames)
+            {
+                gm.Parent.RemoveGame(gm);
+            }
+        }
     }
 }

@@ -14,8 +14,8 @@
             Background="#FFFFEAAF"
             TextWrapping="Wrap" Text="{Binding ElementName=uc, Path=OriginalText}" DockPanel.Dock="Top"/>
         <StackPanel DockPanel.Dock="Bottom"  Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button Padding="5,5,5,5" Content="OK" Click="OnOK"  />
-            <Button Padding="5,5,5,5" Content="Cancel" Click="OnCancel"  />
+            <Button Padding="5,5,5,5" Content="OK" Click="OnOK" IsDefault="True" />
+            <Button Padding="5,5,5,5" Content="Cancel" Click="OnCancel" IsCancel="True" />
         </StackPanel>
         <TextBlock Padding="0,5,0,0" DockPanel.Dock="Top" Text="New:" FontWeight="Bold" />
         <TextBox Background="AliceBlue"

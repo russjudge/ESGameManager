@@ -18,7 +18,7 @@
         <local:OrganizationStructureToBooleanConverter x:Key="OrganizationStructureToBooleanConverter" />
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
-        <Style TargetType="ListViewItem">
+        <Style  TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
                     <Setter Property="Background" Value="#FFDCF3FB" />
@@ -61,7 +61,7 @@
                 </Button.ToolTip>
                 <Button.Content>
                     <StackPanel>
-                        <Image Height="24" Source="/Resources/save.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/save.png" />
                         <TextBlock Text="Save" />
                     </StackPanel>
                 </Button.Content>
@@ -75,7 +75,7 @@
                                     To="Red" Duration="0:0:1" AutoReverse="True"/>
                             </Storyboard>
                         </BeginStoryboard>
-                        
+
                     </EventTrigger>
                 </Button.Triggers>
             </Button>
@@ -99,13 +99,13 @@
                             Text="3. Find images in the ROM folder that are not referenced (that are orphaned) and give the option to delete these."
                             TextWrapping="Wrap"/>
                     </StackPanel>
-                   
+
                 </Button.ToolTip>
                 <Button.Content>
-                <StackPanel>
-                    <Image Height="24" Source="/Resources/scan.png" />
-                    <TextBlock Text="Scan rom folder" />
-                </StackPanel>
+                    <StackPanel>
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/scan.png" />
+                        <TextBlock Text="Scan rom folder" />
+                    </StackPanel>
                 </Button.Content>
             </Button>
             <Button
@@ -115,11 +115,13 @@
                 DockPanel.Dock="Right"
                 Click="OnAdd" >
                 <StackPanel>
-                    <Image Height="24" Source="/Resources/add.png" />
+                    <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/add.png" />
                     <TextBlock Text="Add" />
                 </StackPanel>
             </Button>
+            <!-- Print function not yet implemented -->
             <Button
+                Visibility="Collapsed"
                 Click="OnPrint"
                 VerticalAlignment="Center"
                 ToolTip="Print this list"
@@ -140,7 +142,7 @@
                 DockPanel.Dock="Right" Margin="0,0,10,0" Width="100">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
-                        <Image Height="24" Source="/Resources/rearrange.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rearrange.png" />
                         <TextBlock
                             TextWrapping="Wrap" HorizontalAlignment="Center"
                             Text="First Letter" />
@@ -155,7 +157,7 @@
                 DockPanel.Dock="Right" Margin="0,0,0,0" Width="100">
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
-                        <Image Height="24" Source="/Resources/rearrange.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rearrange.png" />
                         <TextBlock
                             TextWrapping="Wrap" HorizontalAlignment="Center"
                             Text="Genre" />
@@ -173,13 +175,13 @@
                 </Button.ToolTip>
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
-                        <Image Height="24" Source="/Resources/rearrange.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rearrange.png" />
                         <TextBlock
                             TextWrapping="Wrap" HorizontalAlignment="Center"
                             Text="Publisher" />
                     </StackPanel>
                 </Button.Content>
-                
+
             </Button>
             <Button
                 IsEnabled="{Binding ElementName=uc, Path=GameFolder.Organization, Converter={StaticResource OrganizationStructureToBooleanConverter}, ConverterParameter='Developer|False'}"
@@ -192,7 +194,7 @@
                 </Button.ToolTip>
                 <Button.Content>
                     <StackPanel HorizontalAlignment="Center">
-                        <Image Height="24" Source="/Resources/rearrange.png" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rearrange.png" />
                         <TextBlock
                             TextWrapping="Wrap" HorizontalAlignment="Center"
                             Text="Developer" />
@@ -207,13 +209,13 @@
                 DockPanel.Dock="Right" Margin="0,0,0,0" Width="100">
                 <Button.Content>
                     <StackPanel>
-                        <Image Height="24" Source="/Resources/rearrange.png" />
-                        <TextBlock 
-                    TextWrapping="Wrap" HorizontalAlignment="Center"
-                    Text="Into Main" />
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/rearrange.png" />
+                        <TextBlock
+                            TextWrapping="Wrap" HorizontalAlignment="Center"
+                            Text="In Main / Custom" />
                     </StackPanel>
                 </Button.Content>
-                
+
 
             </Button>
             <DockPanel
@@ -248,7 +250,7 @@
                         Text="{Binding ElementName=uc, Path=GameFolder.Provider.System}" />
 
                 </StackPanel>
-                
+
             </DockPanel>
 
         </DockPanel>
@@ -271,7 +273,7 @@
                                     CommandParameter="{Binding}" Click="OnDelete" >
                                     <Image
                                         Height="16" Width="16"
-                                        Source="/Resources/delete.png" />
+                                        Source="/ESGameManagerLibrary;component/Resources/delete.png" />
                                 </Button>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -350,9 +352,16 @@
                                         Foreground="{Binding Mode=OneWay, Source={x:Static properties:Settings.Default}, Path=Flag6Color, Converter={StaticResource ColorListToBrushConverter}}"
                                         Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Symbol}"
                                         ToolTip="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6}"/>
+                                    <Button
+                                        Margin="0,0,5,0"
+                                        ToolTip="Move file to a different folder" Click="OnMoveFile" CommandParameter="{Binding}">
+                                        <Button.Content>
+                                            <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/move-22.png" />
+                                        </Button.Content>
+                                    </Button>
                                     <TextBlock Text="{Binding Path=Path, Mode=OneWay}" />
                                 </StackPanel>
-                                
+
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -410,7 +419,7 @@
                                         CommandParameter="{Binding}"
                                         Click="OnShowDescription" >
                                         <Image
-                                            Height="16" Width="16" Source="/Resources/info.png" />
+                                            Height="16" Width="16" Source="/ESGameManagerLibrary;component/Resources/info.png" />
                                     </Button>
                                     <Button
                                         IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
@@ -420,7 +429,7 @@
                                         CommandParameter="{Binding}"
                                         Click="OnEditDescription" >
                                         <Image
-                                            Height="16" Width="16" Source="/Resources/edit.png" />
+                                            Height="16" Width="16" Source="/ESGameManagerLibrary;component/Resources/edit.png" />
                                     </Button>
                                     <Button
                                         IsEnabled="{Binding ElementName=uc, Path=NotProcessing}"
@@ -516,10 +525,10 @@
                                     <StackPanel>
                                         <Image
                                             Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Collapsed'}"
-                                            MaxHeight="24" Source="/Resources/notes.png" />
+                                            MaxHeight="24" Source="/ESGameManagerLibrary;component/Resources/notes.png" />
                                         <Image
                                             Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='Visible'}"
-                                            MaxHeight="24" Source="/Resources/add.png" />
+                                            MaxHeight="24" Source="/ESGameManagerLibrary;component/Resources/add.png" />
                                     </StackPanel>
                                 </Button>
 

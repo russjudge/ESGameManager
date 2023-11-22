@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
         mc:Ignorable="d"
-        Title="Merge ROM Folders" Height="450" Width="800">
+        Title="Merge ROM Folders" Height="450" Width="800" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico" >
     <Window.Resources>
         <local:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
@@ -21,6 +21,7 @@
             
             <DockPanel>
                 <Button
+                    IsDefault="True"
                     ToolTip="Next Step"
                     Click="OnNext"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom"  DockPanel.Dock="Bottom">
@@ -60,6 +61,7 @@
                         <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png"  />
                     </Button>
                     <Button
+                        IsDefault="True"
                         ToolTip="Next Step"
                         Click="OnNext"
                         HorizontalAlignment="Right" VerticalAlignment="Bottom">
@@ -103,6 +105,7 @@
                         <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png"  />
                     </Button>
                     <Button
+                        IsDefault="True"
                         ToolTip="Next Step"
                         Click="OnNext"
                         HorizontalAlignment="Right" VerticalAlignment="Bottom">
@@ -272,6 +275,7 @@
                         <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png"  />
                     </Button>
                     <Button
+                        IsDefault="True"
                         ToolTip="Start merge"
                         Click="OnNext"
                         HorizontalAlignment="Right" VerticalAlignment="Bottom">

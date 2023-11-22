@@ -12,7 +12,24 @@ namespace ESGameManagerLibrary
 {
     public class Game : DependencyObject
     {
-       
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendFormat("{0}",Name);
+            sb.AppendFormat("\t{0}", DateReleased.ToString("yyyy"));
+            sb.AppendFormat("\t{0}", Publisher);
+            sb.AppendFormat("\t{0}", Developer);
+            sb.AppendFormat("\t{0}", Genre);
+            sb.AppendFormat("\t{0}", Flag1 ? Properties.Settings.Default.Flag1Symbol : " ");
+            sb.AppendFormat("\t{0}", Flag2 ? Properties.Settings.Default.Flag2Symbol : " ");
+            sb.AppendFormat("\t{0}", Flag3 ? Properties.Settings.Default.Flag3Symbol : " ");
+            sb.AppendFormat("\t{0}", Notes);
+
+            return sb.ToString();
+        }
+        
         public static readonly DependencyProperty IdProperty =
          DependencyProperty.Register(
              nameof(Id),

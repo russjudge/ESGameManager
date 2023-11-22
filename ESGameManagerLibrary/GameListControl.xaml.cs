@@ -1,23 +1,8 @@
-﻿using ESGameManagerLibrary;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Printing;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Xps;
 
 namespace ESGameManagerLibrary
@@ -42,7 +27,7 @@ namespace ESGameManagerLibrary
             InitializeComponent();
         }
         public static string? RootGamesListFolder { get; set; }
-       
+
         public static readonly DependencyProperty GameFolderProperty =
            DependencyProperty.Register(
                nameof(GameFolder),
@@ -106,10 +91,10 @@ namespace ESGameManagerLibrary
                typeof(Game),
                typeof(GameListControl), new PropertyMetadata(OnSelectedGameChanged));
 
-       
+
         private static void OnSelectedGameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is GameListControl me )
+            if (d is GameListControl me)
             {
                 if (me.GameFolder != null)
                 {
@@ -173,7 +158,7 @@ namespace ESGameManagerLibrary
                 }
             }
         }
-        
+
         private void OnScan(object sender, RoutedEventArgs e)
         {
             ScanGamesWindow.ShowScanDialog(GameFolder);
@@ -219,12 +204,12 @@ namespace ESGameManagerLibrary
         {
             if (sender is Button b && b.CommandParameter is Game gm && !string.IsNullOrEmpty(gm.Parent.Folder) && !string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
             {
-                
+
                 var newText = ImageEditWindow.ShowEditDialog(gm.Parent.Folder, gm.Image, gm.FullImagePath, "Change Image for " + gm.Name);
                 if (newText != null)
                 {
                     gm.SetFullImagePath(newText);
-                   
+
                 }
             }
         }
@@ -312,15 +297,15 @@ namespace ESGameManagerLibrary
                         break;
                     case StructureOrganization.Publisher:
                         retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(publisher), currentFile.Name);
-                        
+
                         break;
                     case StructureOrganization.ByGenre:
                         retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(genre), currentFile.Name);
-                        
+
                         break;
                     case StructureOrganization.Developer:
                         retVal = System.IO.Path.Combine(startFolder, Game.SetOtherFolder(developer), currentFile.Name);
-                        
+
                         break;
                     default:
                         retVal = System.IO.Path.Combine(startFolder, currentFile.Name);
@@ -365,33 +350,42 @@ namespace ESGameManagerLibrary
         }
         private void MoveFiles(object? state)
         {
-            if (state is StructureOrganization organization)
+            try
             {
-                string? folder = null;
-                List<Game>? games = null;
-                this.Dispatcher.Invoke(() => {
-                    folder = GameFolder.Folder;
-                    games = new(GameFolder.Games);
-                });
-                if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(folder) && games != null)
+                if (state is StructureOrganization organization)
                 {
-                    string startFolder = System.IO.Path.Combine(RootGamesListFolder, folder);
-
-                    foreach (var gm in games)
+                    string? folder = null;
+                    List<Game>? games = null;
+                    this.Dispatcher.Invoke(() =>
                     {
-                        MoveFile(gm, startFolder, organization);
-                    }
-                    this.Dispatcher.Invoke(() => {
-                        GameFolder.Organization = organization;
-                        if (GameFolder.Changed)
-                        {
-                            GameFolder.Save();
-                        }
+                        folder = GameFolder.Folder;
+                        games = new(GameFolder.Games);
                     });
-                    UpdateActivity("Removing empty folders.");
-                    RemoveEmptyFolders();
-                    UpdateActivity("Process complete.");
+                    if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(folder) && games != null)
+                    {
+                        string startFolder = System.IO.Path.Combine(RootGamesListFolder, folder);
+
+                        foreach (var gm in games)
+                        {
+                            MoveFile(gm, startFolder, organization);
+                        }
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            GameFolder.Organization = organization;
+                            if (GameFolder.Changed)
+                            {
+                                GameFolder.Save();
+                            }
+                        });
+                        UpdateActivity("Removing empty folders.");
+                        RemoveEmptyFolders();
+                        UpdateActivity("Process complete.");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Common.FatalApplicationException(ex);
             }
         }
 
@@ -430,83 +424,87 @@ namespace ESGameManagerLibrary
         }
         private void OnPrint(object sender, RoutedEventArgs e)
         {
-            PrintDialog printDialog = new PrintDialog();
-
-            if (printDialog.ShowDialog() == true)
-            {
-                // Create a FixedDocument representing the content of the ListView
-                FixedDocument fixedDoc = CreateFixedDocument(lvGameList);
-
-                // Set up the print queue and print document
-                PrintQueue printQueue = printDialog.PrintQueue;
-                XpsDocumentWriter xpsWriter = PrintQueue.CreateXpsDocumentWriter(printQueue);
-
-                // Write the FixedDocument to the XpsDocumentWriter
-                xpsWriter.Write(fixedDoc);
-            }
+            //Not working--prints blank pages.
+            //Trying to switch to using Flow Document--have a ways to go.
+            PrintGameList pgl = new(GameFolder);
+            pgl.Print();
         }
-        private FixedDocument CreateFixedDocument(ListView listView)
+
+        private void OnMoveFile(object sender, RoutedEventArgs e)
         {
-            FixedDocument fixedDoc = new FixedDocument();
+            if (sender is Button b && b.CommandParameter is Game gm)
+            {
+                if (!string.IsNullOrEmpty(RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
+                {
+                    string topFolder = System.IO.Path.Combine(RootGamesListFolder, GameFolder.Folder);
+                    var dialog = new Microsoft.Win32.OpenFolderDialog
+                    {
+                        Title = "Select folder to move the ROM file to.",
+                        InitialDirectory = topFolder,
 
-            // Create a PageContent to hold the FixedPage
-            PageContent pageContent = new PageContent();
-            FixedPage fixedPage = new FixedPage();
+                    };
 
-            // Set the size of the FixedPage (adjust as needed)
-            fixedPage.Width = 793.76; // 8.5" x 96 dpi
-            fixedPage.Height = 1122.56; // 11" x 96 dpi
+                    dialog.RootDirectory = topFolder;
+                    if (dialog.ShowDialog() == true)
+                    {
+                        string targetFolder = dialog.FolderName;
+                        if (!targetFolder.StartsWith(topFolder))
+                        {
+                            MessageBox.Show(string.Format("Can only move file to within the selected system folder ({0}).", GameFolder.Folder), "Invalid move", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                        else
+                        {
+                            System.IO.FileInfo sourcePath = new(gm.FullPath);
+                            string targetName = System.IO.Path.Combine(targetFolder, sourcePath.Name);
+                            sourcePath.MoveTo(targetName);
+                            gm.FullPath = targetName;
+                            GameFolder.Organization = StructureOrganization.None;
+                            GameFolder.Save();
 
+                        }
+                    }
+                }
+            }
 
-
-            //listView is already child, cannot be added as child here.
-            //Need to figure out how to fix.
-
-            fixedPage.Children.Add(this);
-            ((System.Windows.Markup.IAddChild)pageContent).AddChild(fixedPage);
-            fixedDoc.Pages.Add(pageContent);
-
-
-            return fixedDoc;
         }
         /*
-         * 
-         * Print table of data:
-         * 
-         *  <DataGrid AutoGenerateColumns="False" Margin="12,0,0,0" Name="dataGrid1"  HorizontalAlignment="Left"  VerticalAlignment="Top"  ItemsSource="{Binding}" AlternatingRowBackground="LightGoldenrodYellow" AlternationCount="1">
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <Image Source="{Binding Path=Image}" Width="100" Height="50" />
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
+* 
+* Print table of data:
+* 
+*  <DataGrid AutoGenerateColumns="False" Margin="12,0,0,0" Name="dataGrid1"  HorizontalAlignment="Left"  VerticalAlignment="Top"  ItemsSource="{Binding}" AlternatingRowBackground="LightGoldenrodYellow" AlternationCount="1">
+<DataGrid.Columns>
+   <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
+       <DataGridTemplateColumn.CellTemplate>
+           <DataTemplate>
+               <Image Source="{Binding Path=Image}" Width="100" Height="50" />
+           </DataTemplate>
+       </DataGridTemplateColumn.CellTemplate>
+   </DataGridTemplateColumn>
 
 
-            <DataGridTextColumn Header="Make" Binding="{Binding Path=Make}"/>
-            <DataGridTextColumn Header="Model" Binding="{Binding Path=Model}"/>
-            <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
-            <DataGridTextColumn Header="Color" Binding="{Binding Path=Color}"/>
-        </DataGrid.Columns>
-    </DataGrid>
+   <DataGridTextColumn Header="Make" Binding="{Binding Path=Make}"/>
+   <DataGridTextColumn Header="Model" Binding="{Binding Path=Model}"/>
+   <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
+   <DataGridTextColumn Header="Color" Binding="{Binding Path=Color}"/>
+</DataGrid.Columns>
+</DataGrid>
 
 
-        private void OnDataGridPrinting(object sender, RoutedEventArgs e)
-    {
-        System.Windows.Controls.PrintDialog Printdlg = new System.Windows.Controls.PrintDialog();
-        if ((bool)Printdlg.ShowDialog().GetValueOrDefault())
-        {
-            Size pageSize = new Size(Printdlg.PrintableAreaWidth, Printdlg.PrintableAreaHeight);
-            // sizing of the element.
-            dataGrid1.Measure(pageSize);
-            dataGrid1.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
-            Printdlg.PrintVisual(dataGrid1, Title);
-        }
-
-        Other Info???: https://itecnote.com/tecnote/r-printing-a-wpf-flowdocument/
+private void OnDataGridPrinting(object sender, RoutedEventArgs e)
+{
+System.Windows.Controls.PrintDialog Printdlg = new System.Windows.Controls.PrintDialog();
+if ((bool)Printdlg.ShowDialog().GetValueOrDefault())
+{
+   Size pageSize = new Size(Printdlg.PrintableAreaWidth, Printdlg.PrintableAreaHeight);
+   // sizing of the element.
+   dataGrid1.Measure(pageSize);
+   dataGrid1.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
+   Printdlg.PrintVisual(dataGrid1, Title);
 }
-         * */
+
+Other Info???: https://itecnote.com/tecnote/r-printing-a-wpf-flowdocument/
+}
+* */
 
         //private void PrintList()
 

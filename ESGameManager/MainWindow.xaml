@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ESGameManager"
         xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"
         mc:Ignorable="d" Closing="OnClosing" Closed="OnClosed"
-        Title="Emulation Station Game Manager" Height="600" Width="1100" Icon="/Resources/EMManager.ico">
+        Title="Emulation Station Game Manager" Height="600" Width="1100" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
 
     <DockPanel>
 
@@ -22,60 +22,107 @@
                 DockPanel.Dock="Left" Padding="5,0,5,0"
                 Text="{Binding Path=RootGamesListFolder, Mode=TwoWay }" />
             <Button
+                VerticalAlignment="Center"
                 Padding="2,2,2,2"
                 ToolTip="Select folder of rom files and gamelists."
                 Click="OnBrowseForROMFolder" 
                 DockPanel.Dock="Left">
-                <Image Height="24" Source="/Resources/browse.png" />
+                <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/browse.png"/>
             </Button>
 
             <Button
+                VerticalAlignment="Center" 
                 ToolTip="Settings"
                 DockPanel.Dock="Right"
                 Click="OnSettings">
                 <Button.Content>
                     <StackPanel>
-                        <Image Height="24" Source="/Resources/gear.png" />
+                        <Image
+                            Source="/ESGameManagerLibrary;component/Resources/gear.png"
+                            Height="24"  />
                         <!--<TextBlock Text="Settings" />-->
                     </StackPanel>
                 </Button.Content>
             </Button>
             <Button
+                VerticalAlignment="Center" 
                 ToolTip="Create a single CSV file based on all game lists in all folders."
                 Padding="2,2,2,2" HorizontalAlignment="Right"
                 Click="OnGenerateCSV"
                 DockPanel.Dock="Right">
                 <StackPanel>
-                    <Image Height="24" Source="/Resources/spreadsheet.png"/>
+                    <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/spreadsheet.png" />
                 </StackPanel>
             </Button>
-            <Button
-                Margin="0,0,15,0"
-                Padding="2,2,2,2"
-                DockPanel.Dock="Right"
-                ToolTip="Search"
-                Click="OnSearch">
+            <!--<Button
+                VerticalAlignment="Center" 
+                ToolTip="Test."
+                Padding="2,2,2,2" HorizontalAlignment="Right"
+                Click="OnTest"
+                DockPanel.Dock="Right">
                 <StackPanel>
-                    <Image Height="24" Source="/Resources/search.png" />
+                    <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/printer.png" />
                 </StackPanel>
-            </Button>
-            <CheckBox
-                IsChecked="{Binding Path=SearchIncludeDescription, Mode=TwoWay}"
-                Content="Include Description" DockPanel.Dock="Right" VerticalAlignment="Center" />
-            <TextBox
-                VerticalContentAlignment="Center"
-                Text="{Binding Path=SearchText, Mode=TwoWay}"
-                Width="100" DockPanel.Dock="Right" />
-            
-            <TextBlock Padding="0,0,5,0" VerticalAlignment="Center" Text="Search:" DockPanel.Dock="Right" />
+            </Button>-->
+            <GroupBox
+                ToolTip="Search"
+                Margin="0,0,15,0"
+                DockPanel.Dock="Right">
+                <DockPanel
+                    VerticalAlignment="Center" >
+                    <Button
+                        VerticalAlignment="Center" 
+                        DockPanel.Dock="Right"
+                        Padding="2,2,2,2"
+                        Click="OnSearch">
+                        <StackPanel>
+                            <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/search.png" />
+                        </StackPanel>
+                    </Button>
+                    <StackPanel
+                        Margin="5,0,5,0"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Right">
+                        <CheckBox
+                            ToolTip="Search Description as well as name"
+                            IsChecked="{Binding Path=SearchIncludeDescription, Mode=TwoWay}"
+                            Content="Include Description" VerticalAlignment="Center" />
+                        <CheckBox
+                            ToolTip="Search Genre as well as name"
+                            IsChecked="{Binding Path=SearchIncludeGenre, Mode=TwoWay}"
+                            Content="Include Genre" VerticalAlignment="Center" />
+                        <CheckBox
+                            ToolTip="Search Developer as well as name"
+                            IsChecked="{Binding Path=SearchIncludeDeveloper, Mode=TwoWay}"
+                            Content="Include Developer" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <CheckBox
+                        DockPanel.Dock="Bottom"
+                        ToolTip="Search Publisher as well as name"
+                        IsChecked="{Binding Path=SearchIncludePublisher, Mode=TwoWay}"
+                        Content="Include Publisher" VerticalAlignment="Center" />
+                    <StackPanel
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Top">
+                        <TextBlock Padding="0,0,5,0" VerticalAlignment="Center" Text="Search:" />
+                        <TextBox
+                            Text="{Binding Path=SearchText, Mode=TwoWay}"
+                            Width="100" />
+                        
+                    </StackPanel>
+                    
+                </DockPanel>
+            </GroupBox>
             <Button
+                VerticalAlignment="Center" 
                 Click="OnMerge"
                 Margin="0,0,15,0"
                 Padding="2,2,2,2"
                 DockPanel.Dock="Right"
                 ToolTip="Merge">
                 <StackPanel>
-                    <Image Height="24" Source="/Resources/merge.png" />
+                    <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/merge.png"/>
                 </StackPanel>
             </Button>
             <TextBlock />
@@ -102,17 +149,17 @@
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
-                            <DataTrigger Binding="{Binding Changed}" Value="True">
-                                <DataTrigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard RepeatBehavior="Forever">
-                                            <!-- Animation for changing background color to red -->
-                                            <ColorAnimation
+                                    <DataTrigger Binding="{Binding Changed}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard RepeatBehavior="Forever">
+                                                    <!-- Animation for changing background color to red -->
+                                                    <ColorAnimation
                                                 Storyboard.TargetProperty="(TextBlock.Background).(SolidColorBrush.Color)"
                                                 To="Red" Duration="0:0:1" AutoReverse="True"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </DataTrigger.EnterActions>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
                                         <DataTrigger.ExitActions>
                                             <BeginStoryboard>
                                                 <Storyboard>
@@ -124,8 +171,8 @@
                                             </BeginStoryboard>
                                         </DataTrigger.ExitActions>
 
-                            </DataTrigger>
-                                    
+                                    </DataTrigger>
+
                                 </Style.Triggers>
                             </Style>
                         </TextBlock.Style>

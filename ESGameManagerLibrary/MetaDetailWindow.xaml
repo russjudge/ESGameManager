@@ -21,7 +21,7 @@
                     IsEnabled="{Binding Path=PreviousEnabled}"
                     ToolTip="Previous Game"
                     Click="GoToPreviousGame">
-                    <Image Height="16" Source="/Resources/leftarrow.png" />
+                    <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/leftarrow.png" />
                 </Button>
             </StatusBarItem>
             <StatusBarItem>
@@ -29,11 +29,12 @@
                     IsEnabled="{Binding Path=NextEnabled}"
                     ToolTip="Next Game"
                     Click="GoToNextGame">
-                    <Image Height="16" Source="/Resources/rightarrow.png" />
+                    <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/rightarrow.png" />
                 </Button>
             </StatusBarItem>
         </StatusBar>
         <GroupBox
+            Visibility="{Binding Path=ShowList, Converter={StaticResource BooleanToVisibilityConverter}}"
              DockPanel.Dock="Left">
             <GroupBox.Header>
                 <TextBlock Text="Matches" FontWeight="Bold" />
@@ -96,7 +97,7 @@
                                         <Button
                                         Click="BrowseForMarquee"
                                         DockPanel.Dock="Right" >
-                                            <Image Height="16" Source="/Resources/browse.png" />
+                                            <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
                                         </Button>
                                         <TextBox
                                         IsReadOnly="True"
@@ -121,7 +122,7 @@
                                         Click="BrowseForImage"
                                         DockPanel.Dock="Right" >
                                             <Image
-                                            Height="16" Source="/Resources/browse.png" />
+                                            Height="16" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
                                         </Button>
                                         <TextBox
                                         IsReadOnly="True"
@@ -147,7 +148,7 @@
                                         Click="BrowseForVideo"
                                         DockPanel.Dock="Right" >
                                             <Image
-                                            Height="16" Source="/Resources/browse.png" />
+                                            Height="16" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
                                         </Button>
                                         <TextBox
                                         IsReadOnly="True"
@@ -225,7 +226,7 @@
                                         <Button
                                             Click="BrowseForPath"
                                             DockPanel.Dock="Right" >
-                                            <Image Height="16" Source="/Resources/browse.png" />
+                                            <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
                                         </Button>
                                         <TextBox
                                             IsReadOnly="True"

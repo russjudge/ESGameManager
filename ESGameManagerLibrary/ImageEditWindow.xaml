@@ -34,8 +34,8 @@
                 <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/browse.png" />
             </Button>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
-            <Button Padding="5,5,5,5" Content="OK" Click="OnOK"  />
-            <Button Padding="5,5,5,5" Content="Cancel" Click="OnCancel"  />
+            <Button Padding="5,5,5,5" Content="OK" Click="OnOK" IsDefault="True" />
+            <Button Padding="5,5,5,5" Content="Cancel" Click="OnCancel" IsCancel="True"  />
         </StackPanel>
         </DockPanel>
         <GroupBox

@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:ESGameManagerLibrary"
         mc:Ignorable="d"
         MinWidth="300"
-        Title="Settings" SizeToContent="WidthAndHeight" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+        Title="Settings" SizeToContent="WidthAndHeight" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Window.Resources>
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
     </Window.Resources>

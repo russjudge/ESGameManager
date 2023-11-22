@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ESGameManagerLibrary
@@ -25,8 +27,10 @@ namespace ESGameManagerLibrary
                         BitmapImage image = new BitmapImage();
                         image.BeginInit();
                         image.CacheOption = BitmapCacheOption.OnLoad;
+                        
                         image.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
                         image.EndInit();
+                        image.Freeze();
                         return image;
                     }
                     catch (Exception ex)
@@ -40,8 +44,9 @@ namespace ESGameManagerLibrary
                     BitmapImage image = new BitmapImage();
                     image.BeginInit();
                     image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.UriSource = new Uri("Resources\\na.png", UriKind.RelativeOrAbsolute);
+                    image.UriSource = new Uri("pack://application:,,,/ESGameManagerLibrary;component/Resources/na.png", UriKind.RelativeOrAbsolute);
                     image.EndInit();
+                    image.Freeze();
                     return image;
                 }
             }
