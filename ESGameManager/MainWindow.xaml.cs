@@ -117,6 +117,25 @@ namespace ESGameManager
         }
 
 
+        public static readonly DependencyProperty SearchIncludeDescriptionProperty =
+           DependencyProperty.Register(
+               nameof(SearchIncludeDescription),
+               typeof(bool),
+               typeof(MainWindow));
+        public bool SearchIncludeDescription
+        {
+            get
+            {
+                return (bool)this.GetValue(SearchIncludeDescriptionProperty);
+            }
+
+            set
+            {
+                this.SetValue(SearchIncludeDescriptionProperty, value);
+            }
+        }
+
+
         private void OnGenerateCSV(object sender, RoutedEventArgs e)
         {
             if (GamesList != null)
@@ -183,6 +202,10 @@ namespace ESGameManager
                     foreach (var game in list.Games)
                     {
                         if (game.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            matchedGames.Add(game);
+                        }
+                        else if (SearchIncludeDescription && !string.IsNullOrEmpty(game.Description) && game.Description.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase))
                         {
                             matchedGames.Add(game);
                         }
