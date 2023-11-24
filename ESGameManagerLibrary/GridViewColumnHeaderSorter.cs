@@ -10,6 +10,10 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows;
+using System.Data.Common;
+using System.Data;
+using System.Globalization;
+using System.Reflection;
 
 namespace ESGameManagerLibrary
 {
@@ -106,7 +110,7 @@ namespace ESGameManagerLibrary
                 element.SetValue(SortDirectionProperty, value);
             }
         }
-
+       
         /// <summary>
         /// Get sort direction.
         /// </summary>
@@ -264,7 +268,59 @@ namespace ESGameManagerLibrary
 
             return retVal;
         }
+        public static object? GetFirstMatchOnLetter(DependencyObject? element, string letter)
+        {
+            object? retVal = null;
+            if (element != null)
+            {
+                GridViewColumnHeader? sortColumn = GetCurrentSortColumn(element);
+                if (sortColumn != null && element is ListView parent && parent.Items.Count > 0)
+                {
 
+                    string? field = GetSortColumnID(sortColumn);
+
+                    if (!string.IsNullOrEmpty(field))
+                    {
+                        PropertyInfo? matchProperty = null;
+                        foreach (var p in parent.Items[0].GetType().GetProperties())
+                        {
+                            if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
+                            {
+                                matchProperty = p;
+                                break;
+                            }
+                        }
+                        if (matchProperty != null && CollectionViewSource.GetDefaultView(parent.ItemsSource) is ListCollectionView dataView)
+                        {
+                            dataView.MoveCurrentToPosition(0);
+
+
+                            bool matchFound = false;
+                            while (!matchFound)
+                            {
+                                var currentItem = dataView.CurrentItem;
+                                if (currentItem != null)
+                                {
+                                    var propValue = matchProperty.GetValue(currentItem);
+                                    if (propValue != null)
+                                    {
+                                        string? checkValue = propValue.ToString();
+                                        if (!string.IsNullOrEmpty(checkValue) && checkValue.StartsWith(letter))
+                                        {
+                                            matchFound = true;
+                                            retVal = currentItem;
+                                            break;
+                                        }
+                                    }
+                                }
+                                matchFound = !dataView.MoveCurrentToNext();
+                            }
+                        }
+                    }
+                }
+            }
+            return retVal;
+        }
         /// <summary>
         /// Sort.
         /// </summary>
@@ -369,7 +425,7 @@ namespace ESGameManagerLibrary
                                         {
                                             if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
                                             {
-                                                Type ptype = p.GetType();
+                                                Type ptype = p.PropertyType;
                                                 if (ptype == typeof(DateTime))
                                                 {
                                                     if (newDir == ListSortDirection.Ascending)

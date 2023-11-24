@@ -18,7 +18,16 @@ namespace ESGameManagerLibrary
     [XmlRoot("gameList")]
     public class GameList : DependencyObject
     {
+        static GameList()
+        {
+            Letters = new();
+            for (int i = (int)'A'; i <= (int)'Z'; i++)
+            {
+                Letters.Add(((char)i).ToString());
+            }
+        }
         const string gameListXML = "gameList.xml";
+        public static ObservableCollection<string> Letters { get; private set; }
         private List<Game> DeletedGames { get; set; } = new List<Game>();
         public void RemoveGame(Game gm)
         {
@@ -199,7 +208,8 @@ namespace ESGameManagerLibrary
                 this.SetValue(OrganizationProperty, value);
             }
         }
-        public void Save()
+       
+        public void Save(bool suppressConfirmation = false)
         {
             if (!string.IsNullOrEmpty(Folder) && !string.IsNullOrEmpty(GameListControl.RootGamesListFolder))
             {
@@ -215,7 +225,10 @@ namespace ESGameManagerLibrary
                 }
                 ProcessDeletedGames();
                 Changed = false;
-                MessageBox.Show("GameList.xml file saved:\r\n" + Folder);
+                if (!suppressConfirmation)
+                {
+                    MessageBox.Show("GameList.xml file saved:\r\n" + Folder);
+                }
             }
         }
         private void ProcessDeletedGames()

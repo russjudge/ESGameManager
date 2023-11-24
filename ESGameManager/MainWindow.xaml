@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ESGameManager"
         xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"
         mc:Ignorable="d" Closing="OnClosing" Closed="OnClosed"
-        Title="Emulation Station Game Manager" Height="600" Width="1100" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+        Title="Emulation Station Game Manager" Height="600" Width="1150" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
 
     <DockPanel>
 
@@ -29,6 +29,20 @@
                 DockPanel.Dock="Left">
                 <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/browse.png"/>
             </Button>
+            <Button
+                VerticalAlignment="Center" 
+                ToolTip="Save all lists with changes"
+                DockPanel.Dock="Right"
+                Click="OnSaveAll">
+                <Button.Content>
+                    <StackPanel>
+                        <Image
+                            Source="/ESGameManagerLibrary;component/Resources/save.png"
+                            Height="24"  />
+                        <!--<TextBlock Text="Settings" />-->
+                    </StackPanel>
+                </Button.Content>
+            </Button>
 
             <Button
                 VerticalAlignment="Center" 
@@ -47,7 +61,7 @@
             <Button
                 VerticalAlignment="Center" 
                 ToolTip="Create a single CSV file based on all game lists in all folders."
-                Padding="2,2,2,2" HorizontalAlignment="Right"
+                HorizontalAlignment="Right"
                 Click="OnGenerateCSV"
                 DockPanel.Dock="Right">
                 <StackPanel>

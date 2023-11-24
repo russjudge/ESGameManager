@@ -1,9 +1,16 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Printing;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Xps;
+using System.Xml.Linq;
 
 namespace ESGameManagerLibrary
 {
@@ -20,13 +27,72 @@ namespace ESGameManagerLibrary
                 Properties.Settings.Default.UpgradeRequired = false;
                 Properties.Settings.Default.Save();
             }
+            
         }
+        //bool isLoading = true;
         public GameListControl()
         {
+            ValidLetterSelectionSort = true;
             NotProcessing = true;
             InitializeComponent();
+            //DataContext = this;
         }
         public static string? RootGamesListFolder { get; set; }
+
+
+        public static readonly DependencyProperty SelectedLetterProperty =
+           DependencyProperty.Register(
+               nameof(SelectedLetter),
+               typeof(string),
+               typeof(GameListControl), new PropertyMetadata(OnSelectedLetterChanged));
+
+        private static void OnSelectedLetterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GameListControl me && me.IsLoaded && !string.IsNullOrEmpty(me.SelectedLetter))
+            {
+                if (!me.settingSelectedLetter)
+                {
+                    me.settingSelectedLetter = true;
+                    if (me.GameListScrollBar != null)
+                    {
+                        me.GameListScrollBar.ValueChanged -= me.OnScrollValueChanged;
+                    }
+                    var matchedItem = GridViewColumnHeaderSorter.GetFirstMatchOnLetter(me.lvGameList, me.SelectedLetter);
+                    if (matchedItem is Game gm)
+                    {
+                        me.lvGameList.ScrollIntoView(gm);
+                    }
+                    me.settingSelectedLetter = false;
+                    System.Threading.ThreadPool.QueueUserWorkItem(me.WatchOnScrollValueChanged);
+                    
+                }
+            }
+        }
+        void WatchOnScrollValueChanged(object? state)
+        {
+            this.Dispatcher.Invoke(() => 
+            {
+                if (GameListScrollBar != null)
+                {
+                    GameListScrollBar.ValueChanged += OnScrollValueChanged;
+                }
+            });
+        }
+
+        public string? SelectedLetter
+        {
+            get
+            {
+                return (string?)this.GetValue(SelectedLetterProperty);
+            }
+
+            set
+            {
+                this.SetValue(SelectedLetterProperty, value);
+            }
+        }
+
+
 
         public static readonly DependencyProperty GameFolderProperty =
            DependencyProperty.Register(
@@ -60,6 +126,24 @@ namespace ESGameManagerLibrary
             set
             {
                 this.SetValue(NotProcessingProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty ValidLetterSelectionSortProperty =
+           DependencyProperty.Register(
+               nameof(ValidLetterSelectionSort),
+               typeof(bool),
+               typeof(GameListControl));
+        public bool ValidLetterSelectionSort
+        {
+            get
+            {
+                return (bool)this.GetValue(ValidLetterSelectionSortProperty);
+            }
+
+            set
+            {
+                this.SetValue(ValidLetterSelectionSortProperty, value);
             }
         }
 
@@ -467,25 +551,182 @@ namespace ESGameManagerLibrary
             }
 
         }
+
+        public static T? GetVisualChild<T>(Visual referenceVisual) where T : Visual
+        {
+            Visual? child = null;
+            for (Int32 i = 0; i < VisualTreeHelper.GetChildrenCount(referenceVisual); i++)
+            {
+                child = VisualTreeHelper.GetChild(referenceVisual, i) as Visual;
+                if (child != null && child is T)
+                {
+                    break;
+                }
+                else if (child != null)
+                {
+                    child = GetVisualChild<T>(child);
+                    if (child != null && child is T)
+                    {
+                        break;
+                    }
+                }
+            }
+            return child as T;
+        }
+
+        bool settingSelectedLetter = false;
+        void OnScrollValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (!settingSelectedLetter)
+            {
+                ScrollViewer? scrollViewer = GetVisualChild<ScrollViewer>(lvGameList);
+                if (scrollViewer != null)
+                {
+                    settingSelectedLetter = true;
+                    var newTopItem = scrollViewer.VerticalOffset;
+                    var itemCountvisibile = scrollViewer.ViewportHeight;
+                    int index = (int)newTopItem;
+                    Game? gm = null;
+                    if (CollectionViewSource.GetDefaultView(lvGameList.ItemsSource) is ListCollectionView dataView)
+                    {
+                        var movesuccess = dataView.MoveCurrentToPosition(index);
+                        gm = (Game)dataView.CurrentItem;
+                    }
+
+                    if (gm != null)
+                    {
+                        var sortColumn = GridViewColumnHeaderSorter.GetCurrentSortColumn(lvGameList);
+                        if (sortColumn != null)
+                        {
+
+                            string? field = GridViewColumnHeaderSorter.GetSortColumnID(sortColumn);
+
+                            if (!string.IsNullOrEmpty(field))
+                            {
+                                PropertyInfo? matchProperty = null;
+                                foreach (PropertyInfo p in lvGameList.Items[0].GetType().GetProperties())
+                                {
+                                    if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
+                                    {
+                                        matchProperty = p;
+                                        break;
+                                    }
+                                }
+                                if (matchProperty != null)
+                                {
+                                    var val = matchProperty.GetValue(gm);
+                                    if (val != null)
+                                    {
+                                        var thematchValue = val.ToString();
+                                        if (!string.IsNullOrEmpty(thematchValue) && (SelectedLetter == null || !thematchValue.StartsWith(SelectedLetter)))
+                                        {
+                                            SelectedLetter = thematchValue[0].ToString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                settingSelectedLetter = false;
+            }
+        }
+        ScrollBar? GameListScrollBar = null;
+        private void OnGameListViewLoaded(object sender, RoutedEventArgs e)
+        {
+
+
+            if (sender is ListView listView)
+            {
+                ScrollViewer? scrollViewer = GetVisualChild<ScrollViewer>(listView);
+                if (scrollViewer != null)
+                {
+                    if (scrollViewer.Template.FindName("PART_VerticalScrollBar", scrollViewer) is ScrollBar scrollBar)
+                    {
+                        GameListScrollBar = scrollBar;
+                        GameListScrollBar.ValueChanged += OnScrollValueChanged;
+                        /*
+                        (object sender, RoutedPropertyChangedEventArgs<double> e) =>
+                        {
+                            if (!settingSelectedLetter)
+                            {
+                                settingSelectedLetter = true;
+                                var newTopItem = scrollViewer.VerticalOffset;
+                                var itemCountvisibile = scrollViewer.ViewportHeight;
+                                int index = (int)newTopItem;
+                                Game gm = GameFolder.Games[index];
+                                if (gm != null)
+                                {
+                                    var sortColumn = GridViewColumnHeaderSorter.GetCurrentSortColumn(listView);
+                                    if (sortColumn != null)
+                                    {
+
+                                        string? field = GridViewColumnHeaderSorter.GetSortColumnID(sortColumn);
+
+                                        if (!string.IsNullOrEmpty(field) && CollectionViewSource.GetDefaultView(listView.ItemsSource) is ListCollectionView dataView)
+                                        {
+                                            PropertyInfo? matchProperty = null;
+                                            foreach (ItemPropertyInfo p in dataView.ItemProperties)
+                                            {
+                                                if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
+                                                {
+                                                    matchProperty = dataView.CurrentItem.GetType().GetProperty(p.Name);
+                                                    break;
+                                                }
+                                            }
+                                            if (matchProperty != null)
+                                            {
+                                                var val = matchProperty.GetValue(gm);
+                                                if (val != null)
+                                                {
+                                                    var thematchValue = val.ToString();
+                                                    if (!string.IsNullOrEmpty(thematchValue) && (SelectedLetter == null || !thematchValue.StartsWith(SelectedLetter)))
+                                                    {
+                                                        SelectedLetter = thematchValue[0].ToString();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                settingSelectedLetter = false;
+                            }
+                        };
+                        */
+                    }
+                }
+            }
+
+        }
+
+        private void OnChangeSort(object sender, RoutedEventArgs e)
+        {
+            if (sender is DependencyObject d)
+            {
+                var field = GridViewColumnHeaderSorter.GetSortColumnID(d);
+                ValidLetterSelectionSort = (field == "Name");
+            }
+        }
+
         /*
 * 
 * Print table of data:
 * 
 *  <DataGrid AutoGenerateColumns="False" Margin="12,0,0,0" Name="dataGrid1"  HorizontalAlignment="Left"  VerticalAlignment="Top"  ItemsSource="{Binding}" AlternatingRowBackground="LightGoldenrodYellow" AlternationCount="1">
 <DataGrid.Columns>
-   <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
-       <DataGridTemplateColumn.CellTemplate>
-           <DataTemplate>
-               <Image Source="{Binding Path=Image}" Width="100" Height="50" />
-           </DataTemplate>
-       </DataGridTemplateColumn.CellTemplate>
-   </DataGridTemplateColumn>
+<DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
+<DataGridTemplateColumn.CellTemplate>
+<DataTemplate>
+<Image Source="{Binding Path=Image}" Width="100" Height="50" />
+</DataTemplate>
+</DataGridTemplateColumn.CellTemplate>
+</DataGridTemplateColumn>
 
 
-   <DataGridTextColumn Header="Make" Binding="{Binding Path=Make}"/>
-   <DataGridTextColumn Header="Model" Binding="{Binding Path=Model}"/>
-   <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
-   <DataGridTextColumn Header="Color" Binding="{Binding Path=Color}"/>
+<DataGridTextColumn Header="Make" Binding="{Binding Path=Make}"/>
+<DataGridTextColumn Header="Model" Binding="{Binding Path=Model}"/>
+<DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
+<DataGridTextColumn Header="Color" Binding="{Binding Path=Color}"/>
 </DataGrid.Columns>
 </DataGrid>
 
@@ -495,11 +736,11 @@ private void OnDataGridPrinting(object sender, RoutedEventArgs e)
 System.Windows.Controls.PrintDialog Printdlg = new System.Windows.Controls.PrintDialog();
 if ((bool)Printdlg.ShowDialog().GetValueOrDefault())
 {
-   Size pageSize = new Size(Printdlg.PrintableAreaWidth, Printdlg.PrintableAreaHeight);
-   // sizing of the element.
-   dataGrid1.Measure(pageSize);
-   dataGrid1.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
-   Printdlg.PrintVisual(dataGrid1, Title);
+Size pageSize = new Size(Printdlg.PrintableAreaWidth, Printdlg.PrintableAreaHeight);
+// sizing of the element.
+dataGrid1.Measure(pageSize);
+dataGrid1.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
+Printdlg.PrintVisual(dataGrid1, Title);
 }
 
 Other Info???: https://itecnote.com/tecnote/r-printing-a-wpf-flowdocument/

@@ -300,5 +300,18 @@ namespace ESGameManager
         {
             throw new NotImplementedException("test");
         }
+
+        private void OnSaveAll(object sender, RoutedEventArgs e)
+        {
+            foreach (var list in GamesList)
+            {
+                if (list.Changed)
+                {
+                   
+                    list.Save(true);
+                }
+            }
+            MessageBox.Show("All lists saved.");
+        }
     }
 }

@@ -11,6 +11,7 @@
     HorizontalContentAlignment="Stretch"
     d:DesignHeight="600" d:DesignWidth="1100">
     <UserControl.Resources>
+        <local:GameList x:Key="GameList" />
         <local:DateFormatter x:Key="DateFormatter" />
         <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -254,7 +255,29 @@
             </DockPanel>
 
         </DockPanel>
+        <ScrollViewer
+            Visibility="{Binding ElementName=uc, Path=ValidLetterSelectionSort, Converter={StaticResource BooleanToVisibilityConverter}}"
+            HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto"
+            DockPanel.Dock="Left">
+            <TabControl
+                TabStripPlacement="Left"
+                ItemsSource="{Binding Source={StaticResource GameList}, Path=Letters}"
+                SelectedItem="{Binding ElementName=uc, Path=SelectedLetter, Mode=TwoWay}">
+                
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <ItemContainerTemplate>
+                        <!--<TextBlock Text="" />-->
+                    </ItemContainerTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </ScrollViewer>
         <ListView
+            Loaded="OnGameListViewLoaded"
             Name="lvGameList"
             SelectedItem="{Binding ElementName=uc, Path=SelectedGame, Mode=TwoWay}"
             DockPanel.Dock="Top" 
@@ -280,6 +303,7 @@
                     </GridViewColumn>
                     <GridViewColumn Width="70">
                         <GridViewColumnHeader
+                            Click="OnChangeSort"
                             ToolTip="Click to sort"
                             local:GridViewColumnHeaderSorter.SortColumnID="Id" />
 
@@ -301,6 +325,7 @@
                     </GridViewColumn>
                     <GridViewColumn Width="400">
                         <GridViewColumnHeader
+                            Click="OnChangeSort"
                             ToolTip="Click to sort"
                             local:GridViewColumnHeaderSorter.SortColumnID="Path" />
                         <GridViewColumn.HeaderTemplate>
@@ -368,6 +393,7 @@
 
                     <GridViewColumn Width="77">
                         <GridViewColumnHeader
+                            Click="OnChangeSort"
                             ToolTip="Click to sort"
                             local:GridViewColumnHeaderSorter.SortColumnID="DateReleased" />
                         <GridViewColumn.HeaderTemplate>
@@ -398,7 +424,9 @@
                     </GridViewColumn>
                     <GridViewColumn Width="350">
                         <GridViewColumnHeader
+                            Click="OnChangeSort"
                             ToolTip="Click to sort"
+                            local:GridViewColumnHeaderSorter.IsDefault="True"
                             local:GridViewColumnHeaderSorter.SortColumnID="Name" />
                         <GridViewColumn.HeaderTemplate>
                             <DataTemplate>
