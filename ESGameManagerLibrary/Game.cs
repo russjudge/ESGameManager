@@ -1035,7 +1035,8 @@ namespace ESGameManagerLibrary
                     }
                     else
                     {
-                        f.CopyTo(retVal);
+
+                        f.CopyTo(retVal, true);
                     }
                 }
             }

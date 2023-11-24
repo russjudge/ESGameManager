@@ -290,6 +290,7 @@ namespace ESGameManagerLibrary
                 }
             }
             OrphanImages.Clear();
+            MessageBox.Show("Images deleted.");
         }
 
         private void DeleteAllMissingROMS(object sender, RoutedEventArgs e)
@@ -297,7 +298,12 @@ namespace ESGameManagerLibrary
             foreach(var gm in DeleteGames)
             {
                 gm.Parent.RemoveGame(gm);
+                
             }
+            DeleteGames.Clear();
+            MessageBox.Show("Games Removed.");
         }
+
+        
     }
 }

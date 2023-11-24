@@ -26,6 +26,15 @@
             </StatusBarItem>
             <StatusBarItem>
                 <Button
+                    CommandParameter="{Binding}"
+                    ToolTip="Delete Game"
+                    Click="OnDeleteGame">
+                    <Image Height="16" Source="/ESGameManagerLibrary;component/Resources/delete.png" />
+                </Button>
+            </StatusBarItem>
+
+            <StatusBarItem>
+                <Button
                     IsEnabled="{Binding Path=NextEnabled}"
                     ToolTip="Next Game"
                     Click="GoToNextGame">

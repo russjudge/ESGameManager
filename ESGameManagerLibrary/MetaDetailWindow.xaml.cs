@@ -265,5 +265,7 @@ namespace ESGameManagerLibrary
                 Games.Remove(gm);
             }
         }
+
+        
     }
 }
