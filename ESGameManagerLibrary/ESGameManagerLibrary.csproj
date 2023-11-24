@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SimpleWPFReporting" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\add.png" />
     <Resource Include="Resources\browse.png" />
     <Resource Include="Resources\delete.png" />

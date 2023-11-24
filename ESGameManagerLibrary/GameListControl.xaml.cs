@@ -511,7 +511,9 @@ namespace ESGameManagerLibrary
             //Not working--prints blank pages.
             //Trying to switch to using Flow Document--have a ways to go.
             PrintGameList pgl = new(GameFolder);
-            pgl.Print();
+            //pgl.SimpleReporting(startpoint);
+            pgl.SimpleReporting();
+            //pgl.Print();
         }
 
         private void OnMoveFile(object sender, RoutedEventArgs e)

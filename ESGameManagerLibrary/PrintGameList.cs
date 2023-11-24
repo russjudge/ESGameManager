@@ -34,28 +34,206 @@ namespace ESGameManagerLibrary
             theList = list;
         }
         bool printingHeader = false;
+        private TableRowGroup GetGroupHeader()
+        {
+            TableRowGroup rowGroupHeader = new TableRowGroup();
 
-        private FlowDocument CreateFlowDocument()
+            rowGroupHeader.Background = Brushes.LightGray;
+            rowGroupHeader.FontWeight = FontWeights.Bold;
+            rowGroupHeader.FontSize = 12;
+
+
+
+            TableRow row = new TableRow();
+            rowGroupHeader.Rows.Add(row);
+            //row.Cells.Add(new TableCell());
+
+
+
+            Paragraph para = new Paragraph();
+            para.Inlines.Add("Name");
+
+            TableCell cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+            para = new Paragraph();
+            para.Inlines.Add("Year");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+            para = new Paragraph();
+            para.Inlines.Add("Publisher");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+            para = new Paragraph();
+            para.Inlines.Add("Developer");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+            para = new Paragraph();
+            para.Inlines.Add("Genre");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+            para = new Paragraph();
+            para.Inlines.Add("Flags");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+
+
+            para = new Paragraph();
+            para.Inlines.Add("Notes");
+
+            cell = new TableCell(para);
+            row.Cells.Add(cell);
+            return rowGroupHeader;
+        }
+        private TableRowGroup GetGroupSummary()
+        {
+            TableRowGroup rowGroupSummary = new TableRowGroup();
+            rowGroupSummary.FontSize = 12;
+            rowGroupSummary.FontStyle = FontStyles.Italic;
+            TableRow row = new TableRow();
+            rowGroupSummary.Rows.Add(row);
+
+            Paragraph para = new Paragraph();
+            para.Inlines.Add(new Run("Total Games:"));
+            para.Inlines.Add(new Run(theList.Games.Count.ToString()));
+
+            TableCell cell = new TableCell(para);
+
+            row.Cells.Add(cell);
+            cell.ColumnSpan = 7;
+
+            return rowGroupSummary;
+        }
+        private TableRowGroup GetGroupBody()
+        {
+            TableRowGroup rowGroupBody = new TableRowGroup();
+            rowGroupBody.FontSize = 10;
+
+
+            foreach (var game in theList.Games)
+            {
+                TableRow row = new TableRow();
+                rowGroupBody.Rows.Add(row);
+
+
+                Paragraph para = new Paragraph();
+                para.Inlines.Add(game.Name);
+
+                TableCell cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+                para = new Paragraph();
+                para.Inlines.Add(game.DateReleased.ToString("yyyy"));
+
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+                para = new Paragraph();
+                if (!string.IsNullOrEmpty(game.Publisher))
+                {
+                    para.Inlines.Add(game.Publisher);
+                }
+
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+                para = new Paragraph();
+                if (!string.IsNullOrEmpty(game.Developer))
+                {
+                    para.Inlines.Add(game.Developer);
+                }
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+                para = new Paragraph();
+                if (!string.IsNullOrEmpty(game.Genre))
+                {
+                    para.Inlines.Add(game.Genre);
+                }
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+                para = new Paragraph();
+                if (game.Flag1)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag1Symbol);
+                }
+                if (game.Flag2)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag2Symbol);
+                }
+                if (game.Flag3)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag3Symbol);
+                }
+                if (game.Flag4)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag4Symbol);
+                }
+                if (game.Flag5)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag5Symbol);
+                }
+                if (game.Flag6)
+                {
+                    para.Inlines.Add(Properties.Settings.Default.Flag6Symbol);
+                }
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+
+                para = new Paragraph();
+                if (!string.IsNullOrEmpty(game.Notes))
+                {
+                    para.Inlines.Add(game.Notes);
+                }
+                cell = new TableCell(para);
+                row.Cells.Add(cell);
+
+            }
+            return rowGroupBody;
+        }
+        //private Visual CreateVisual()
+        //{
+
+        //}
+        private FlowDocument CreateFlowDocument(double width, double height)
         {
             // Create a FlowDocument  
             FlowDocument doc = new FlowDocument();
-            // Create a Section  
-            Section sec = new Section();
-            // Create first Paragraph  
-            Paragraph p1 = new Paragraph();
-            // Create and add a new Bold, Italic and Underline  
-            Bold bld = new Bold();
-            bld.Inlines.Add(new Run("First Paragraph"));
-            Italic italicBld = new Italic();
-            italicBld.Inlines.Add(bld);
-            Underline underlineItalicBld = new Underline();
-            underlineItalicBld.Inlines.Add(italicBld);
-            // Add Bold, Italic, Underline to Paragraph  
-            p1.Inlines.Add(underlineItalicBld);
-            // Add Paragraph to Section  
-            sec.Blocks.Add(p1);
-            // Add Section to FlowDocument  
-            doc.Blocks.Add(sec);
+            doc.PageWidth = width;
+            doc.PageHeight = height;
+            Table table = new Table();
+            table.TextAlignment = TextAlignment.Justify;
+            doc.Blocks.Add(table);
+
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+            table.Columns.Add(new TableColumn());
+
+
+            
+            
+
+            table.RowGroups.Add(GetGroupHeader());
+            table.RowGroups.Add(GetGroupBody());
+            table.RowGroups.Add(GetGroupSummary());
+
+
+
             return doc;
         }
         void PrintFlowDocument()
@@ -63,12 +241,26 @@ namespace ESGameManagerLibrary
             // Create a PrintDialog
             PrintDialog printDlg = new PrintDialog();
             // Create a FlowDocument dynamically.  
-            FlowDocument doc = CreateFlowDocument();
-            doc.Name = "ES Game Manager Document";
+            FlowDocument doc = CreateFlowDocument(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight);
+           
+            doc.Name = "ES_Game_Manager_Document";
             // Create IDocumentPaginatorSource from FlowDocument  
             IDocumentPaginatorSource idpSource = doc;
+
+            //doc.PageWidth = printDlg.PrintableAreaWidth;
+            //doc.PageHeight = printDlg.PrintableAreaHeight;
+
+
             // Call PrintDocument method to send document to printer  
             printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
+        }
+        public void SimpleReporting()
+        {
+            Report1 visual = new();
+            //SimpleWPFReporting.Report.ExportVisualAsPdf(visual);
+            SimpleWPFReporting.Report.PrintReport(visual, theList, SimpleWPFReporting.ReportOrientation.Portrait);
+          
+
         }
 
         void StartNewPage()
@@ -103,7 +295,8 @@ namespace ESGameManagerLibrary
 
             if (printDialog.ShowDialog() == true)
             {
-                PrintData(printDialog.PrintQueue.FullName);
+                PrintFlowDocument();
+                //PrintData(printDialog.PrintQueue.FullName);
 
                 //PrintData(printDialog.PrintQueue);
                 MessageBox.Show("Printing complete.");

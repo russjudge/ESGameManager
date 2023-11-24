@@ -30,7 +30,8 @@
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <DockPanel HorizontalAlignment="Stretch" >
+
+    <DockPanel  HorizontalAlignment="Stretch" >
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" >
@@ -568,4 +569,5 @@
 
         </ListView>
     </DockPanel>
+    
 </UserControl>
