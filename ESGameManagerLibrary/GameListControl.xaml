@@ -122,8 +122,9 @@
                 </StackPanel>
             </Button>
             <!-- Print function not yet implemented -->
+            <!--Visibility="Collapsed"-->
             <Button
-                Visibility="Collapsed"
+                
                 Click="OnPrint"
                 VerticalAlignment="Center"
                 ToolTip="Print this list"

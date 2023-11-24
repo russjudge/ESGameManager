@@ -257,8 +257,17 @@ namespace ESGameManagerLibrary
         public void SimpleReporting()
         {
             Report1 visual = new();
+            visual.DataContext = theList;
+            var paginator = new ProgramPaginator(visual);
+            var dlg = new PrintDialog();
+            if (dlg.ShowDialog() == true)
+            {
+                paginator.PageSize = new Size(dlg.PrintableAreaWidth, dlg.PrintableAreaWidth);
+                dlg.PrintDocument(paginator, "ESManagerDocument");
+            }
+
             //SimpleWPFReporting.Report.ExportVisualAsPdf(visual);
-            SimpleWPFReporting.Report.PrintReport(visual, theList, SimpleWPFReporting.ReportOrientation.Portrait);
+            //SimpleWPFReporting.Report.PrintReport(visual, theList, SimpleWPFReporting.ReportOrientation.Portrait);
           
 
         }

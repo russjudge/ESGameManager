@@ -508,6 +508,7 @@ namespace ESGameManagerLibrary
         }
         private void OnPrint(object sender, RoutedEventArgs e)
         {
+
             //Not working--prints blank pages.
             //Trying to switch to using Flow Document--have a ways to go.
             PrintGameList pgl = new(GameFolder);
