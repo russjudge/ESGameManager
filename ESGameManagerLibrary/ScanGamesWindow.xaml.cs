@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ESGameManagerLibrary
 {
@@ -148,9 +137,9 @@ namespace ESGameManagerLibrary
             if (!string.IsNullOrEmpty(GameListControl.RootGamesListFolder) && !string.IsNullOrEmpty(GameFolder.Folder))
             {
                 List<string> existingGames = new();
-                
+
                 List<string> usedImages = new();
-               
+
                 foreach (var gm in GameFolder.Games)
                 {
                     if (System.IO.File.Exists(gm.FullPath))
@@ -168,7 +157,7 @@ namespace ESGameManagerLibrary
                 string startFolder = System.IO.Path.Combine(GameListControl.RootGamesListFolder, GameFolder.Folder);
                 DirectoryInfo startDir = new(startFolder);
                 ScanDir(startDir, existingGames, usedImages);
-               
+
             }
             else
             {
@@ -263,7 +252,7 @@ namespace ESGameManagerLibrary
             if (SelectedDeleteGame == null || string.IsNullOrEmpty(SelectedNewROM))
             {
                 MessageBox.Show("You need to select the Game with the bad ROM to be updated AND the Orphaned ROM file.",
-                    "Update ROM file",MessageBoxButton.OK, MessageBoxImage.Stop);
+                    "Update ROM file", MessageBoxButton.OK, MessageBoxImage.Stop);
             }
             else
             {
@@ -283,7 +272,7 @@ namespace ESGameManagerLibrary
                     {
                         File.Delete(img);
                     }
-                    catch (Exception ex)
+                    catch
                     {
 
                     }
@@ -295,15 +284,15 @@ namespace ESGameManagerLibrary
 
         private void DeleteAllMissingROMS(object sender, RoutedEventArgs e)
         {
-            foreach(var gm in DeleteGames)
+            foreach (var gm in DeleteGames)
             {
                 gm.Parent.RemoveGame(gm);
-                
+
             }
             DeleteGames.Clear();
             MessageBox.Show("Games Removed.");
         }
 
-        
+
     }
 }

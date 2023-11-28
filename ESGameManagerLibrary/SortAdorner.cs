@@ -1,59 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows;
 
 namespace ESGameManagerLibrary
 {
     /// <summary>
     /// Sort Adorner.
     /// </summary>
-    public class SortAdorner : Adorner
+    internal class SortAdorner : Adorner
     {
-        private static readonly Geometry AscGeometry =
-              Geometry.Parse("M 0,0 L 10,0 L 5,5 Z");
-
-        private static readonly Geometry DescGeometry =
-            Geometry.Parse("M 0,5 L 10,5 L 5,0 Z");
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SortAdorner"/> class.
         /// </summary>
         /// <param name="element">Element.</param>
         /// <param name="direction">Direction.</param>
-        public SortAdorner(UIElement element, ListSortDirection direction)
+        public SortAdorner(GridViewColumnHeader element, ListSortDirection direction)
             : base(element)
         {
-            this.Initialize(direction, Brushes.LightSteelBlue);
+            Direction = direction;
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SortAdorner"/> class.
-        /// </summary>
-        /// <param name="element">Element.</param>
-        /// <param name="direction">Direction.</param>
-        /// <param name="brushColor">Brush color.</param>
-        public SortAdorner(UIElement element, ListSortDirection direction, Brush brushColor)
-            : base(element)
-        {
-            this.Initialize(direction, brushColor);
-        }
-
         /// <summary>
         /// Gets Direction.
         /// </summary>
-        public ListSortDirection Direction { get; private set; }
-
-        /// <summary>
-        /// Gets or sets Brushcolor.
-        /// </summary>
-        public Brush? BrushColor { get; set; }
-
+        private ListSortDirection Direction { get; set; }
         /// <summary>
         /// On render.
         /// </summary>
@@ -75,19 +45,12 @@ namespace ESGameManagerLibrary
                        (this.AdornedElement.RenderSize.Height - 5) / 2));
 
                 drawingContext.DrawGeometry(
-                    this.BrushColor,
+                    GridViewColumnHeaderSorter.SortIconBrush,
                     null,
-                    this.Direction == ListSortDirection.Ascending ? AscGeometry : DescGeometry);
+                    this.Direction == ListSortDirection.Ascending ? GridViewColumnHeaderSorter.AscendingIcon : GridViewColumnHeaderSorter.DecendingIcon);
 
                 drawingContext.Pop();
             }
         }
-
-        private void Initialize(ListSortDirection direction, Brush brushColor)
-        {
-            this.Direction = direction;
-            this.BrushColor = brushColor;
-        }
     }
 }
-

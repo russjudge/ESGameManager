@@ -333,7 +333,8 @@ namespace ESGameManagerLibrary
                     FontUri = typeface.FontFamily.BaseUri,
                     FontRenderingEmSize = fontSize,
                     OriginX = margin,
-                    OriginY = yPos
+                    OriginY = yPos,
+                    
                 };
                
                 fixedPage.Children.Add(data);
@@ -385,5 +386,47 @@ namespace ESGameManagerLibrary
             xpsWriter.Write(fixedDocument, printTicket);
         }
 
+        public static void GenerateReport(GameList gameList)
+        {
+            // Create a FlowDocument
+            FlowDocument doc = new FlowDocument();
+
+            // Create a Section
+            Section sec = new Section();
+
+            // Create first (header) paragraph
+            Paragraph para1 = new Paragraph();
+            para1.Inlines.Add(new Bold(new Run($"Provider: {gameList.Provider}\nFolder: {gameList.Folder}")) { FontSize = 16 });
+            sec.Blocks.Add(para1);
+
+            // Create second (column headers) paragraph
+            Paragraph para2 = new Paragraph();
+            para2.Inlines.Add(new Bold(new Run("Name\t\tPath")) { FontSize = 14 });
+            sec.Blocks.Add(para2);
+
+            // Create rest of the paragraphs (each game)
+            foreach (Game game in gameList.Games)
+            {
+                Paragraph para = new Paragraph();
+                para.Inlines.Add(new Run($"{game.Name}\t\t{game.Path}"));
+                sec.Blocks.Add(para);
+            }
+
+            // Add Section to FlowDocument
+            doc.Blocks.Add(sec);
+
+            // Create IDocumentPaginatorSource from FlowDocument
+            IDocumentPaginatorSource idpSource = doc;
+
+            // Call PrintDocument method to send document to printer
+            PrintDialog printDlg = new PrintDialog();
+            if ((bool)printDlg.ShowDialog().GetValueOrDefault())
+            {
+                printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
+            }
+        }
+
     }
+
+
 }

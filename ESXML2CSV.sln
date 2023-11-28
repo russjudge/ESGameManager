@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESGameManagerLibrary", "ESGameManagerLibrary\ESGameManagerLibrary.csproj", "{9DE9AC64-8919-4D13-969B-E45C47710F2F}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ESGameManagerSetup", "ESGameManagerSetup\ESGameManagerSetup.vdproj", "{FAB1E2DA-8704-4EB5-88C8-0C699393EB80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,8 @@ Global
 		{9DE9AC64-8919-4D13-969B-E45C47710F2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DE9AC64-8919-4D13-969B-E45C47710F2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DE9AC64-8919-4D13-969B-E45C47710F2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAB1E2DA-8704-4EB5-88C8-0C699393EB80}.Debug|Any CPU.ActiveCfg = Debug
+		{FAB1E2DA-8704-4EB5-88C8-0C699393EB80}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
+using System.ComponentModel;
 
 namespace ESGameManagerLibrary
 {
     /// <summary>
     /// Date sorter.
     /// </summary>
-    public class DateSorter : IComparer
+    internal class DateSorter : IComparer
     {
+        ListSortDirection _direction;
+        public DateSorter(ListSortDirection direction)
+        {
+            _direction = direction;
+        }
         /// <summary>
         /// Compare two date objects.
         /// </summary>
@@ -24,15 +25,15 @@ namespace ESGameManagerLibrary
             DateTime? dty = y as DateTime?;
             if (dtx != null && dty != null)
             {
-                return dtx.Value.CompareTo(dty.Value);
+                return (_direction == ListSortDirection.Ascending) ? dtx.Value.CompareTo(dty.Value) : dty.Value.CompareTo(dtx.Value);
             }
             else if (dtx == null && dty != null)
             {
-                return 1;
+                return (_direction == ListSortDirection.Ascending) ? 1 : -1;
             }
             else if (dtx != null && dty == null)
             {
-                return -1;
+                return (_direction == ListSortDirection.Ascending) ? -1 : 1;
             }
             else
             {

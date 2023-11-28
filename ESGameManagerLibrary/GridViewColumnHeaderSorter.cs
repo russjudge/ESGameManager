@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows;
-using System.Data.Common;
-using System.Data;
-using System.Globalization;
-using System.Reflection;
 
 namespace ESGameManagerLibrary
 {
@@ -23,20 +15,23 @@ namespace ESGameManagerLibrary
     /// </summary>
     public static class GridViewColumnHeaderSorter
     {
+        private static readonly Geometry AscGeometry =
+             Geometry.Parse("M 0,0 L 10,0 L 5,5 Z");
+
+        private static readonly Geometry DescGeometry =
+            Geometry.Parse("M 0,5 L 10,5 L 5,0 Z");
+
+        public static Geometry AscendingIcon { get; set; } = AscGeometry;
+
+        public static Geometry DecendingIcon { get; set; } = DescGeometry;
+
+        public static Brush SortIconBrush { get; set; } = Brushes.LightSteelBlue;
+
+
         //To use: Binding for ItemsSource should be ObservableCollection<T>.
         //Currently only works for ListViews.
-        // Add <GridColumnHeader Extensions.SortColumnID="xxx"> where "xxx" is the field name in the binding
+        // Add <GridColumnHeader GridViewColumnHeaderSorter.SortColumnID="xxx"> where "xxx" is the field name in the binding
         //  to sort on.  only works with simple (one field) sorting.
-
-        /// <summary>
-        /// Sort Enabled property.
-        /// </summary>
-        public static readonly DependencyProperty SortEnabledProperty =
-            DependencyProperty.RegisterAttached(
-                "SortEnabled",
-                typeof(bool),
-                typeof(GridViewColumnHeaderSorter),
-                new FrameworkPropertyMetadata(true));
 
         /// <summary>
         /// Sort direction.
@@ -49,7 +44,7 @@ namespace ESGameManagerLibrary
                 new FrameworkPropertyMetadata(ListSortDirection.Ascending));
 
         /// <summary>
-        /// Is Default property.
+        /// Is Default property.  Set the particular column to true to automatically sort on this column on load.
         /// </summary>
         public static readonly DependencyProperty IsDefaultProperty =
            DependencyProperty.RegisterAttached(
@@ -68,14 +63,14 @@ namespace ESGameManagerLibrary
                 new FrameworkPropertyMetadata(OnSortColumnIDChanged));
 
         /// <summary>
-        /// Parent listview property.
+        /// Parent ItemsControl property.  (note: used only in this class.)
         /// </summary>
-        public static readonly DependencyProperty ParentListViewProperty =
+        private static readonly DependencyProperty ParentItemsControlProperty =
             DependencyProperty.RegisterAttached(
-                "ParentListView",
-                typeof(ListView),
+                "ParentItemsControl",
+                typeof(ItemsControl),
                 typeof(GridViewColumnHeaderSorter),
-                new FrameworkPropertyMetadata(new PropertyChangedCallback(OnParentListViewChanged)));
+                new FrameworkPropertyMetadata(new PropertyChangedCallback(OnParentItemsControlChanged)));
 
         private static readonly DependencyProperty CurrentSortColumnProperty =
             DependencyProperty.RegisterAttached(
@@ -88,8 +83,7 @@ namespace ESGameManagerLibrary
             DependencyProperty.RegisterAttached(
                 "CurrentSortAdorner",
                 typeof(SortAdorner),
-                typeof(GridViewColumnHeaderSorter),
-                new FrameworkPropertyMetadata(OnCurrentSortAdornerChanged));
+                typeof(GridViewColumnHeaderSorter));
 
         private static readonly DependencyProperty IsSortingProperty =
           DependencyProperty.RegisterAttached(
@@ -99,24 +93,11 @@ namespace ESGameManagerLibrary
               new FrameworkPropertyMetadata());
 
         /// <summary>
-        /// Set sort direction.
-        /// </summary>
-        /// <param name="element">Element.</param>
-        /// <param name="value">sort direction.</param>
-        public static void SetSortDirection(DependencyObject element, ListSortDirection value)
-        {
-            if (element != null)
-            {
-                element.SetValue(SortDirectionProperty, value);
-            }
-        }
-       
-        /// <summary>
         /// Get sort direction.
         /// </summary>
         /// <param name="element">element.</param>
         /// <returns>sort direction.</returns>
-        public static ListSortDirection GetSortDirection(DependencyObject element)
+        private static ListSortDirection GetSortDirection(this DependencyObject? element)
         {
             ListSortDirection value = ListSortDirection.Ascending;
             if (element != null)
@@ -140,7 +121,7 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">Element.</param>
         /// <param name="value">true if default.</param>
-        public static void SetIsDefault(DependencyObject element, bool value)
+        public static void SetIsDefault(this DependencyObject? element, bool value)
         {
             if (element != null)
             {
@@ -153,7 +134,7 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">element.</param>
         /// <returns>true if default.</returns>
-        public static bool GetIsDefault(DependencyObject element)
+        public static bool GetIsDefault(this DependencyObject? element)
         {
             bool value = true;
             if (element != null)
@@ -169,7 +150,7 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">object to set.</param>
         /// <param name="value">Value to set.</param>
-        public static void SetSortColumnID(DependencyObject element, string value)
+        public static void SetSortColumnID(this DependencyObject? element, string value)
         {
             if (element != null)
             {
@@ -182,7 +163,7 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">column.</param>
         /// <returns>The id.</returns>
-        public static string? GetSortColumnID(DependencyObject element)
+        public static string? GetSortColumnID(this DependencyObject? element)
         {
             string? value = null;
             if (element != null)
@@ -198,15 +179,14 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">List view to set.</param>
         /// <param name="value">Column to set to.</param>
-        public static void SetCurrentSortColumn(ListView element, GridViewColumnHeader value)
+        public static void SetCurrentSortColumn(this ItemsControl? element, GridViewColumnHeader value)
         {
             if (element != null)
             {
                 if (value == null)
                 {
-                    RemoveSortAdorner(element);
+                    element.RemoveSortAdorner();
                 }
-
                 element.SetValue(CurrentSortColumnProperty, value);
             }
         }
@@ -216,7 +196,7 @@ namespace ESGameManagerLibrary
         /// </summary>
         /// <param name="element">element to check.</param>
         /// <returns>Column Header.</returns>
-        public static GridViewColumnHeader? GetCurrentSortColumn(DependencyObject element)
+        public static GridViewColumnHeader? GetCurrentSortColumn(this DependencyObject? element)
         {
             GridViewColumnHeader? value = null;
             if (element != null)
@@ -226,94 +206,93 @@ namespace ESGameManagerLibrary
 
             return value;
         }
-
         /// <summary>
-        /// Disable sort.
+        /// Finds all rows matching search item.
         /// </summary>
-        /// <param name="target">Object to disable sort on.</param>
-        public static void DisableSort(ListView target)
+        /// <param name="element">The ItemsControl</param>
+        /// <param name="match">The search text</param>
+        /// <param name="searchOnCurrentSortColumnOnly">Whether or not to search only on the currently sorted column, or on all columns.</param>
+        /// <returns></returns>
+        public static object[] FindAll(this ItemsControl? element, string match, bool searchOnCurrentSortColumnOnly = true)
         {
-            if (target != null)
+            List<object> retVal = new();
+            GridViewColumnHeader? sortColumn = element?.GetCurrentSortColumn();
+            if (sortColumn != null && element != null && element.Items.Count > 0)
             {
-                target.SetValue(SortEnabledProperty, false);
-                RemoveSortAdorner(target);
-            }
-        }
-
-        /// <summary>
-        /// Enable sort.
-        /// </summary>
-        /// <param name="target">Object to enable sort on.</param>
-        public static void EnableSort(DependencyObject target)
-        {
-            if (target != null)
-            {
-                target.SetValue(SortEnabledProperty, true);
-                Sort(target);
-            }
-        }
-
-        /// <summary>
-        /// Get sort enabled.
-        /// </summary>
-        /// <param name="target">object to check.</param>
-        /// <returns>true if sort is enabled.</returns>
-        public static bool GetSortEnabled(DependencyObject target)
-        {
-            bool retVal = true;
-            if (target != null)
-            {
-                retVal = (bool)target.GetValue(SortEnabledProperty);
-            }
-
-            return retVal;
-        }
-        public static object? GetFirstMatchOnLetter(DependencyObject? element, string letter)
-        {
-            object? retVal = null;
-            if (element != null)
-            {
-                GridViewColumnHeader? sortColumn = GetCurrentSortColumn(element);
-                if (sortColumn != null && element is ListView parent && parent.Items.Count > 0)
+                List<PropertyInfo> matchProperties = new();
+                string? field = GetSortColumnID(sortColumn);
+                if (!string.IsNullOrEmpty(field))
                 {
-
-                    string? field = GetSortColumnID(sortColumn);
-
-                    if (!string.IsNullOrEmpty(field))
+                    foreach (var p in element.Items[0].GetType().GetProperties())
                     {
-                        PropertyInfo? matchProperty = null;
-                        foreach (var p in parent.Items[0].GetType().GetProperties())
+                        if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase) || !searchOnCurrentSortColumnOnly)
                         {
-                            if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
+                            matchProperties.Add(p);
+                            break;
+                        }
+                    }
+                }
+
+                if (matchProperties.Count > 0 && CollectionViewSource.GetDefaultView(element.ItemsSource) is ICollectionView dataView)
+                {
+                    foreach (var item in dataView)
+                    {
+                        foreach (var matchProperty in matchProperties)
+                        {
+                            var propValue = matchProperty.GetValue(item);
+                            if (propValue != null)
                             {
-                                matchProperty = p;
-                                break;
+                                string? checkValue = propValue.ToString();
+                                if (!string.IsNullOrEmpty(checkValue) && checkValue.Contains(match))
+                                {
+                                    retVal.Add(item);
+                                    break;
+                                }
                             }
                         }
-                        if (matchProperty != null && CollectionViewSource.GetDefaultView(parent.ItemsSource) is ListCollectionView dataView)
+                    }
+                }
+            }
+            return retVal.ToArray();
+        }
+        /// <summary>
+        /// Returns first matching row.
+        /// </summary>
+        /// <param name="element">The ItemsControl</param>
+        /// <param name="match">The search term</param>
+        /// <param name="searchOnCurrentSortColumnOnly">Whether or not to search just the currently sorted column, or all columns.</param>
+        /// <returns></returns>
+        public static object? Find(this ItemsControl? element, string match, bool searchOnCurrentSortColumnOnly = true)
+        {
+            object? retVal = null;
+            GridViewColumnHeader? sortColumn = element.GetCurrentSortColumn();
+            if (sortColumn != null && element != null && element.Items.Count > 0)
+            {
+                List<PropertyInfo> matchProperties = new();
+                string? field = sortColumn.GetSortColumnID();
+                foreach (var p in element.Items[0].GetType().GetProperties())
+                {
+                    if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase) || !searchOnCurrentSortColumnOnly)
+                    {
+                        matchProperties.Add(p);
+                        break;
+                    }
+                }
+                if (matchProperties.Count > 0 && CollectionViewSource.GetDefaultView(element.ItemsSource) is ICollectionView dataView)
+                {
+                    foreach (var item in dataView)
+                    {
+                        foreach (var matchProperty in matchProperties)
                         {
-                            dataView.MoveCurrentToPosition(0);
-
-
-                            bool matchFound = false;
-                            while (!matchFound)
+                            var propValue = matchProperty.GetValue(item);
+                            if (propValue != null)
                             {
-                                var currentItem = dataView.CurrentItem;
-                                if (currentItem != null)
+                                string? checkValue = propValue.ToString();
+                                if (!string.IsNullOrEmpty(checkValue) && checkValue.Contains(match))
                                 {
-                                    var propValue = matchProperty.GetValue(currentItem);
-                                    if (propValue != null)
-                                    {
-                                        string? checkValue = propValue.ToString();
-                                        if (!string.IsNullOrEmpty(checkValue) && checkValue.StartsWith(letter))
-                                        {
-                                            matchFound = true;
-                                            retVal = currentItem;
-                                            break;
-                                        }
-                                    }
+                                    retVal = item;
+                                    break;
                                 }
-                                matchFound = !dataView.MoveCurrentToNext();
                             }
                         }
                     }
@@ -322,205 +301,209 @@ namespace ESGameManagerLibrary
             return retVal;
         }
         /// <summary>
-        /// Sort.
+        /// Returns all rows where the column starts with the search text.
         /// </summary>
-        /// <param name="target">Object to sort.</param>
-        public static void Sort(DependencyObject target)
+        /// <param name="element">The ItemsControl</param>
+        /// <param name="match">The text to search for</param>
+        /// <param name="searchOnCurrentSortColumnOnly">Whether or not to search only the sort column or all columns.</param>
+        /// <returns></returns>
+        public static object[] FindAllStartsWith(this ItemsControl? element, string match, bool searchOnCurrentSortColumnOnly = true)
         {
-            GridViewColumnHeader? sortColumn = GetCurrentSortColumn(target);
-            if (sortColumn != null)
+            List<object> retVal = new();
+            GridViewColumnHeader? sortColumn = element?.GetCurrentSortColumn();
+            if (sortColumn != null && element != null && element.Items.Count > 0)
             {
-                sortColumn.Sort();
+                List<PropertyInfo> matchProperties = new();
+
+                string? field = sortColumn.GetSortColumnID();
+                foreach (var p in element.Items[0].GetType().GetProperties())
+                {
+                    if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase) || !searchOnCurrentSortColumnOnly)
+                    {
+                        matchProperties.Add(p);
+                        break;
+                    }
+                }
+
+                if (matchProperties.Count > 0 && CollectionViewSource.GetDefaultView(element.ItemsSource) is ICollectionView dataView)
+                {
+                    foreach (var item in dataView)
+                    {
+                        foreach (var matchProperty in matchProperties)
+                        {
+                            var propValue = matchProperty.GetValue(item);
+                            if (propValue != null)
+                            {
+                                string? checkValue = propValue.ToString();
+                                if (!string.IsNullOrEmpty(checkValue) && checkValue.StartsWith(match))
+                                {
+                                    retVal.Add(item);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
+
+            return retVal.ToArray();
+        }
+        /// <summary>
+        /// Returns first row with column that starts with match text.
+        /// </summary>
+        /// <param name="element">The ItemsControl to search</param>
+        /// <param name="match">The search text to match</param>
+        /// <param name="searchOnCurrentSortColumnOnly">Whether or not to match only the currently sorted column or all columns.</param>
+        /// <returns></returns>
+        public static object? FindStartsWith(this ItemsControl? element, string match, bool searchOnCurrentSortColumnOnly = true)
+        {
+            object? retVal = null;
+
+            GridViewColumnHeader? sortColumn = element?.GetCurrentSortColumn();
+            if (sortColumn != null && element != null && element.Items.Count > 0)
+            {
+                List<PropertyInfo> matchProperties = new();
+
+                string? field = sortColumn.GetSortColumnID();
+                foreach (var p in element.Items[0].GetType().GetProperties())
+                {
+                    if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase) || !searchOnCurrentSortColumnOnly)
+                    {
+                        matchProperties.Add(p);
+                        break;
+                    }
+                }
+                if (matchProperties.Count > 0 && CollectionViewSource.GetDefaultView(element.ItemsSource) is ICollectionView dataView)
+                {
+                    foreach (var item in dataView)
+                    {
+                        foreach (var matchProperty in matchProperties)
+                        {
+                            var propValue = matchProperty.GetValue(item);
+                            if (propValue != null)
+                            {
+                                string? checkValue = propValue.ToString();
+                                if (!string.IsNullOrEmpty(checkValue) && checkValue.StartsWith(match))
+                                {
+                                    retVal = item;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return retVal;
         }
 
         /// <summary>
         /// Sort.
         /// </summary>
         /// <param name="column">Column to sort on.</param>
-        public static void Sort(this GridViewColumnHeader column)
+        private static void Sort(this GridViewColumnHeader column)
         {
-            if (column != null)
+            ItemsControl? parent = column.ParentItemsControl();
+            if (parent != null)
             {
-                ListView? parent = column.ParentListView();
-                if (parent != null)
+                if (!parent.GetIsSorting())
                 {
-                    if (!GetIsSorting(parent) && GetSortEnabled(parent))
+                    parent.SetIsSorting(true);
+                    string? field = column.GetSortColumnID();
+                    GridViewColumnHeader? curSortCol = parent.GetCurrentSortColumn();
+
+                    SortAdorner? curAdorner = parent.GetCurrentSortAdorner();
+                    if (!string.IsNullOrEmpty(field))
                     {
-                        SetIsSorting(parent, true);
-                        string? fieldxxx = GetSortColumnID(column);
-                        string[]? fieldList = null;
-                        string? field = null;
-                        if (!string.IsNullOrEmpty(fieldxxx))
+
+                        if (CollectionViewSource.GetDefaultView(parent.ItemsSource) is ListCollectionView dataView)
                         {
-                            fieldList = fieldxxx.Split('|');
-                            if (fieldList.Length == 1)
+                            if (curSortCol != null)
                             {
-                                field = fieldList[0];
+                                AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
+                                dataView.SortDescriptions.Clear();
+                                parent.Items.SortDescriptions.Clear();
                             }
-                        }
-
-                        //TODO: Allow compound column fields.
-                        GridViewColumnHeader? curSortCol = GetCurrentSortColumn(parent);
-
-                        SortAdorner? curAdorner = GetCurrentSortAdorner(parent);
-                        if (fieldList != null)
-                        {
-                            ListCollectionView? dataView = CollectionViewSource.GetDefaultView(parent.ItemsSource) as ListCollectionView;
-                            if (dataView != null)
+                            else
                             {
-                                if (curSortCol != null)
+                                if (curAdorner != null)
                                 {
-                                    AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
+                                    AdornerLayer.GetAdornerLayer(parent).Remove(curAdorner);
                                     dataView.SortDescriptions.Clear();
                                     parent.Items.SortDescriptions.Clear();
                                 }
-                                else
-                                {
-                                    if (curAdorner != null)
-                                    {
-                                        AdornerLayer.GetAdornerLayer(parent).Remove(curAdorner);
-                                        dataView.SortDescriptions.Clear();
-                                        parent.Items.SortDescriptions.Clear();
-                                    }
-                                }
-
-                                ListSortDirection newDir = GetSortDirection(column);
-
-                                curAdorner = new SortAdorner(column, newDir);
-
-                                AdornerLayer.GetAdornerLayer(column).Add(curAdorner);
-                                SetCurrentSortColumn(parent, column);
-
-                                SetCurrentSortAdorner(parent, curAdorner);
-
-                                IComparer? sorter = null;
-
-                                if (fieldList.Length > 1)
-                                {
-                                    if (MultipleColumnSorter.IsCandidate(dataView.ItemProperties, fieldList))
-                                    {
-                                        if (newDir == ListSortDirection.Ascending)
-                                        {
-                                            sorter = new MultipleColumnSorter(fieldList);
-                                        }
-                                        else
-                                        {
-                                            sorter = new ReverseMultipleColumnSorter(fieldList);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        foreach (string f in fieldList)
-                                        {
-                                            dataView.SortDescriptions.Add(new SortDescription(f, newDir));
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    if (field != null)
-                                    {
-                                        foreach (ItemPropertyInfo p in dataView.ItemProperties)
-                                        {
-                                            if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
-                                            {
-                                                Type ptype = p.PropertyType;
-                                                if (ptype == typeof(DateTime))
-                                                {
-                                                    if (newDir == ListSortDirection.Ascending)
-                                                    {
-                                                        sorter = new DateSorter();
-                                                    }
-                                                    else
-                                                    {
-                                                        sorter = new ReverseDateSorter();
-                                                    }
-                                                }
-                                                else if (ptype == typeof(IComparable))
-                                                {
-                                                    if (newDir == ListSortDirection.Ascending)
-                                                    {
-                                                        sorter = new ComparableSorter();
-                                                    }
-                                                    else
-                                                    {
-                                                        sorter = new ReverseComparableSorter();
-                                                    }
-                                                }
-
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    if (sorter == null)
-                                    {
-                                        dataView.SortDescriptions.Add(new SortDescription(field, newDir));
-                                    }
-                                    else
-                                    {
-                                        dataView.CustomSort = sorter;
-                                    }
-                                }
-
-                                dataView.Refresh();
                             }
+
+                            ListSortDirection newDir = GetSortDirection(column);
+
+                            curAdorner = new SortAdorner(column, newDir);
+                            AdornerLayer.GetAdornerLayer(column).Add(curAdorner);
+                            SetCurrentSortColumn(parent, column);
+
+                            SetCurrentSortAdorner(parent, curAdorner);
+
+                            IComparer? sorter = null;
+
+                            foreach (ItemPropertyInfo p in dataView.ItemProperties)
+                            {
+                                if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    Type ptype = p.PropertyType;
+                                    if (ptype == typeof(DateTime))
+                                    {
+                                        sorter = new DateSorter(newDir);
+                                    }
+                                    else if (ptype == typeof(IComparable))
+                                    {
+                                        sorter = new ComparableSorter(newDir);
+                                    }
+
+                                    break;
+                                }
+                            }
+                            if (sorter == null)
+                            {
+                                dataView.SortDescriptions.Add(new SortDescription(field, newDir));
+                            }
+                            else
+                            {
+                                dataView.CustomSort = sorter;
+                            }
+
+                            dataView.Refresh();
                         }
-
-                        SetIsSorting(parent, false);
                     }
+                    parent.SetIsSorting(false);
                 }
             }
         }
-
-        private static void RemoveSortAdorner(ListView target)
+        private static void RemoveSortAdorner(this ItemsControl? target)
         {
-            GridViewColumnHeader? curSortCol = GetCurrentSortColumn(target);
-            SortAdorner? curAdorner = GetCurrentSortAdorner(target);
-            if (curSortCol != null)
+            if (target != null)
             {
-                AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
-                if (CollectionViewSource.GetDefaultView(target.ItemsSource) is ListCollectionView dataView)
+                GridViewColumnHeader? curSortCol = target.GetCurrentSortColumn();
+                SortAdorner? curAdorner = target.GetCurrentSortAdorner();
+                if (curSortCol != null && curAdorner != null)
                 {
-                    dataView.SortDescriptions.Clear();
-                }
+                    AdornerLayer.GetAdornerLayer(curSortCol).Remove(curAdorner);
+                    if (CollectionViewSource.GetDefaultView(target.ItemsSource) is ListCollectionView dataView)
+                    {
+                        dataView.SortDescriptions.Clear();
+                    }
 
-                target.Items.SortDescriptions.Clear();
-            }
-        }
-
-        private static void ItemContainerGenerator_ItemsChanged(object sender, System.Windows.Controls.Primitives.ItemsChangedEventArgs e, ListView? parent)
-        {
-            if (parent != null)
-            {
-                var column = GetCurrentSortColumn(parent);
-                if (column != null)
-                {
-                    column.Sort();
+                    target.Items.SortDescriptions.Clear();
                 }
             }
         }
-
-        private static void OnCurrentSortAdornerChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void ItemContainerGenerator_ItemsChanged(object sender, System.Windows.Controls.Primitives.ItemsChangedEventArgs e, ItemsControl? parent)
         {
-            if (sender is ListView me)
-            {
-                //RemoveSortAdorner(me);
-                //Sender will be a listview?
-                //remove all sortadorners from all columns but one for e.newvalue.
-            }
+            parent?.GetCurrentSortColumn()?.Sort();
+        }
+        private static void SetCurrentSortAdorner(this ItemsControl? element, SortAdorner value)
+        {
+            element?.SetValue(CurrentSortAdornerProperty, value);
         }
 
-        private static void SetCurrentSortAdorner(ListView element, SortAdorner value)
-        {
-            if (element != null)
-            {
-                element.SetValue(CurrentSortAdornerProperty, value);
-            }
-        }
-
-        private static SortAdorner? GetCurrentSortAdorner(ListView? element)
+        private static SortAdorner? GetCurrentSortAdorner(this ItemsControl? element)
         {
             SortAdorner? value = null;
             if (element != null)
@@ -535,36 +518,31 @@ namespace ESGameManagerLibrary
         {
             if (e.OriginalSource is GridViewColumnHeader headerClicked)
             {
-                SetSortDirection(headerClicked, (GetSortDirection(headerClicked) == ListSortDirection.Ascending) ? ListSortDirection.Descending : ListSortDirection.Ascending);
-
+                headerClicked.SetValue(SortDirectionProperty, headerClicked.GetSortDirection() == ListSortDirection.Ascending ? ListSortDirection.Descending : ListSortDirection.Ascending);
                 headerClicked.Sort();
             }
         }
 
-        private static ListView? ParentListView(this GridViewColumnHeader me)
+        private static ItemsControl? ParentItemsControl(this GridViewColumnHeader me)
         {
-            ListView? parent = GetParentListView(me);
+            ItemsControl? parent = GetParentItemsControl(me);
             if (parent == null)
             {
-                parent = GetAncestor<ListView>(me);
+                parent = GetAncestor<ItemsControl>(me);
                 if (parent != null)
                 {
-                    SetParentListView(me, parent);
+                    SetParentItemsControl(me, parent);
                 }
             }
-
             return parent;
         }
 
-        private static void SetIsSorting(DependencyObject element, bool value)
+        private static void SetIsSorting(this DependencyObject? element, bool value)
         {
-            if (element != null)
-            {
-                element.SetValue(IsSortingProperty, value);
-            }
+            element?.SetValue(IsSortingProperty, value);
         }
 
-        private static bool GetIsSorting(DependencyObject element)
+        private static bool GetIsSorting(this DependencyObject? element)
         {
             bool value = false;
             if (element != null)
@@ -583,20 +561,20 @@ namespace ESGameManagerLibrary
             return value;
         }
 
-        private static void SetParentListView(DependencyObject element, ListView value)
+        private static void SetParentItemsControl(DependencyObject? element, ItemsControl value)
         {
             if (element != null)
             {
-                element.SetValue(ParentListViewProperty, value);
+                element.SetValue(ParentItemsControlProperty, value);
             }
         }
 
-        private static ListView? GetParentListView(DependencyObject element)
+        private static ItemsControl? GetParentItemsControl(DependencyObject? element)
         {
-            ListView? value = null;
+            ItemsControl? value = null;
             if (element != null)
             {
-                value = (ListView)element.GetValue(ParentListViewProperty);
+                value = (ItemsControl)element.GetValue(ParentItemsControlProperty);
             }
 
             return value;
@@ -611,7 +589,6 @@ namespace ESGameManagerLibrary
                     column.Click += new RoutedEventHandler(GridColumnHeader_Click);
                     column.Loaded += new RoutedEventHandler(Column_Loaded);
                 }
-
                 if (e.NewValue == null && e.OldValue != null)
                 {
                     column.Click -= new RoutedEventHandler(GridColumnHeader_Click);
@@ -623,7 +600,7 @@ namespace ESGameManagerLibrary
         private static void Column_Loaded(object sender, RoutedEventArgs e)
         {
             GridViewColumnHeader column = (GridViewColumnHeader)sender;
-            if (GetIsDefault(column))
+            if (column.GetIsDefault())
             {
                 column.Sort();
             }
@@ -657,15 +634,14 @@ namespace ESGameManagerLibrary
                 return default;
             }
         }
-
-        private static void OnParentListViewChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void OnParentItemsControlChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is ListView newparent)
+            if (e.NewValue is ItemsControl newparent)
             {
                 newparent.ItemContainerGenerator.ItemsChanged += (o, err) => ItemContainerGenerator_ItemsChanged(o, err, newparent);
             }
 
-            if (e.OldValue is ListView oldparent)
+            if (e.OldValue is ItemsControl oldparent)
             {
                 oldparent.ItemContainerGenerator.ItemsChanged -= (o, err) => ItemContainerGenerator_ItemsChanged(o, err, oldparent);
             }

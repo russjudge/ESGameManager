@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Printing;
+﻿using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,8 +6,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Xps;
-using System.Xml.Linq;
 
 namespace ESGameManagerLibrary
 {
@@ -27,7 +22,7 @@ namespace ESGameManagerLibrary
                 Properties.Settings.Default.UpgradeRequired = false;
                 Properties.Settings.Default.Save();
             }
-            
+
         }
         //bool isLoading = true;
         public GameListControl()
@@ -57,20 +52,20 @@ namespace ESGameManagerLibrary
                     {
                         me.GameListScrollBar.ValueChanged -= me.OnScrollValueChanged;
                     }
-                    var matchedItem = GridViewColumnHeaderSorter.GetFirstMatchOnLetter(me.lvGameList, me.SelectedLetter);
-                    if (matchedItem is Game gm)
+
+                    if (me.lvGameList.FindStartsWith(me.SelectedLetter, true) is Game gm)
                     {
                         me.lvGameList.ScrollIntoView(gm);
                     }
                     me.settingSelectedLetter = false;
                     System.Threading.ThreadPool.QueueUserWorkItem(me.WatchOnScrollValueChanged);
-                    
+
                 }
             }
         }
         void WatchOnScrollValueChanged(object? state)
         {
-            this.Dispatcher.Invoke(() => 
+            this.Dispatcher.Invoke(() =>
             {
                 if (GameListScrollBar != null)
                 {
@@ -508,12 +503,12 @@ namespace ESGameManagerLibrary
         }
         private void OnPrint(object sender, RoutedEventArgs e)
         {
-
+            PrintGameList.GenerateReport(GameFolder);
             //Not working--prints blank pages.
             //Trying to switch to using Flow Document--have a ways to go.
-            PrintGameList pgl = new(GameFolder);
+            //PrintGameList pgl = new(GameFolder);
             //pgl.SimpleReporting(startpoint);
-            pgl.SimpleReporting();
+            //pgl.SimpleReporting();
             //pgl.Print();
         }
 
@@ -582,6 +577,8 @@ namespace ESGameManagerLibrary
         {
             if (!settingSelectedLetter)
             {
+                //if (sender is ListView listView)
+                //{
                 ScrollViewer? scrollViewer = GetVisualChild<ScrollViewer>(lvGameList);
                 if (scrollViewer != null)
                 {
@@ -630,6 +627,7 @@ namespace ESGameManagerLibrary
                             }
                         }
                     }
+                    //}
                 }
                 settingSelectedLetter = false;
             }
@@ -706,8 +704,8 @@ namespace ESGameManagerLibrary
         {
             if (sender is DependencyObject d)
             {
-                var field = GridViewColumnHeaderSorter.GetSortColumnID(d);
-                ValidLetterSelectionSort = (field == "Name");
+
+                ValidLetterSelectionSort = (GridViewColumnHeaderSorter.GetSortColumnID(d) == "Name");
             }
         }
 

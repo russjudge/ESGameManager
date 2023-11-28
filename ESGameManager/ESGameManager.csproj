@@ -13,6 +13,10 @@
     <Title>ES Game Manager</Title>
     <PackageIcon>EMManager.ico</PackageIcon>
     <ApplicationIcon>EMManager.ico</ApplicationIcon>
+    <Authors>Russ Judge</Authors>
+    <Company>Confederate in Blue Gaming</Company>
+    <Copyright>Copyright (c) 2023</Copyright>
+    <RepositoryType>git</RepositoryType>
   
   </PropertyGroup>
 
@@ -50,7 +54,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleWPFReporting" Version="1.1.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
   </ItemGroup>
 
