@@ -10,7 +10,7 @@
 
     <DockPanel>
 
-        <DockPanel
+        <DockPanel 
             DockPanel.Dock="Top" >
             <Label
                 VerticalAlignment="Center" FontWeight="Bold"
