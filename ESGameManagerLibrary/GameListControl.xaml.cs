@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using RussJudge.WPFListSorter;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -595,11 +596,11 @@ namespace ESGameManagerLibrary
 
                     if (gm != null)
                     {
-                        var sortColumn = GridViewColumnHeaderSorter.GetCurrentSortColumn(lvGameList);
+                        var sortColumn = Sorter.GetCurrentSortColumn(lvGameList);
                         if (sortColumn != null)
                         {
 
-                            string? field = GridViewColumnHeaderSorter.GetSortColumnID(sortColumn);
+                            string? field = Sorter.GetSortColumnID(sortColumn);
 
                             if (!string.IsNullOrEmpty(field))
                             {
@@ -705,7 +706,7 @@ namespace ESGameManagerLibrary
             if (sender is DependencyObject d)
             {
 
-                ValidLetterSelectionSort = (GridViewColumnHeaderSorter.GetSortColumnID(d) == "Name");
+                ValidLetterSelectionSort = (Sorter.GetSortColumnID(d) == "Name");
             }
         }
 

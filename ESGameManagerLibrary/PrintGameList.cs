@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Printing;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Printing;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Xps;
-using System.Windows;
-using System.Xml.Linq;
 
 namespace ESGameManagerLibrary
 {
@@ -206,12 +199,12 @@ namespace ESGameManagerLibrary
         //{
 
         //}
-        private FlowDocument CreateFlowDocument(double width, double height)
+        private FlowDocument CreateFlowDocument()
         {
             // Create a FlowDocument  
             FlowDocument doc = new FlowDocument();
-            doc.PageWidth = width;
-            doc.PageHeight = height;
+            //doc.PageWidth = width;
+            //doc.PageHeight = height;
             Table table = new Table();
             table.TextAlignment = TextAlignment.Justify;
             doc.Blocks.Add(table);
@@ -225,8 +218,8 @@ namespace ESGameManagerLibrary
             table.Columns.Add(new TableColumn());
 
 
-            
-            
+
+
 
             table.RowGroups.Add(GetGroupHeader());
             table.RowGroups.Add(GetGroupBody());
@@ -241,8 +234,8 @@ namespace ESGameManagerLibrary
             // Create a PrintDialog
             PrintDialog printDlg = new PrintDialog();
             // Create a FlowDocument dynamically.  
-            FlowDocument doc = CreateFlowDocument(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight);
-           
+            FlowDocument doc = CreateFlowDocument();
+
             doc.Name = "ES_Game_Manager_Document";
             // Create IDocumentPaginatorSource from FlowDocument  
             IDocumentPaginatorSource idpSource = doc;
@@ -268,7 +261,7 @@ namespace ESGameManagerLibrary
 
             //SimpleWPFReporting.Report.ExportVisualAsPdf(visual);
             //SimpleWPFReporting.Report.PrintReport(visual, theList, SimpleWPFReporting.ReportOrientation.Portrait);
-          
+
 
         }
 
@@ -295,7 +288,7 @@ namespace ESGameManagerLibrary
             PrintRow(string.Format("Name\tYear\tPublisher\tDeveloper\tGenre\t{0}\t{1}\t{2}\tNotes",
                 Properties.Settings.Default.Flag1, Properties.Settings.Default.Flag2,
                 Properties.Settings.Default.Flag3), fontSize, FontWeights.Bold);
-            
+
             printingHeader = false;
         }
         public void Print()
@@ -310,7 +303,7 @@ namespace ESGameManagerLibrary
                 //PrintData(printDialog.PrintQueue);
                 MessageBox.Show("Printing complete.");
             }
-            
+
         }
         private void PrintRow(string text, double fntSz, FontWeight weight)
         {
@@ -334,9 +327,9 @@ namespace ESGameManagerLibrary
                     FontRenderingEmSize = fontSize,
                     OriginX = margin,
                     OriginY = yPos,
-                    
+
                 };
-               
+
                 fixedPage.Children.Add(data);
 
                 // Move to the next row
@@ -364,7 +357,7 @@ namespace ESGameManagerLibrary
                     PrintRow(game.ToString(), fontSize, FontWeights.Normal);
 
                 }
-                 PrintRow("Total Game Count:" + theList.Games.Count.ToString(), fontSize, FontWeights.Normal);
+                PrintRow("Total Game Count:" + theList.Games.Count.ToString(), fontSize, FontWeights.Normal);
                 // Add the last page to the document
                 pageContent.Child = fixedPage;
                 fixedDocument.Pages.Add(pageContent);
@@ -385,46 +378,76 @@ namespace ESGameManagerLibrary
             XpsDocumentWriter xpsWriter = PrintQueue.CreateXpsDocumentWriter(printQueue);
             xpsWriter.Write(fixedDocument, printTicket);
         }
+        /*  *************** */
 
         public static void GenerateReport(GameList gameList)
         {
-            // Create a FlowDocument
-            FlowDocument doc = new FlowDocument();
 
-            // Create a Section
-            Section sec = new Section();
+            //var ppd = VisualTreeHelper.GetDpi(baseControl).PixelsPerDip;
 
-            // Create first (header) paragraph
-            Paragraph para1 = new Paragraph();
-            para1.Inlines.Add(new Bold(new Run($"Provider: {gameList.Provider}\nFolder: {gameList.Folder}")) { FontSize = 16 });
-            sec.Blocks.Add(para1);
 
-            // Create second (column headers) paragraph
-            Paragraph para2 = new Paragraph();
-            para2.Inlines.Add(new Bold(new Run("Name\t\tPath")) { FontSize = 14 });
-            sec.Blocks.Add(para2);
+            //// Create a FlowDocument
+            //FlowDocument doc = new FlowDocument();
 
-            // Create rest of the paragraphs (each game)
-            foreach (Game game in gameList.Games)
-            {
-                Paragraph para = new Paragraph();
-                para.Inlines.Add(new Run($"{game.Name}\t\t{game.Path}"));
-                sec.Blocks.Add(para);
-            }
+            //// Create a Section
+            //Section sec = new Section();
 
-            // Add Section to FlowDocument
-            doc.Blocks.Add(sec);
+            //// Create first (header) paragraph
+            //Paragraph para1 = new Paragraph();
 
-            // Create IDocumentPaginatorSource from FlowDocument
-            IDocumentPaginatorSource idpSource = doc;
+            //para1.Inlines.Add(new Bold(new Run($"Provider: {gameList.Provider.System}\nFolder: {gameList.Folder}")) { FontSize = 16, FontFamily = new FontFamily("Courier New") });
+
+            //sec.Blocks.Add(para1);
+
+            //// Create second (column headers) paragraph
+            //Paragraph para2 = new Paragraph();
+
+
+
+
+            //para2.Inlines.Add(new Bold(new Run("Name\t\tPath")) { FontSize = 14 });
+            //sec.Blocks.Add(para2);
+
+            //// Create rest of the paragraphs (each game)
+            //foreach (Game game in gameList.Games)
+            //{
+            //    Paragraph para = new Paragraph();
+            //    para.Inlines.Add(new Run($"{game.Name}\t\t{game.Path}"));
+            //    sec.Blocks.Add(para);
+            //}
+
+            //// Add Section to FlowDocument
+            //doc.Blocks.Add(sec);
+
+
+
 
             // Call PrintDocument method to send document to printer
             PrintDialog printDlg = new PrintDialog();
             if ((bool)printDlg.ShowDialog().GetValueOrDefault())
             {
-                printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
+                var pgl = new PrintGameList(gameList);
+                var doc = pgl.CreateFlowDocument();
+
+
+                ReportPaginator.ReportPageDefinition def = new(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight);
+
+                def.LoadHeaderLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal), 18, "ES Game Manager");
+                def.LoadHeaderLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal), 10, "Page " + ReportPaginator.ReportPageDefinition.PageNumberSubstitution);
+
+                def.LoadFooterLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal), 10, "Test Footer");
+                ReportPaginator paginator = new ReportPaginator(doc, def);
+
+                //printDlg.PrintableAreaHeight
+                printDlg.PrintDocument(paginator, "ES Game Manager");
             }
         }
+
+        public static void DoThePrint()
+        {
+
+        }
+
 
     }
 
