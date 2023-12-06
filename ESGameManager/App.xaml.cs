@@ -1,10 +1,4 @@
 ﻿using ESGameManagerLibrary;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ESGameManager
@@ -18,6 +12,12 @@ namespace ESGameManager
         {
             Common.SetDispatcher(System.Windows.Threading.Dispatcher.CurrentDispatcher);
             System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException += CurrentDispatcher_UnhandledException;
+            if (ESGameManager.Properties.Settings.Default.UpgradeRequired)
+            {
+                ESGameManager.Properties.Settings.Default.Upgrade();
+                ESGameManager.Properties.Settings.Default.UpgradeRequired = false;
+                ESGameManager.Properties.Settings.Default.Save();
+            }
             base.OnStartup(e);
             //Shutdown(1);
             //TODO: Add Check for update.

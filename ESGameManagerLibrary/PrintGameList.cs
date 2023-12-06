@@ -1,9 +1,10 @@
-﻿using System.Printing;
+﻿using RussJudge.SimpleWPFReportPrinter;
+using System.Printing;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Xps;
 
 namespace ESGameManagerLibrary
 {
@@ -20,71 +21,26 @@ namespace ESGameManagerLibrary
         const double fontSize = 10;
         const double fontHeaderSize = 14;
 
-        private int pageNumber = 0;
-
         public PrintGameList(GameList list)
         {
             theList = list;
         }
         bool printingHeader = false;
-        private TableRowGroup GetGroupHeader()
+        private static TableRowGroup GetGroupHeader()
         {
             TableRowGroup rowGroupHeader = new TableRowGroup();
 
-            rowGroupHeader.Background = Brushes.LightGray;
             rowGroupHeader.FontWeight = FontWeights.Bold;
             rowGroupHeader.FontSize = 12;
-
-
-
             TableRow row = new TableRow();
             rowGroupHeader.Rows.Add(row);
-            //row.Cells.Add(new TableCell());
-
-
-
-            Paragraph para = new Paragraph();
-            para.Inlines.Add("Name");
-
-            TableCell cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-            para = new Paragraph();
-            para.Inlines.Add("Year");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-            para = new Paragraph();
-            para.Inlines.Add("Publisher");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-            para = new Paragraph();
-            para.Inlines.Add("Developer");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-            para = new Paragraph();
-            para.Inlines.Add("Genre");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-            para = new Paragraph();
-            para.Inlines.Add("Flags");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
-
-
-            para = new Paragraph();
-            para.Inlines.Add("Notes");
-
-            cell = new TableCell(para);
-            row.Cells.Add(cell);
+            row.Cells.Add(BuildHeaderCell("Name"));
+            row.Cells.Add(BuildHeaderCell("Year"));
+            row.Cells.Add(BuildHeaderCell("Publisher"));
+            row.Cells.Add(BuildHeaderCell("Developer"));
+            row.Cells.Add(BuildHeaderCell("Genre"));
+            row.Cells.Add(BuildHeaderCell("Flags"));
+            row.Cells.Add(BuildHeaderCell("Notes"));
             return rowGroupHeader;
         }
         private TableRowGroup GetGroupSummary()
@@ -106,56 +62,47 @@ namespace ESGameManagerLibrary
 
             return rowGroupSummary;
         }
+        private static TableCell BuildHeaderCell(string text)
+        {
+            var para = new Paragraph();
+            para.Background = Brushes.LightGray;
+            para.Inlines.Add(text);
+
+            var cell = new TableCell(para);
+            return cell;
+        }
+        private static TableCell BuildCell(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                return new(new Paragraph(new Run(text)));
+            }
+            else
+            {
+                return new(new Paragraph());
+            }
+        }
         private TableRowGroup GetGroupBody()
         {
-            TableRowGroup rowGroupBody = new TableRowGroup();
+            TableRowGroup rowGroupBody = new();
             rowGroupBody.FontSize = 10;
-
-
+            bool isAlt = false;
             foreach (var game in theList.Games)
             {
                 TableRow row = new TableRow();
+
+                row.Background = isAlt ? Brushes.AliceBlue : Brushes.Transparent;
+                isAlt = !isAlt;
+
+
                 rowGroupBody.Rows.Add(row);
+                row.Cells.Add(BuildCell(game.Name));
+                row.Cells.Add(BuildCell(game.DateReleased.ToString("yyyy")));
+                row.Cells.Add(BuildCell(game.Publisher));
+                row.Cells.Add(BuildCell(game.Developer));
+                row.Cells.Add(BuildCell(game.Genre));
 
-
-                Paragraph para = new Paragraph();
-                para.Inlines.Add(game.Name);
-
-                TableCell cell = new TableCell(para);
-                row.Cells.Add(cell);
-
-                para = new Paragraph();
-                para.Inlines.Add(game.DateReleased.ToString("yyyy"));
-
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
-
-                para = new Paragraph();
-                if (!string.IsNullOrEmpty(game.Publisher))
-                {
-                    para.Inlines.Add(game.Publisher);
-                }
-
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
-
-                para = new Paragraph();
-                if (!string.IsNullOrEmpty(game.Developer))
-                {
-                    para.Inlines.Add(game.Developer);
-                }
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
-
-                para = new Paragraph();
-                if (!string.IsNullOrEmpty(game.Genre))
-                {
-                    para.Inlines.Add(game.Genre);
-                }
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
-
-                para = new Paragraph();
+                var para = new Paragraph();
                 if (game.Flag1)
                 {
                     para.Inlines.Add(Properties.Settings.Default.Flag1Symbol);
@@ -180,31 +127,17 @@ namespace ESGameManagerLibrary
                 {
                     para.Inlines.Add(Properties.Settings.Default.Flag6Symbol);
                 }
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
 
-
-                para = new Paragraph();
-                if (!string.IsNullOrEmpty(game.Notes))
-                {
-                    para.Inlines.Add(game.Notes);
-                }
-                cell = new TableCell(para);
-                row.Cells.Add(cell);
-
+                row.Cells.Add(new(para));
+                row.Cells.Add(BuildCell(game.Notes));
             }
             return rowGroupBody;
         }
-        //private Visual CreateVisual()
-        //{
 
-        //}
         private FlowDocument CreateFlowDocument()
         {
             // Create a FlowDocument  
             FlowDocument doc = new FlowDocument();
-            //doc.PageWidth = width;
-            //doc.PageHeight = height;
             Table table = new Table();
             table.TextAlignment = TextAlignment.Justify;
             doc.Blocks.Add(table);
@@ -216,240 +149,71 @@ namespace ESGameManagerLibrary
             table.Columns.Add(new TableColumn());
             table.Columns.Add(new TableColumn());
             table.Columns.Add(new TableColumn());
-
-
-
-
-
             table.RowGroups.Add(GetGroupHeader());
             table.RowGroups.Add(GetGroupBody());
             table.RowGroups.Add(GetGroupSummary());
 
-
-
             return doc;
         }
-        void PrintFlowDocument()
-        {
-            // Create a PrintDialog
-            PrintDialog printDlg = new PrintDialog();
-            // Create a FlowDocument dynamically.  
-            FlowDocument doc = CreateFlowDocument();
-
-            doc.Name = "ES_Game_Manager_Document";
-            // Create IDocumentPaginatorSource from FlowDocument  
-            IDocumentPaginatorSource idpSource = doc;
-
-            //doc.PageWidth = printDlg.PrintableAreaWidth;
-            //doc.PageHeight = printDlg.PrintableAreaHeight;
-
-
-            // Call PrintDocument method to send document to printer  
-            printDlg.PrintDocument(idpSource.DocumentPaginator, "Hello WPF Printing.");
-        }
-        public void SimpleReporting()
-        {
-            Report1 visual = new();
-            visual.DataContext = theList;
-            var paginator = new ProgramPaginator(visual);
-            var dlg = new PrintDialog();
-            if (dlg.ShowDialog() == true)
-            {
-                paginator.PageSize = new Size(dlg.PrintableAreaWidth, dlg.PrintableAreaWidth);
-                dlg.PrintDocument(paginator, "ESManagerDocument");
-            }
-
-            //SimpleWPFReporting.Report.ExportVisualAsPdf(visual);
-            //SimpleWPFReporting.Report.PrintReport(visual, theList, SimpleWPFReporting.ReportOrientation.Portrait);
-
-
-        }
-
-        void StartNewPage()
-        {
-            pageNumber++;
-            pageContent = new PageContent();
-            fixedPage = new FixedPage();
-            if (printTicket != null && printTicket.PageMediaSize != null && printTicket.PageMediaSize.Width != null && printTicket.PageMediaSize.Height != null)
-            {
-                fixedPage.Width = printTicket.PageMediaSize.Width.Value;
-                fixedPage.Height = printTicket.PageMediaSize.Height.Value;
-            }
-            yPos = margin;
-
-            PrintHeader();
-        }
-        void PrintHeader()
-        {
-            printingHeader = true;
-            PrintRow("\t\t\tEmulaiton Station Game List", fontHeaderSize, FontWeights.Bold);
-            PrintRow("Page " + pageNumber.ToString() + "\tFolder: " + theList.Folder + "\tSystem: " + theList.Provider.System, fontHeaderSize, FontWeights.Normal);
-
-            PrintRow(string.Format("Name\tYear\tPublisher\tDeveloper\tGenre\t{0}\t{1}\t{2}\tNotes",
-                Properties.Settings.Default.Flag1, Properties.Settings.Default.Flag2,
-                Properties.Settings.Default.Flag3), fontSize, FontWeights.Bold);
-
-            printingHeader = false;
-        }
-        public void Print()
-        {
-            PrintDialog printDialog = new PrintDialog();
-
-            if (printDialog.ShowDialog() == true)
-            {
-                PrintFlowDocument();
-                //PrintData(printDialog.PrintQueue.FullName);
-
-                //PrintData(printDialog.PrintQueue);
-                MessageBox.Show("Printing complete.");
-            }
-
-        }
-        private void PrintRow(string text, double fntSz, FontWeight weight)
-        {
-            if (fixedPage != null && pageContent != null && fixedDocument != null)
-            {
-                Typeface typeface = new Typeface(new FontFamily(fontFamily), FontStyles.Normal, weight, FontStretches.Normal);
-                // Set up the formatted text
-                FormattedText formattedText = new FormattedText(text,
-                    System.Globalization.CultureInfo.CurrentCulture,
-                    FlowDirection.LeftToRight,
-                    typeface, fontSize, Brushes.Black,
-                    1.25);
-                formattedText.SetFontWeight(weight);
-                formattedText.SetForegroundBrush(Brushes.Black);
-                // Draw the text on the fixed page
-                Glyphs data = new()
-                {
-                    Fill = System.Windows.Media.Brushes.Black,
-                    UnicodeString = formattedText.Text,
-                    FontUri = typeface.FontFamily.BaseUri,
-                    FontRenderingEmSize = fontSize,
-                    OriginX = margin,
-                    OriginY = yPos,
-
-                };
-
-                fixedPage.Children.Add(data);
-
-                // Move to the next row
-                yPos += formattedText.Height;
-
-                // Check if another page is needed
-                if (!printingHeader && yPos + formattedText.Height > fixedPage.Height)
-                {
-                    // Add the current fixed page to the document
-                    pageContent.Child = fixedPage;
-                    fixedDocument.Pages.Add(pageContent);
-                    // Start a new page
-                    StartNewPage();
-                }
-            }
-        }
-        private void PrintGames()
-        {
-            if (fixedPage != null && pageContent != null && fixedDocument != null)
-            {
-
-                // Iterate through each row
-                foreach (var game in theList.Games)
-                {
-                    PrintRow(game.ToString(), fontSize, FontWeights.Normal);
-
-                }
-                PrintRow("Total Game Count:" + theList.Games.Count.ToString(), fontSize, FontWeights.Normal);
-                // Add the last page to the document
-                pageContent.Child = fixedPage;
-                fixedDocument.Pages.Add(pageContent);
-            }
-        }
-
-        private void PrintData(string printerName)
-        {
-            PrintQueue printQueue = new PrintQueue(new PrintServer(), printerName);
-            printTicket = printQueue.UserPrintTicket;
-            // Create a FixedDocument for printing
-            //GameListFlowDocument doc = new();
-            StartNewPage();
-            // Add a page to the document
-            PrintGames();
-
-            // Print the document
-            XpsDocumentWriter xpsWriter = PrintQueue.CreateXpsDocumentWriter(printQueue);
-            xpsWriter.Write(fixedDocument, printTicket);
-        }
-        /*  *************** */
 
         public static void GenerateReport(GameList gameList)
         {
-
-            //var ppd = VisualTreeHelper.GetDpi(baseControl).PixelsPerDip;
-
-
-            //// Create a FlowDocument
-            //FlowDocument doc = new FlowDocument();
-
-            //// Create a Section
-            //Section sec = new Section();
-
-            //// Create first (header) paragraph
-            //Paragraph para1 = new Paragraph();
-
-            //para1.Inlines.Add(new Bold(new Run($"Provider: {gameList.Provider.System}\nFolder: {gameList.Folder}")) { FontSize = 16, FontFamily = new FontFamily("Courier New") });
-
-            //sec.Blocks.Add(para1);
-
-            //// Create second (column headers) paragraph
-            //Paragraph para2 = new Paragraph();
-
-
-
-
-            //para2.Inlines.Add(new Bold(new Run("Name\t\tPath")) { FontSize = 14 });
-            //sec.Blocks.Add(para2);
-
-            //// Create rest of the paragraphs (each game)
-            //foreach (Game game in gameList.Games)
-            //{
-            //    Paragraph para = new Paragraph();
-            //    para.Inlines.Add(new Run($"{game.Name}\t\t{game.Path}"));
-            //    sec.Blocks.Add(para);
-            //}
-
-            //// Add Section to FlowDocument
-            //doc.Blocks.Add(sec);
-
-
-
-
-            // Call PrintDocument method to send document to printer
             PrintDialog printDlg = new PrintDialog();
-            if ((bool)printDlg.ShowDialog().GetValueOrDefault())
+            if (printDlg.ShowDialog().GetValueOrDefault())
             {
                 var pgl = new PrintGameList(gameList);
                 var doc = pgl.CreateFlowDocument();
 
+                Typeface tpBold = new(new("Times New"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+                Typeface tpNormal = new(new("TImes New"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                Typeface tpItalic = new(new("TImes New"), FontStyles.Italic, FontWeights.Normal, FontStretches.Normal);
 
-                ReportPaginator.ReportPageDefinition def = new(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight);
+                ReportPageDefinition def = new(printDlg.PrintableAreaWidth, printDlg.PrintableAreaHeight, 48, 48, 48, 48);
 
-                def.LoadHeaderLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal), 18, "ES Game Manager");
-                def.LoadHeaderLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal), 10, "Page " + ReportPaginator.ReportPageDefinition.PageNumberSubstitution);
+                ReportHeaderFooterTextData pageDataSection = new("Page " + ReportPageDefinition.PageNumberSubstitution + " of " + ReportPageDefinition.TotalPagesSubstitution + " pages", tpNormal, 10);
 
-                def.LoadFooterLine(new(new FontFamily("Courier New"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal), 10, "Test Footer");
-                ReportPaginator paginator = new ReportPaginator(doc, def);
+                def.AddHeaderLine(new(new(DateTime.Now.ToString(), tpNormal, 10), new("ES Game Manager", tpBold, 18), pageDataSection));
+                string folder = string.Empty;
+                if (!string.IsNullOrEmpty(gameList.Folder))
+                {
+                    folder = gameList.Folder;
+                }
 
-                //printDlg.PrintableAreaHeight
+                def.AddHeaderLine(new(new("Folder:" + folder, tpItalic, 10)));
+
+                StringBuilder sb = new StringBuilder();
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag1Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag1))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag1Symbol, Properties.Settings.Default.Flag1);
+                }
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag2Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag2))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag2Symbol, Properties.Settings.Default.Flag2);
+                }
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag3Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag3))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag3Symbol, Properties.Settings.Default.Flag3);
+                }
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag4Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag4))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag4Symbol, Properties.Settings.Default.Flag4);
+                }
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag5Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag5))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag5Symbol, Properties.Settings.Default.Flag5);
+                }
+                if (!string.IsNullOrEmpty(Properties.Settings.Default.Flag6Symbol) && !string.IsNullOrEmpty(Properties.Settings.Default.Flag6))
+                {
+                    sb.AppendFormat("{0}: {1}  ", Properties.Settings.Default.Flag6Symbol, Properties.Settings.Default.Flag6);
+                }
+
+                def.AddFooterLine(new(new(sb.ToString(), tpNormal, 8), null, new(folder, tpNormal, 10)));
+
+                ReportPaginator paginator = new(doc, def);
+
                 printDlg.PrintDocument(paginator, "ES Game Manager");
+                MessageBox.Show("Printing complete.");
             }
         }
-
-        public static void DoThePrint()
-        {
-
-        }
-
-
     }
-
-
 }

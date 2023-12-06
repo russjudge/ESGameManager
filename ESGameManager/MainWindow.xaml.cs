@@ -4,18 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace ESGameManager
 {
@@ -24,9 +13,10 @@ namespace ESGameManager
     /// </summary>
     public partial class MainWindow : Window
     {
-       
+
         public MainWindow()
         {
+
             InitializeComponent();
             DataContext = this;
             SearchText = string.Empty;
@@ -229,7 +219,7 @@ namespace ESGameManager
                 }
             }
         }
-        
+
         private void OnClosed(object sender, EventArgs e)
         {
             if (Common.DetailWindow != null)
@@ -279,7 +269,7 @@ namespace ESGameManager
             if (matchedGames.Count > 0)
             {
                 MetaDetailWindow win = new MetaDetailWindow();
-                win.Games =new( matchedGames);
+                win.Games = new(matchedGames);
                 win.ShowList = true;
                 win.Show();
             }
@@ -307,11 +297,23 @@ namespace ESGameManager
             {
                 if (list.Changed)
                 {
-                   
+
                     list.Save(true);
                 }
             }
             MessageBox.Show("All lists saved.");
+        }
+        bool sizeChanging = true;
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!sizeChanging)
+            {
+                sizeChanging = true;
+                Properties.Settings.Default.WinHeight = this.Height;
+                Properties.Settings.Default.WinWidth = this.Width;
+                Properties.Settings.Default.Save();
+                sizeChanging = false;
+            }
         }
     }
 }

@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="RussJudge.SimpleWPFReportPrinter" Version="1.0.0" />
     <PackageReference Include="RussJudge.WPFListSorter" Version="1.0.0" />
   </ItemGroup>
 

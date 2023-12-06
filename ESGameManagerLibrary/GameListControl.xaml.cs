@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace ESGameManagerLibrary
@@ -493,15 +492,6 @@ namespace ESGameManagerLibrary
         {
             MoveFiles(StructureOrganization.Developer);
         }
-        private void Print()
-        {
-            FixedDocument fixedDoc = new FixedDocument();
-            PageContent pageContent = new PageContent();
-            FixedPage fixedPage = new FixedPage();
-            fixedPage.Children.Add(lvGameList);
-            ((System.Windows.Markup.IAddChild)pageContent).AddChild(fixedPage);
-            fixedDoc.Pages.Add(pageContent);
-        }
         private void OnPrint(object sender, RoutedEventArgs e)
         {
             PrintGameList.GenerateReport(GameFolder);
@@ -607,7 +597,7 @@ namespace ESGameManagerLibrary
                                 PropertyInfo? matchProperty = null;
                                 foreach (PropertyInfo p in lvGameList.Items[0].GetType().GetProperties())
                                 {
-                                    if (p.Name.ToUpperInvariant() == field.ToUpperInvariant())
+                                    if (p.Name.Equals(field, StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         matchProperty = p;
                                         break;

@@ -4,9 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManager"
+        xmlns:properties="clr-namespace:ESGameManager.Properties"
         xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"
-        mc:Ignorable="d" Closing="OnClosing" Closed="OnClosed"
-        Title="Emulation Station Game Manager" Height="600" Width="1150" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
+        mc:Ignorable="d"
+        Closing="OnClosing" Closed="OnClosed"
+        SizeChanged="OnSizeChanged"
+        Title="Emulation Station Game Manager"
+        Height="{Binding Mode=TwoWay, Source={x:Static properties:Settings.Default}, Path=WinHeight}"
+        Width="{Binding Mode=TwoWay, Source={x:Static properties:Settings.Default}, Path=WinWidth}"
+        Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
 
     <DockPanel>
 

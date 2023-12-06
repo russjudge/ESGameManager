@@ -12,6 +12,7 @@
         <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
+        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
     </Window.Resources>
     <DockPanel>
@@ -320,6 +321,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Row="7" Grid.Column="1">
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag1Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag1}">
                                             <CheckBox.Content>
                                                 <StackPanel
@@ -337,6 +339,7 @@
                                         </CheckBox>
 
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag2Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag2}">
                                             <CheckBox.Content>
                                                 <StackPanel Orientation="Horizontal">
@@ -353,6 +356,7 @@
                                         </CheckBox>
 
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag3Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag3}">
                                             <CheckBox.Content>
                                                 <StackPanel Orientation="Horizontal">
@@ -370,6 +374,7 @@
                                     </StackPanel>
                                     <StackPanel Grid.Row="7" Grid.Column="2">
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag4Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag4}">
                                             <CheckBox.Content>
                                                 <StackPanel Orientation="Horizontal">
@@ -385,6 +390,7 @@
                                         </CheckBox>
 
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag5Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag5}">
                                             <CheckBox.Content>
                                                 <StackPanel Orientation="Horizontal">
@@ -400,6 +406,7 @@
                                         </CheckBox>
 
                                         <CheckBox
+                                            Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=Flag6Symbol, Converter={StaticResource NullToVisibilityConverter}}"
                                             IsChecked="{Binding Path=SelectedGame.Flag6}">
                                             <CheckBox.Content>
                                                 <StackPanel Orientation="Horizontal">
