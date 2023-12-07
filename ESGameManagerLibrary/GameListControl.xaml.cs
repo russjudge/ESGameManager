@@ -29,9 +29,37 @@ namespace ESGameManagerLibrary
         {
             ValidLetterSelectionSort = true;
             NotProcessing = true;
+            DockMetaDetail = Properties.Settings.Default.DockMetaDetail;
             InitializeComponent();
-            //DataContext = this;
+            Common.DockMetaDetailChanged += Common_DockMetaDetailChanged;
         }
+
+        private void Common_DockMetaDetailChanged(object? sender, EventArgs e)
+        {
+            DockMetaDetail = Properties.Settings.Default.DockMetaDetail;
+        }
+
+        public static readonly DependencyProperty DockMetaDetailProperty =
+           DependencyProperty.Register(
+               nameof(DockMetaDetail),
+               typeof(bool),
+               typeof(GameListControl));
+
+
+
+        public bool DockMetaDetail
+        {
+            get
+            {
+                return (bool)this.GetValue(DockMetaDetailProperty);
+            }
+
+            set
+            {
+                this.SetValue(DockMetaDetailProperty, value);
+            }
+        }
+
         public static string? RootGamesListFolder { get; set; }
 
 
@@ -86,9 +114,6 @@ namespace ESGameManagerLibrary
                 this.SetValue(SelectedLetterProperty, value);
             }
         }
-
-
-
         public static readonly DependencyProperty GameFolderProperty =
            DependencyProperty.Register(
                nameof(GameFolder),
@@ -175,16 +200,19 @@ namespace ESGameManagerLibrary
         {
             if (d is GameListControl me)
             {
-                if (me.GameFolder != null)
+                if (!me.DockMetaDetail)
                 {
-                    if (Common.DetailWindow == null)
+                    if (me.GameFolder != null && me.SelectedGame != null)
                     {
-                        Common.ShowDetailWindow();
-                    }
-                    if (Common.DetailWindow != null)
-                    {
-                        Common.DetailWindow.Games = me.GameFolder.Games;
-                        Common.DetailWindow.SelectedGame = me.SelectedGame;
+                        if (Common.DetailWindow == null)
+                        {
+                            Common.ShowDetailWindow();
+                        }
+                        if (Common.DetailWindow != null)
+                        {
+                            Common.DetailWindow.Games = me.GameFolder.Games;
+                            Common.DetailWindow.SelectedGame = me.SelectedGame;
+                        }
                     }
                 }
             }
@@ -245,7 +273,7 @@ namespace ESGameManagerLibrary
 
         private void OnAdd(object sender, RoutedEventArgs e)
         {
-            var path = MetaDetailWindow.BrowseForFile("Select ROM file", MetaDetailWindow.romFilesFilter);
+            var path = MetaDetailControl.BrowseForFile("Select ROM file", MetaDetailControl.romFilesFilter);
             if (!string.IsNullOrEmpty(path))
             {
                 GameFolder.AddGame(path);
@@ -494,6 +522,7 @@ namespace ESGameManagerLibrary
         }
         private void OnPrint(object sender, RoutedEventArgs e)
         {
+
             PrintGameList.GenerateReport(GameFolder);
             //Not working--prints blank pages.
             //Trying to switch to using Flow Document--have a ways to go.
@@ -538,7 +567,6 @@ namespace ESGameManagerLibrary
                     }
                 }
             }
-
         }
 
         public static T? GetVisualChild<T>(Visual referenceVisual) where T : Visual

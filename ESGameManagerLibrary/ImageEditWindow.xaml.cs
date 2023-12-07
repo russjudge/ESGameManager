@@ -1,17 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace ESGameManagerLibrary
 {
@@ -23,10 +10,10 @@ namespace ESGameManagerLibrary
         private string? _relativeFolder;
         public static string? ShowEditDialog(string relativeFolder, string originalText, string originalFullPath, string title = "")
         {
-           
+
             string? retVal = null;
             ImageEditWindow win = new();
-            win._relativeFolder= relativeFolder;
+            win._relativeFolder = relativeFolder;
             if (!string.IsNullOrEmpty(title))
             {
                 win.Title = title;
@@ -46,7 +33,7 @@ namespace ESGameManagerLibrary
         {
             InitializeComponent();
         }
-        
+
         public static readonly DependencyProperty OriginalTextProperty =
            DependencyProperty.Register(
                nameof(OriginalText),
@@ -141,12 +128,11 @@ namespace ESGameManagerLibrary
 
         private void OnBrowse(object sender, RoutedEventArgs e)
         {
-            var path = MetaDetailWindow.BrowseForFile("Select image file", MetaDetailWindow.imageFilesFilter);
+            var path = MetaDetailControl.BrowseForFile("Select image file", MetaDetailControl.imageFilesFilter);
             if (!string.IsNullOrEmpty(path))
             {
                 EditTextFullPath = path;
             }
-            
         }
     }
 }

@@ -1,22 +1,6 @@
-﻿using ESGameManagerLibrary;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml.Serialization;
 
 namespace ESGameManagerLibrary
 {
@@ -64,9 +48,16 @@ namespace ESGameManagerLibrary
             SendDetailToForeground();
             if (d is MetaDetailWindow me)
             {
-                int i = me.Games.IndexOf(me.SelectedGame);
-                me.PreviousEnabled = i > 0;
-                me.NextEnabled = i < me.Games.Count - 1;
+                if (me.SelectedGame == null)
+                {
+                    //me.Close();
+                }
+                else
+                {
+                    int i = me.Games.IndexOf(me.SelectedGame);
+                    me.PreviousEnabled = i > 0;
+                    me.NextEnabled = i < me.Games.Count - 1;
+                }
             }
         }
         public static void SendDetailToForeground()
@@ -80,15 +71,17 @@ namespace ESGameManagerLibrary
         /// <param name="state"></param>
         static void SendToForeGround(object? state)
         {
-
             try
             {
                 if (Common.UIDispatcher != null && Common.DetailWindow != null)
                 {
                     Common.UIDispatcher.Invoke(() =>
                     {
-                        Common.DetailWindow.Activate();
-                        Common.DetailWindow.Focus();
+                        if (Common.DetailWindow.SelectedGame != null)
+                        {
+                            Common.DetailWindow.Activate();
+                            Common.DetailWindow.Focus();
+                        }
                     });
                 }
             }
@@ -167,64 +160,6 @@ namespace ESGameManagerLibrary
             }
         }
 
-        public const string romFilesFilter = "Zip Files|*.zip;*.7z;*.bin;*.gz;*.a26|ISO|*.iso|Executable|*.exe|ROM Files|*.rom";
-        public const string imageFilesFilter = "Image Files|*.jpg;*.png;*.bmp;*.gif;*.svg";
-        public const string videoFilesFilter = "Video files|*.mp4";
-        public static string? BrowseForFile(string title, string filter)
-        {
-            string? retVal = null;
-            OpenFileDialog diag = new();
-            diag.Filter = filter + "|All Files|*.*";
-            diag.Multiselect = false;
-            diag.Title = title;
-            diag.CheckFileExists = true;
-            if (diag.ShowDialog() == true)
-            {
-                retVal = diag.FileName;
-            }
-            return retVal;
-        }
-
-        private void BrowseForPath(object sender, RoutedEventArgs e)
-        {
-            var path = BrowseForFile("Select ROM file", romFilesFilter);
-            if (!string.IsNullOrEmpty(path))
-            {
-                SelectedGame.SetFullROMPath(path);
-                SelectedGame.FullPath = path;
-            }
-        }
-
-        private void BrowseForMarquee(object sender, RoutedEventArgs e)
-        {
-            var path = BrowseForFile("Select Marquee file", imageFilesFilter);
-            if (!string.IsNullOrEmpty(path))
-            {
-                SelectedGame.SetFullMarqueePath(path);
-                SelectedGame.FullMarqueePath = path;
-            }
-        }
-
-        private void BrowseForImage(object sender, RoutedEventArgs e)
-        {
-            var path = BrowseForFile("Select Image file", imageFilesFilter);
-            if (!string.IsNullOrEmpty(path))
-            {
-                SelectedGame.SetFullImagePath(path);
-                SelectedGame.FullImagePath = path;
-            }
-        }
-
-        private void BrowseForVideo(object sender, RoutedEventArgs e)
-        {
-            var path = BrowseForFile("Select Video file", videoFilesFilter);
-            if (!string.IsNullOrEmpty(path))
-            {
-                SelectedGame.SetFullVideoPath(path);
-                SelectedGame.FullImagePath = path;
-            }
-        }
-
         private void OnClosed(object sender, EventArgs e)
         {
             if (Common.DetailWindow == this)
@@ -240,7 +175,7 @@ namespace ESGameManagerLibrary
             {
                 SelectedGame = Games[i - 1];
             }
-           
+
         }
 
         private void GoToNextGame(object sender, RoutedEventArgs e)
@@ -252,11 +187,6 @@ namespace ESGameManagerLibrary
             }
         }
 
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
-
         private void OnDeleteGame(object sender, RoutedEventArgs e)
         {
             if (sender is Button b && b.CommandParameter is Game gm)
@@ -265,7 +195,5 @@ namespace ESGameManagerLibrary
                 Games.Remove(gm);
             }
         }
-
-        
     }
 }

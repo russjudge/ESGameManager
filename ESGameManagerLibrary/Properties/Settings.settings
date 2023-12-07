@@ -71,5 +71,8 @@
     <Setting Name="Flag7Symbol" Type="System.String" Scope="User">
       <Value Profile="(Default)">+</Value>
     </Setting>
+    <Setting Name="DockMetaDetail" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

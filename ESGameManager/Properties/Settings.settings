@@ -11,5 +11,8 @@
     <Setting Name="WinHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">600</Value>
     </Setting>
+    <Setting Name="DockMetaDetail" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -58,5 +58,17 @@ namespace ESGameManager.Properties {
                 this["WinHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DockMetaDetail {
+            get {
+                return ((bool)(this["DockMetaDetail"]));
+            }
+            set {
+                this["DockMetaDetail"] = value;
+            }
+        }
     }
 }

@@ -23,8 +23,34 @@ namespace ESGameManager
             //RootGamesListFolder = @"E:\DefaultUser\Documents\roms";
             GamesList = new();
             GameList.NewGameList += GameList_NewGameList;
+            DockMetaDetail = Common.DockMetaDetail;
         }
+        public static readonly DependencyProperty DockMetaDetailProperty =
+           DependencyProperty.Register(
+               nameof(DockMetaDetail),
+               typeof(bool),
+               typeof(MainWindow), new PropertyMetadata(OnDockMetaDetailChanged));
 
+        private static void OnDockMetaDetailChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is MainWindow me)
+            {
+                Common.DockMetaDetail = me.DockMetaDetail;
+            }
+
+        }
+        public bool DockMetaDetail
+        {
+            get
+            {
+                return (bool)this.GetValue(DockMetaDetailProperty);
+            }
+
+            set
+            {
+                this.SetValue(DockMetaDetailProperty, value);
+            }
+        }
         private void GameList_NewGameList(object? sender, NewGameListEventArgs e)
         {
             this.Dispatcher.BeginInvoke(() =>
@@ -226,6 +252,7 @@ namespace ESGameManager
             {
                 Common.DetailWindow.Close();
             }
+            Properties.Settings.Default.Save();
         }
 
         private void OnSettings(object sender, RoutedEventArgs e)
@@ -303,17 +330,6 @@ namespace ESGameManager
             }
             MessageBox.Show("All lists saved.");
         }
-        bool sizeChanging = true;
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (!sizeChanging)
-            {
-                sizeChanging = true;
-                Properties.Settings.Default.WinHeight = this.Height;
-                Properties.Settings.Default.WinWidth = this.Width;
-                Properties.Settings.Default.Save();
-                sizeChanging = false;
-            }
-        }
+
     }
 }

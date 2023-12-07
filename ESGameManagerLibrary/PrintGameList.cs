@@ -1,5 +1,4 @@
 ﻿using RussJudge.SimpleWPFReportPrinter;
-using System.Printing;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,21 +10,13 @@ namespace ESGameManagerLibrary
     public class PrintGameList
     {
         GameList theList;
-        PageContent? pageContent;
-        FixedPage? fixedPage;
-        PrintTicket? printTicket;
-        FixedDocument? fixedDocument;
-        double yPos;
-        const string fontFamily = "Times New";
-        const double margin = 40;
-        const double fontSize = 10;
-        const double fontHeaderSize = 14;
+
 
         public PrintGameList(GameList list)
         {
             theList = list;
         }
-        bool printingHeader = false;
+
         private static TableRowGroup GetGroupHeader()
         {
             TableRowGroup rowGroupHeader = new TableRowGroup();

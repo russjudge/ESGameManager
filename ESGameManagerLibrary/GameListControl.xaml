@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ESGameManagerLibrary"
     xmlns:sorter="clr-namespace:RussJudge.WPFListSorter;assembly=WPFListSorter"
-    
     xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
     mc:Ignorable="d" Name="uc"
     HorizontalAlignment="Stretch"
@@ -21,6 +20,7 @@
         <local:OrganizationStructureToBooleanConverter x:Key="OrganizationStructureToBooleanConverter" />
         <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
+        <local:PercentageOfNumericConverter x:Key="PercentageOfNumericConverter" />
         <Style  TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -29,11 +29,33 @@
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
                     <Setter Property="Background" Value="White" />
                 </Trigger>
+                <Trigger Property="IsSelected" Value="True" >
+          
+                    <Setter Property="Background" Value="#FFFFDADA" />
+                   
+                </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-
-    <DockPanel  HorizontalAlignment="Stretch" >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1" Width="10" Background="LightCoral"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Center" />
+        <local:MetaDetailControl
+            Grid.Column="2"
+     
+     Visibility="{Binding Mode=OneWay, Path=DockMetaDetail, Converter={StaticResource BooleanToVisibilityConverter}}"
+     DataContext="{Binding ElementName=uc}"
+     DockPanel.Dock="Right"
+     SelectedGame="{Binding ElementName=uc, Path=SelectedGame, Mode=TwoWay}" />
+        <DockPanel
+        Grid.Column="0"
+        HorizontalAlignment="Stretch" >
+       
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem BorderBrush="Gray" BorderThickness="1">
                 <StackPanel Orientation="Horizontal" >
@@ -572,5 +594,6 @@
 
         </ListView>
     </DockPanel>
-    
+
+    </Grid>
 </UserControl>

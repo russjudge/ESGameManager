@@ -13,7 +13,8 @@
     </Window.Resources>
     <DockPanel>
 
-        <GroupBox>
+        <GroupBox
+            DockPanel.Dock="Top" >
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold" Text="Flag Meanings" />
             </GroupBox.Header>
@@ -182,21 +183,25 @@
                     MinWidth="200"
                     HorizontalAlignment="Stretch"
                     Text="{Binding Source={x:Static properties:Settings.Default}, Path=Flag7Text}" />-->
-                <Button
-                    IsDefault="True"
-                    Grid.Row="7" Grid.ColumnSpan="4"
-                    HorizontalAlignment="Right"
-                    ToolTip="Save Changes"
-                    Click="OnSave">
-                    <Button.Content>
-                        <StackPanel>
-                            <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/save.png" />
-                            <TextBlock Text="Save" />
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
+                
 
             </Grid>
         </GroupBox>
+        <StackPanel
+            HorizontalAlignment="Right"
+            Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button
+                IsDefault="True"
+                HorizontalAlignment="Right"
+                ToolTip="Save Changes"
+                Click="OnSave">
+                <Button.Content>
+                    <StackPanel>
+                        <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/save.png" />
+                        <TextBlock Text="Save" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </StackPanel>
     </DockPanel>
 </Window>

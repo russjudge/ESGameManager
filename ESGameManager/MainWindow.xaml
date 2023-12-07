@@ -5,17 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManager"
         xmlns:properties="clr-namespace:ESGameManager.Properties"
-        xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"
+        xmlns:ctl="clr-namespace:ESGameManagerLibrary;assembly=ESGameManagerLibrary"        
         mc:Ignorable="d"
         Closing="OnClosing" Closed="OnClosed"
-        SizeChanged="OnSizeChanged"
         Title="Emulation Station Game Manager"
         Height="{Binding Mode=TwoWay, Source={x:Static properties:Settings.Default}, Path=WinHeight}"
         Width="{Binding Mode=TwoWay, Source={x:Static properties:Settings.Default}, Path=WinWidth}"
         Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
 
     <DockPanel>
-
         <DockPanel 
             DockPanel.Dock="Top" >
             <Label
@@ -145,6 +143,12 @@
                     <Image Height="24" Source="/ESGameManagerLibrary;component/Resources/merge.png"/>
                 </StackPanel>
             </Button>
+            <CheckBox
+                Margin="0,0,15,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Right"
+                IsChecked="{Binding Path=DockMetaDetail, Mode=TwoWay}"
+                Content="Dock Meta Detail Panel "/>
             <TextBlock />
         </DockPanel>
 
@@ -155,7 +159,10 @@
             ItemsSource="{Binding Path=GamesList, Mode=OneWay}">
             <TabControl.ContentTemplate>
                 <ItemContainerTemplate>
-                    <ctl:GameListControl GameFolder="{Binding}" />
+                    <ctl:GameListControl
+                        
+                        DockMetaDetail="{Binding Path=DockMetaDetail, Mode=TwoWay}"
+                        GameFolder="{Binding}" />
                 </ItemContainerTemplate>
             </TabControl.ContentTemplate>
 
