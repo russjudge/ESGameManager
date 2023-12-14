@@ -4,16 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
+        xmlns:converters="clr-namespace:RussJudge.WPFValueConverters;assembly=RussJudge.WPFValueConverters"
         xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
         mc:Ignorable="d"
         Title="Merge ROM Folders" Height="450" Width="800" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico" >
     <Window.Resources>
-        <local:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+        <converters:NumericComparisonToVisibilityConverter x:Key="NumericComparisonToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
     </Window.Resources>
     <Grid>
         <GroupBox
-            Visibility="{Binding Path=Step, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='1|Visible'}"
+            Visibility="{Binding Path=Step, Converter={StaticResource NumericComparisonToVisibilityConverter}, ConverterParameter='=|1|Visible|Collapsed'}"
             Tag="Step1">
             <GroupBox.Header>
                 <TextBlock Text="Select Source Game List folder to Merge" />
@@ -44,7 +45,7 @@
         
         
         <GroupBox
-            Visibility="{Binding Path=Step, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='2|Visible'}"
+            Visibility="{Binding Path=Step, Converter={StaticResource NumericComparisonToVisibilityConverter}, ConverterParameter='=|2|Visible|Collapsed'}"
             Tag="Step2">
             <GroupBox.Header>
                 <TextBlock Text="Select Games to Merge" />
@@ -88,7 +89,7 @@
 
         </GroupBox>
         <GroupBox
-            Visibility="{Binding Path=Step, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='3|Visible'}"
+            Visibility="{Binding Path=Step, Converter={StaticResource NumericComparisonToVisibilityConverter}, ConverterParameter='=|3|Visible|Collapsed'}"
             Tag="Step3">
             <GroupBox.Header>
                 <TextBlock Text="Select Target Game List folder to Merge into" />
@@ -127,7 +128,7 @@
            
         </GroupBox>
         <GroupBox
-            Visibility="{Binding Path=Step, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='4|Visible'}"
+            Visibility="{Binding Path=Step, Converter={StaticResource NumericComparisonToVisibilityConverter}, ConverterParameter='=|4|Visible|Collapsed'}"
             Tag="Step4">
             <GroupBox.Header>
                 <TextBlock Text="Select Options:" />

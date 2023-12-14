@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ESGameManagerLibrary"
+    xmlns:converters="clr-namespace:RussJudge.WPFValueConverters;assembly=RussJudge.WPFValueConverters"
     xmlns:sorter="clr-namespace:RussJudge.WPFListSorter;assembly=WPFListSorter"
     xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
     mc:Ignorable="d" Name="uc"
@@ -13,14 +14,14 @@
     d:DesignHeight="600" d:DesignWidth="1100">
     <UserControl.Resources>
         <local:GameList x:Key="GameList" />
-        <local:DateFormatter x:Key="DateFormatter" />
-        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
+        <converters:DateFormatter x:Key="DateFormatter" />
+
+        <converters:PathToBitmapImageConverter x:Key="PathToBitmapImageConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:OrganizationStructureToTextConverter x:Key="OrganizationStructureToTextConverter" />
         <local:OrganizationStructureToBooleanConverter x:Key="OrganizationStructureToBooleanConverter" />
-        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
-        <local:PercentageOfNumericConverter x:Key="PercentageOfNumericConverter" />
         <Style  TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -532,12 +533,12 @@
 
                                             <Image
                                                 MinWidth="200" MinHeight="200"
-                                                Source="{Binding FullImagePath, Mode=OneWay, Converter={StaticResource PathToImageSourceConverter}}" />
+                                                Source="{Binding FullImagePath, Mode=OneWay, Converter={StaticResource PathToBitmapImageConverter}}" />
                                         </DockPanel>
                                     </Button.ToolTip>
                                     <Image
                                         MaxHeight="24"
-                                        Source="{Binding FullImagePath, Mode=OneWay, Converter={StaticResource PathToImageSourceConverter}}" />
+                                        Source="{Binding FullImagePath, Mode=OneWay, Converter={StaticResource PathToBitmapImageConverter}}" />
                                 </Button>
 
                             </DataTemplate>

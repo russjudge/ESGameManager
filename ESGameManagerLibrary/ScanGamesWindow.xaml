@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
+        xmlns:converters="clr-namespace:RussJudge.WPFValueConverters;assembly=RussJudge.WPFValueConverters"
         mc:Ignorable="d" Loaded="OnLoaded" Name="uc"
         Title="ROM Folder Scan Result" SizeToContent="Height" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
-        <local:FullFilePathToNameConverter x:Key="FullFilePathToNameConverter" />
-        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
+        <converters:FullFilePathToNameConverter x:Key="FullFilePathToNameConverter" />
+        <converters:PathToBitmapImageConverter x:Key="PathToImageSourceConverter" />
     </Window.Resources>
     <DockPanel>
         <GroupBox

@@ -4,15 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
+        xmlns:converters="clr-namespace:RussJudge.WPFValueConverters;assembly=RussJudge.WPFValueConverters"
         xmlns:properties="clr-namespace:ESGameManagerLibrary.Properties"
         mc:Ignorable="d" Closed="OnClosed"
         Title="Game Detail" Height="650" Width="1000" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
-        <local:DateFormatter x:Key="DateFormatter" />
-        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
+        <converters:DateFormatter x:Key="DateFormatter" />
+        <converters:PathToBitmapImageConverter x:Key="PathToImageSourceConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <local:StringToBoolConverter x:Key="StringToBoolConverter" />
-        <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
         <local:ColorListToBrushConverter x:Key="ColorListToBrushConverter" />
     </Window.Resources>
     <DockPanel>

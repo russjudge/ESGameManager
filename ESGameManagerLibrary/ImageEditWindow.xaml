@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ESGameManagerLibrary"
+        xmlns:converters="clr-namespace:RussJudge.WPFValueConverters;assembly=RussJudge.WPFValueConverters"
         mc:Ignorable="d" Name="uc" MinHeight="200" MinWidth="300"
         MaxWidth="1300"
         MaxHeight="760"
         Title="Select New Image" SizeToContent="WidthAndHeight" Icon="/ESGameManagerLibrary;component/Resources/EMManager.ico">
     <Window.Resources>
-        <local:PathToImageSourceConverter x:Key="PathToImageSourceConverter" />
+        <converters:PathToBitmapImageConverter x:Key="PathToImageSourceConverter" />
     </Window.Resources>
     <DockPanel Margin="5,5,5,5">
         <GroupBox
