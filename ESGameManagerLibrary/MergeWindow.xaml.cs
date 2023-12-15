@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ESGameManagerLibrary;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -267,6 +268,66 @@ namespace ESGameManagerLibrary
                 DoAction();
             }
         }
+
+
+        public static readonly DependencyProperty ProcessStatusProperty =
+           DependencyProperty.Register(
+           nameof(ProcessStatus),
+           typeof(string),
+           typeof(MergeWindow));
+        public string ProcessStatus
+        {
+            get
+            {
+                return (string)this.GetValue(ProcessStatusProperty);
+            }
+
+            set
+            {
+                this.SetValue(ProcessStatusProperty, value);
+            }
+        }
+        void DoAction(object? state)
+        {
+            if (state is Tuple<string, List<Game>, GameList> parameters)
+            {
+                string subfolder = parameters.Item1;
+
+                foreach (var game in parameters.Item2)
+                {
+                    Dispatcher.Invoke(() => { ProcessStatus = "Processing " + game.Name; });
+                    Dispatcher.Invoke(() =>
+                    {
+                        
+                        game.Flag7 = false;
+                        Game newGame = game.Copy(parameters.Item3);
+                        newGame.Flag1 = SetFlag1;
+                        newGame.Flag2 = SetFlag2;
+                        newGame.Flag3 = SetFlag3;
+                        newGame.Flag4 = SetFlag4;
+                        newGame.Flag5 = SetFlag5;
+                        newGame.Flag6 = SetFlag6;
+
+                        parameters.Item3.AddGame(newGame, subfolder);
+                        if (DeleteFromSource)
+                        {
+                            SourceGameList.RemoveGame(game);
+                        }
+                    });
+                }
+                Dispatcher.Invoke(() =>
+                {
+                    parameters.Item3.Save();
+                    if (DeleteFromSource)
+                    {
+                        SourceGameList.Save();
+                    }
+                    MessageBox.Show("Merge complete");
+                    this.Close();
+                });
+
+            }
+        }
         void DoAction()
         {
             if (SourceGameList == null)
@@ -301,27 +362,8 @@ namespace ESGameManagerLibrary
                 }
                 else
                 {
-                    string subfolder = string.Empty;
-                    if (IntoSpecialFolder)
-                    {
-                        subfolder = SpecialFolder;
-                    }
-                    foreach (var game in GamesToMerge)
-                    {
-                        game.Flag7 = false;
-                        Game newGame = game.Copy();
-                        newGame.Flag1 = SetFlag1;
-                        newGame.Flag2 = SetFlag2;
-                        newGame.Flag3 = SetFlag3;
-                        newGame.Flag4 = SetFlag4;
-                        newGame.Flag5 = SetFlag5;
-                        newGame.Flag6 = SetFlag6;
-                        TargetGameList.AddGame(newGame, subfolder);
-                        if (DeleteFromSource)
-                        {
-                            SourceGameList.RemoveGame(game);
-                        }
-                    }
+                    System.Threading.ThreadPool.QueueUserWorkItem(DoAction,
+                        new Tuple<string, List<Game>, GameList>(IntoSpecialFolder ? SpecialFolder : string.Empty, GamesToMerge, TargetGameList));
                 }
             }
         }

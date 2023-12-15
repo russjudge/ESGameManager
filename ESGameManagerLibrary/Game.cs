@@ -954,7 +954,7 @@ namespace ESGameManagerLibrary
         /// <param name="path"></param>
         public static string ShrinkImageIfNecessary(string filePath, string target)
         {
-            string retVal = filePath;
+            string retVal = target;
             try
             {
                 using (System.IO.FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
@@ -1022,6 +1022,7 @@ namespace ESGameManagerLibrary
                 }
                 else
                 {
+                   
                     FileInfo f = new FileInfo(path);
                     if (!Directory.Exists(targetImageFolder))
                     {
@@ -1035,7 +1036,6 @@ namespace ESGameManagerLibrary
                     }
                     else
                     {
-
                         f.CopyTo(retVal, true);
                     }
                 }
@@ -1188,7 +1188,7 @@ namespace ESGameManagerLibrary
         {
             FullVideoPath = GetFullVideoPath(path);
         }
-        public Game Copy()
+        public Game Copy(GameList newParent)
         {
 
             return new Game()
@@ -1199,7 +1199,7 @@ namespace ESGameManagerLibrary
                 Name = Name,
                 FullPath = FullPath,
                 Path = Path,
-                Parent = Parent,
+                Parent = newParent,
                 Description = Description,
                 Rating = Rating,
                 ReleaseDate = ReleaseDate,
@@ -1218,6 +1218,7 @@ namespace ESGameManagerLibrary
                 Marquee = Marquee,
                 FullMarqueePath = FullMarqueePath,
                 GenreId = GenreId,
+                IsLoading=false,
             };
         }
     }

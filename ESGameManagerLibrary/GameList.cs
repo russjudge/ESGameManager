@@ -46,6 +46,7 @@ namespace ESGameManagerLibrary
         }
         public void AddGame(Game game, string targetSubfolder = "")
         {
+            game.Parent = this;
             //FullPath, FullImagePath, FullMarqueePath, FullVideoPath
             if (string.IsNullOrEmpty(targetSubfolder))
             {
@@ -53,7 +54,9 @@ namespace ESGameManagerLibrary
             }
             else
             {
+                
                 game.FullPath = game.SetFileLocation(game.FullPath, targetSubfolder, false);
+
             }
             if (!string.IsNullOrEmpty(game.FullImagePath))
             {
@@ -98,6 +101,7 @@ namespace ESGameManagerLibrary
                     Image = string.Empty,
                     FullImagePath = string.Empty,
                     GenreId = string.Empty,
+                    IsLoading = false
                 };
                 gm.SetFullROMPath(sourcefullFilePath);
                 Games.Add(gm);

@@ -30,6 +30,7 @@ namespace ESGameManagerLibrary
             ValidLetterSelectionSort = true;
             NotProcessing = true;
             DockMetaDetail = Properties.Settings.Default.DockMetaDetail;
+            
             InitializeComponent();
             Common.DockMetaDetailChanged += Common_DockMetaDetailChanged;
         }
@@ -114,6 +115,7 @@ namespace ESGameManagerLibrary
                 this.SetValue(SelectedLetterProperty, value);
             }
         }
+
         public static readonly DependencyProperty GameFolderProperty =
            DependencyProperty.Register(
                nameof(GameFolder),

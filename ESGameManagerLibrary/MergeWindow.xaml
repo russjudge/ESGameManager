@@ -158,7 +158,7 @@
                     <DockPanel>
                     <StackPanel>
                         <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag1, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag1, Mode=TwoWay}">
                             <CheckBox.Content>
                                 <StackPanel
                                     Orientation="Horizontal">
@@ -175,7 +175,7 @@
                         </CheckBox>
 
                             <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag2, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag2, Mode=TwoWay}">
                                 <CheckBox.Content>
                                     <StackPanel
                                     Orientation="Horizontal">
@@ -192,7 +192,7 @@
                             </CheckBox>
 
                             <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag3, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag3, Mode=TwoWay}">
                                 <CheckBox.Content>
                                     <StackPanel
                                     Orientation="Horizontal">
@@ -213,7 +213,7 @@
 
                         <StackPanel>
                             <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag4, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag4, Mode=TwoWay}">
                                 <CheckBox.Content>
                                     <StackPanel
                                     Orientation="Horizontal">
@@ -230,7 +230,7 @@
                             </CheckBox>
 
                             <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag5, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag5, Mode=TwoWay}">
                                 <CheckBox.Content>
                                     <StackPanel
                                     Orientation="Horizontal">
@@ -247,7 +247,7 @@
                             </CheckBox>
 
                             <CheckBox
-                            IsChecked="{Binding Path=SelectedGame.SetFlag6, Mode=TwoWay}">
+                            IsChecked="{Binding Path=SetFlag6, Mode=TwoWay}">
                                 <CheckBox.Content>
                                     <StackPanel
                                     Orientation="Horizontal">
@@ -284,6 +284,11 @@
                     </Button>
                 </StackPanel>
             </DockPanel>
+        </GroupBox>
+        <GroupBox
+            Visibility="{Binding Path=Step, Converter={StaticResource NumericComparisonToVisibilityConverter}, ConverterParameter='=|5|Visible|Collapsed'}"
+            Tag="Step5">
+            <TextBlock Text="{Binding Path=ProcessStatus}" />
         </GroupBox>
     </Grid>
 </Window>
