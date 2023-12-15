@@ -19,6 +19,10 @@ namespace ESGameManager
                 ESGameManager.Properties.Settings.Default.Save();
             }
             base.OnStartup(e);
+            //if (CheckForUpdate())
+            //{
+            //    Shutdown(0);
+            //}
             //Shutdown(1);
             //TODO: Add Check for update.
 
@@ -29,7 +33,8 @@ namespace ESGameManager
 
             //QUESTION:  Will settings be retained on an update install????  If not, then cannot run installer to update.
         }
-
+        //russjudge.com/software/esgamemanager.version
+        
         private void CurrentDispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             Common.FatalApplicationException(e.Exception);
