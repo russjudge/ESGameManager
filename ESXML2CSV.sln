@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E4F80AD-1026-4ABC-90E0-99D724E089ED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		CreateDeploy.cmd = CreateDeploy.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -30,12 +29,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{
 		Resources\VersionBump.exe = Resources\VersionBump.exe
 		Resources\VersionBump.pdb = Resources\VersionBump.pdb
 		Resources\VersionBump.runtimeconfig.json = Resources\VersionBump.runtimeconfig.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{D83A8EF9-6560-48DE-9403-67A58BBAF7C4}"
-	ProjectSection(SolutionItems) = preProject
-		Release\ESGameManager.version = Release\ESGameManager.version
-		Release\esgamemanagersetup.msi = Release\esgamemanagersetup.msi
 	EndProjectSection
 EndProject
 Global

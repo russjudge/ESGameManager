@@ -12,7 +12,7 @@ I discovered there is at least one application out there that helps with managin
 it seemed pretty simple, so I created my own application.
 
 The features of this application are all features I needed for my own use.  Upon completion I felt that this tool was useful enough for others, and it offered features not
-available elsewhere, so I released it for others (TODO). 
+available elsewhere, so I released it for others. 
 
 # How it works
 

@@ -6,8 +6,8 @@
     <UseWPF>true</UseWPF>
 
     <ImplicitUsings>enable</ImplicitUsings>
-    <FileVersion>1.0.0.4</FileVersion>
-    <AssemblyVersion>1.0.0.4</AssemblyVersion>
+    <FileVersion>1.0.0.18</FileVersion>
+    <AssemblyVersion>1.0.0.18</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
