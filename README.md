@@ -40,5 +40,5 @@ compiling to Linux may become available at a later date.
 
 Currently only set to run on Windows.  To run on Linux, clone this repository and compile it in your Linux environment.
 
-For Windows install, download and run the installer file from <https://github.com/russjudge/ESGameManager/Release/esgamemanagersetup.msi>
+For Windows install, download and run the installer file from <https://github.com/russjudge/ESGameManager/releases/download/v1.0.0-alpha/esgamemanagersetup.msi>
 
