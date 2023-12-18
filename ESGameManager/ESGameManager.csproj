@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-	  
+
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <SignAssembly>False</SignAssembly>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -15,9 +15,12 @@
     <ApplicationIcon>EMManager.ico</ApplicationIcon>
     <Authors>Russ Judge</Authors>
     <Company>Confederate in Blue Gaming</Company>
-    <Copyright>Copyright (c) 2023</Copyright>
+    <Copyright>Copyright (c) Russ Judge 2023</Copyright>
     <RepositoryType>git</RepositoryType>
-  
+    <PackageProjectUrl>https://github.com/russjudge/ESGameManager</PackageProjectUrl>
+
+    <FileVersion>1.0.0.4</FileVersion>
+    <AssemblyVersion>1.0.0.4</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -64,6 +67,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="RussJudge.UpdateCheck">
+      <HintPath>..\Resources\RussJudge.UpdateCheck.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="EMManager.ico" />
   </ItemGroup>
 
@@ -93,5 +102,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)Resources\VersionBump.exe $(ProjectPath)" />
+  </Target>
 
 </Project>

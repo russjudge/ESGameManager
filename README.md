@@ -35,3 +35,10 @@ made available here.
 
 ESGameManager is written in .NET 8.0, and as such should be able to be compiled in Linux.  However, the installer is only available for Windows.  A script for
 compiling to Linux may become available at a later date.
+
+## Installation
+
+Currently only set to run on Windows.  To run on Linux, clone this repository and compile it in your Linux environment.
+
+For Windows install, download and run the installer file from <https://github.com/russjudge/ESGameManager/Release/esgamemanagersetup.msi>
+

@@ -8,12 +8,35 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3E4F80AD-1026-4ABC-90E0-99D724E089ED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		CreateDeploy.cmd = CreateDeploy.cmd
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESGameManagerLibrary", "ESGameManagerLibrary\ESGameManagerLibrary.csproj", "{9DE9AC64-8919-4D13-969B-E45C47710F2F}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ESGameManagerSetup", "ESGameManagerSetup\ESGameManagerSetup.vdproj", "{FAB1E2DA-8704-4EB5-88C8-0C699393EB80}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{8CB74658-AF90-4AE0-AC6F-36A790CABD78}"
+	ProjectSection(SolutionItems) = preProject
+		Resources\RussJudge.Deployer.deps.json = Resources\RussJudge.Deployer.deps.json
+		Resources\RussJudge.Deployer.dll = Resources\RussJudge.Deployer.dll
+		Resources\RussJudge.Deployer.exe = Resources\RussJudge.Deployer.exe
+		Resources\RussJudge.Deployer.pdb = Resources\RussJudge.Deployer.pdb
+		Resources\RussJudge.Deployer.runtimeconfig.json = Resources\RussJudge.Deployer.runtimeconfig.json
+		Resources\RussJudge.UpdateCheck.dll = Resources\RussJudge.UpdateCheck.dll
+		Resources\RussJudge.UpdateCheck.pdb = Resources\RussJudge.UpdateCheck.pdb
+		Resources\VersionBump.deps.json = Resources\VersionBump.deps.json
+		Resources\VersionBump.dll = Resources\VersionBump.dll
+		Resources\VersionBump.exe = Resources\VersionBump.exe
+		Resources\VersionBump.pdb = Resources\VersionBump.pdb
+		Resources\VersionBump.runtimeconfig.json = Resources\VersionBump.runtimeconfig.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Release", "Release", "{D83A8EF9-6560-48DE-9403-67A58BBAF7C4}"
+	ProjectSection(SolutionItems) = preProject
+		Release\ESGameManager.version = Release\ESGameManager.version
+		Release\esgamemanagersetup.msi = Release\esgamemanagersetup.msi
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

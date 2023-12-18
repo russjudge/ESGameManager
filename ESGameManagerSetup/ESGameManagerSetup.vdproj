@@ -49,6 +49,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.CoreRuntime.8.0.x64"
+                    {
+                    "Name" = "8:.NET Runtime 8.0.0 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.CoreRuntime.8.0.x64"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -65,6 +81,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.CoreRuntime.8.0.x64"
+                    {
+                    "Name" = "8:.NET Runtime 8.0.0 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.CoreRuntime.8.0.x64"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -694,7 +726,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_089F3B621A984DAF81F5AAFC7D9CBA73"
             {
-            "SourcePath" = "8:..\\ESGameManager\\obj\\Debug\\net8.0-windows7.0\\ESGameManager.dll"
+            "SourcePath" = "8:..\\ESGameManager\\obj\\Release\\net8.0-windows7.0\\ESGameManager.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1706BF978E18483B9AF021E1ADB78F88"
@@ -750,7 +782,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4D531D4F297B43449650E5C96FC71B67"
             {
-            "SourcePath" = "8:..\\ESGameManagerLibrary\\obj\\Debug\\net8.0-windows\\ESGameManagerLibrary.dll"
+            "SourcePath" = "8:..\\ESGameManagerLibrary\\obj\\Release\\net8.0-windows\\ESGameManagerLibrary.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_1706BF978E18483B9AF021E1ADB78F88"

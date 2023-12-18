@@ -1,0 +1,1 @@
+Resources\RussJudge.Deployer.exe "ESGameManager\ESGameManager.csproj" "ESGameManagerSetup\Debug\ESGameManagerSetup.msi" "Release"
